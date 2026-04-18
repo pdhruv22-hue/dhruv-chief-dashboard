@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="../data/data.js" onerror="console.log('No data.js yet â€” dashboard will show empty state or fallback to localStorage')"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wealth Â· Chief of Staff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E0E10;
+    --bg-card: #16161A;
+    --bg-elev: #1D1D22;
+    --ink: #F2EDE3;
+    --ink-soft: #9A948A;
+    --ink-faint: #5C5850;
+    --rule: #26262C;
+    --accent: #E3AD3B;       /* warm amber â€” the hero color */
+    --accent-soft: #8B6B1E;
+    --green: #6AC48A;        /* money up */
+    --red: #E85A5A;          /* money down */
+    --blue: #5EAFE0;
+    --font-serif: 'Fraunces', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Menlo', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px 80px; }
+
+  /* ====== HEADER ====== */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .header-title {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .header-meta {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+    line-height: 1.8;
+  }
+  .header-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  /* ====== HERO BLOCK ====== */
+  .hero {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 48px;
+    padding: 32px 0 40px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 40px;
+    animation: fadeInUp 0.6s ease-out;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-number {
+    font-family: var(--font-mono);
+    font-size: 80px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+    margin-top: 6px;
+  }
+  .hero-delta {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    margin-top: 12px;
+    color: var(--ink-soft);
+  }
+  .hero-delta.positive { color: var(--green); }
+  .hero-delta.negative { color: var(--red); }
+  .hero-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .ring {
+    position: relative;
+    width: 220px;
+    height: 220px;
+  }
+  .ring-svg { transform: rotate(-90deg); }
+  .ring-bg { stroke: var(--rule); }
+  .ring-fg { stroke: var(--accent); transition: stroke-dashoffset 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
+  .ring-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .ring-pct {
+    font-family: var(--font-mono);
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .ring-target {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ====== CHART ====== */
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+  .chart-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .chart-canvas {
+    width: 100%;
+    height: 320px;
+  }
+
+  /* ====== STATS ROW ====== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .stat {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 16px 18px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .stat:hover { border-color: var(--accent-soft); transform: translateY(-2px); }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* ====== WHAT-IF SIMULATOR ====== */
+  .sim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  .sim-card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 24px;
+  }
+  .slider-group { margin-bottom: 20px; }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .slider-name {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .slider-value {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--rule);
+    border-radius: 2px;
+  }
+  input[type=range]::-moz-range-track {
+    height: 4px;
+    background: var(--rule);
+    border-radius: 2px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: -7px;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(227, 173, 59, 0.2);
+    transition: box-shadow 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 6px rgba(227, 173, 59, 0.25);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+  }
+  .sim-result {
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+    margin-top: 20px;
+  }
+  .sim-result-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .sim-result-line .v { color: var(--ink); font-weight: 500; }
+  .sim-result-line.hero { padding-top: 16px; border-top: 1px solid var(--rule); margin-top: 8px; }
+  .sim-result-line.hero .k { color: var(--ink-soft); }
+  .sim-result-line.hero .v { font-size: 20px; color: var(--accent); }
+
+  /* ====== ADD SNAPSHOT FORM ====== */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  input[type=number], input[type=text], input[type=date] {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 8px 0;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus {
+    border-bottom-color: var(--accent);
+  }
+  button {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 10px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s, transform 0.1s;
+  }
+  button:hover { background: #F2BC4A; }
+  button:active { transform: scale(0.97); }
+  button.secondary {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+  }
+  button.secondary:hover {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  /* ====== HISTORY TABLE ====== */
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .history-table th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 400;
+  }
+  .history-table td {
+    padding: 14px 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+  }
+  .history-table td.money { font-weight: 500; }
+  .history-table td.delta-pos { color: var(--green); }
+  .history-table td.delta-neg { color: var(--red); }
+
+  /* ====== TOAST ====== */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ====== EMPTY STATE ====== */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  /* ====== DATA SOURCE NOTICE ====== */
+  .source-notice {
+    background: var(--bg-elev);
+    border-left: 3px solid var(--accent);
+    padding: 12px 20px;
+    margin-bottom: 24px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+  .source-notice.error {
+    border-left-color: var(--red);
+    color: var(--ink);
+  }
+  .source-notice code {
+    color: var(--accent);
+    background: none;
+  }
+
+  @media (max-width: 900px) {
+    .container { padding: 16px; }
+    .hero { grid-template-columns: 1fr; gap: 24px; }
+    .hero-ring-wrap { align-items: center; }
+    .hero-number { font-size: 56px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .sim-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <span class="header-label">Personal operating system</span>
+    <div class="header-title">The Wealth Ledger</div>
+  </div>
+  <div class="header-meta">
+    <div id="current-date">â€”</div>
+    <div>Sprint 1 Â· Aprâ€“Oct 2026</div>
+    <div>Mansfield, MA</div>
+  </div>
+</header>
+
+<div id="source-notice" class="source-notice">
+  Loading data from <code>../data/wealth.json</code>...
+</div>
+
+<div class="hero" id="hero" style="display:none;">
+  <div>
+    <span class="header-label">Liquid net worth</span>
+    <div class="hero-number" id="hero-number">$0</div>
+    <div class="hero-delta" id="hero-delta">â€”</div>
+  </div>
+  <div class="hero-ring-wrap">
+    <div class="ring">
+      <svg class="ring-svg" width="220" height="220" viewBox="0 0 220 220">
+        <circle class="ring-bg" cx="110" cy="110" r="96" fill="none" stroke-width="12" />
+        <circle class="ring-fg" id="ring-fg" cx="110" cy="110" r="96" fill="none" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="603.19" stroke-dashoffset="603.19" />
+      </svg>
+      <div class="ring-label">
+        <div class="ring-pct" id="ring-pct">0%</div>
+        <div class="ring-target">to $550K target</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="chart-wrap" id="chart-wrap" style="display:none;">
+  <div class="section-title">Net Worth Â· Over Time</div>
+  <div class="section-sub">History Â· trajectory Â· Year-1 target</div>
+  <canvas class="chart-canvas" id="chart"></canvas>
+</div>
+
+<div class="stats-grid" id="stats-grid" style="display:none;"></div>
+
+<div class="sim-grid">
+  <div class="sim-card">
+    <div class="section-title" style="margin-bottom: 24px;">What-If Simulator</div>
+
+    <div class="slider-group">
+      <div class="slider-label">
+        <span class="slider-name">Monthly contribution</span>
+        <span class="slider-value" id="sim-contrib-val">$4,167</span>
+      </div>
+      <input type="range" id="sim-contrib" min="0" max="15000" step="100" value="4167" />
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label">
+        <span class="slider-name">Annual growth rate</span>
+        <span class="slider-value" id="sim-growth-val">8%</span>
+      </div>
+      <input type="range" id="sim-growth" min="0" max="15" step="0.5" value="8" />
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label">
+        <span class="slider-name">Time horizon</span>
+        <span class="slider-value" id="sim-years-val">5 years</span>
+      </div>
+      <input type="range" id="sim-years" min="1" max="10" step="1" value="5" />
+    </div>
+
+    <div class="sim-result">
+      <div class="sim-result-line">
+        <span>Starting point</span>
+        <span class="v" id="sim-start">$â€”</span>
+      </div>
+      <div class="sim-result-line">
+        <span>Total contributions</span>
+        <span class="v" id="sim-contribs">$â€”</span>
+      </div>
+      <div class="sim-result-line">
+        <span>Growth (compound)</span>
+        <span class="v" id="sim-growth-val2">$â€”</span>
+      </div>
+      <div class="sim-result-line hero">
+        <span class="k">Projected ending</span>
+        <span class="v" id="sim-ending">$â€”</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-card">
+    <div class="section-title" style="margin-bottom: 6px;">Add Snapshot</div>
+    <div class="section-sub">Log your current position</div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="in-date" />
+      </div>
+      <div class="field">
+        <label>Total liquid *</label>
+        <input type="number" id="in-total" placeholder="417000" />
+      </div>
+      <div class="field">
+        <label>Merrill</label>
+        <input type="number" id="in-merrill" placeholder="205000" />
+      </div>
+      <div class="field">
+        <label>Bluestone</label>
+        <input type="number" id="in-bluestone" placeholder="200000" />
+      </div>
+      <div class="field">
+        <label>Axos</label>
+        <input type="number" id="in-axos" placeholder="75000" />
+      </div>
+      <div class="field">
+        <label>SoFi</label>
+        <input type="number" id="in-sofi" placeholder="25000" />
+      </div>
+      <div class="field">
+        <label>Coinbase</label>
+        <input type="number" id="in-coinbase" placeholder="7700" />
+      </div>
+      <div class="field" style="grid-column: span 2;">
+        <label>Notes</label>
+        <input type="text" id="in-notes" placeholder="Optional context" />
+      </div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center; margin-top: 4px;">
+      <button id="btn-save">Save snapshot</button>
+      <button class="secondary" id="btn-reload">Reload data</button>
+      <span id="save-hint" style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); margin-left: auto;">
+        Note: browser can read but not write directly
+      </span>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="section-title">History</div>
+  <div class="section-sub" id="history-sub">Most recent snapshots</div>
+  <div id="history-wrap">
+    <div class="empty">No snapshots yet. Log your first one via the form above or the Python CLI.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ==================== STATE ====================
+const YEAR1_TARGET = 550000;
+const STARTING_LIQUID = 416834;
+const PLAN_START_DATE = "2026-04-18";
+
+let state = {
+  snapshots: [],
+  loaded: false,
+  source: "none",
+};
+
+let chart = null;
+
+// ==================== AUDIO (subtle, optional) ====================
+let audioCtx = null;
+function initAudio() {
+  if (audioCtx) return;
+  try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+}
+function beep(freq = 880, duration = 0.12, volume = 0.08) {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.frequency.value = freq;
+  osc.type = 'sine';
+  gain.gain.setValueAtTime(0, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+function chimeSuccess() { beep(880, 0.10); setTimeout(() => beep(1175, 0.15), 80); }
+function chimeMilestone() { beep(523, 0.12); setTimeout(() => beep(659, 0.12), 100); setTimeout(() => beep(784, 0.22), 200); }
+
+// ==================== FORMATTERS ====================
+const fmt = {
+  money(n) { return "$" + Math.round(n).toLocaleString(); },
+  compact(n) {
+    if (Math.abs(n) >= 1000000) return "$" + (n / 1000000).toFixed(2) + "M";
+    if (Math.abs(n) >= 1000) return "$" + Math.round(n / 1000) + "K";
+    return "$" + Math.round(n);
+  },
+  pct(n) { return Math.round(n * 10) / 10 + "%"; },
+  date(iso) {
+    if (!iso) return "â€”";
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" });
+  },
+};
+
+// ==================== COUNT-UP ANIMATION ====================
+function animateCount(el, from, to, duration = 900, formatter = (n) => Math.round(n).toLocaleString()) {
+  const start = performance.now();
+  function step(now) {
+    const elapsed = now - start;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = from + (to - from) * eased;
+    el.textContent = formatter(val);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ==================== TOAST ====================
+function showToast(msg, duration = 2200) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), duration);
+}
+
+// ==================== DATA LOADING ====================
+async function loadData() {
+  const notice = document.getElementById("source-notice");
+
+  // Try window.WEALTH_DATA (loaded via <script src="../data/data.js">)
+  // This works from file:// URLs where fetch() is blocked.
+  if (window.WEALTH_DATA && window.WEALTH_DATA.snapshots) {
+    state.snapshots = window.WEALTH_DATA.snapshots || [];
+    state.loaded = true;
+    state.source = "data.js";
+    notice.innerHTML = `Loaded ${state.snapshots.length} snapshots from <code>../data/data.js</code> Â· <span id="reload-status"></span>`;
+    renderAll();
+    return;
+  }
+
+  // Try JSON file fetch (works when served via a local web server)
+  try {
+    const resp = await fetch("../data/wealth.json?t=" + Date.now());
+    if (resp.ok) {
+      const data = await resp.json();
+      state.snapshots = data.snapshots || [];
+      state.loaded = true;
+      state.source = "file";
+      notice.innerHTML = `Loaded ${state.snapshots.length} snapshots from <code>../data/wealth.json</code> Â· <span id="reload-status"></span>`;
+      renderAll();
+      return;
+    }
+  } catch (e) {
+    // Silent fail, try localStorage
+  }
+
+  // Try localStorage fallback
+  try {
+    const local = localStorage.getItem("wealth-snapshots");
+    if (local) {
+      state.snapshots = JSON.parse(local);
+      state.loaded = true;
+      state.source = "localStorage";
+      notice.innerHTML = `Using browser localStorage (${state.snapshots.length} snapshots). Log a snapshot via Python CLI and refresh to sync from disk.`;
+      renderAll();
+      return;
+    }
+  } catch (e) {}
+
+  // Nothing found â€” show empty state
+  state.loaded = true;
+  state.source = "empty";
+  notice.classList.add("error");
+  notice.innerHTML = `No snapshots yet. Log one via the form below (saves to browser), or run:<br><code>python handler.py snapshot 417000 --merrill 205000 --bluestone 200000 --axos 75000 --sofi 25000 --coinbase 7700</code>`;
+  renderAll();
+}
+
+// ==================== RENDER ====================
+function renderAll() {
+  if (state.snapshots.length === 0) {
+    document.getElementById("hero").style.display = "none";
+    document.getElementById("chart-wrap").style.display = "none";
+    document.getElementById("stats-grid").style.display = "none";
+    document.getElementById("history-wrap").innerHTML = '<div class="empty">No snapshots yet. Log your first one via the form above.</div>';
+    updateSimulator();
+    return;
+  }
+  document.getElementById("hero").style.display = "grid";
+  document.getElementById("chart-wrap").style.display = "block";
+  document.getElementById("stats-grid").style.display = "grid";
+  renderHero();
+  renderChart();
+  renderStats();
+  renderHistory();
+  updateSimulator();
+}
+
+function renderHero() {
+  const snaps = [...state.snapshots].sort((a, b) => b.snapshot_date.localeCompare(a.snapshot_date));
+  const latest = snaps[0];
+  const prev = snaps[1];
+
+  const heroEl = document.getElementById("hero-number");
+  heroEl.textContent = "$0";
+  animateCount(heroEl, 0, latest.total_liquid, 1000, (n) => "$" + Math.round(n).toLocaleString());
+
+  const deltaEl = document.getElementById("hero-delta");
+  if (prev) {
+    const delta = latest.total_liquid - prev.total_liquid;
+    const sign = delta >= 0 ? "+" : "";
+    deltaEl.textContent = `${sign}${delta.toLocaleString()} since ${fmt.date(prev.snapshot_date)}`;
+    deltaEl.className = "hero-delta " + (delta >= 0 ? "positive" : "negative");
+  } else {
+    deltaEl.textContent = "First snapshot logged";
+    deltaEl.className = "hero-delta";
+  }
+
+  // Ring
+  const pct = Math.min(100, (latest.total_liquid / YEAR1_TARGET) * 100);
+  const circumference = 2 * Math.PI * 96;
+  const offset = circumference - (circumference * pct / 100);
+  const ringFg = document.getElementById("ring-fg");
+  setTimeout(() => {
+    ringFg.style.strokeDashoffset = offset;
+  }, 100);
+  animateCount(document.getElementById("ring-pct"), 0, pct, 1200, (n) => Math.round(n) + "%");
+
+  // Milestone chime if crossed a threshold since load
+  if (pct >= 100 && !sessionStorage.getItem("milestone-100")) {
+    sessionStorage.setItem("milestone-100", "1");
+    setTimeout(chimeMilestone, 1500);
+    setTimeout(() => showToast("Year-1 target reached"), 1500);
+  }
+}
+
+function renderChart() {
+  const snaps = [...state.snapshots].sort((a, b) => a.snapshot_date.localeCompare(b.snapshot_date));
+  const labels = snaps.map(s => fmt.date(s.snapshot_date));
+  const data = snaps.map(s => s.total_liquid);
+
+  // Add target trajectory line: linear from starting to year1 target over ~1 year
+  const startDate = new Date(PLAN_START_DATE);
+  const targetLine = snaps.map(s => {
+    const daysSince = (new Date(s.snapshot_date) - startDate) / (1000 * 60 * 60 * 24);
+    const frac = Math.min(1, Math.max(0, daysSince / 365));
+    return STARTING_LIQUID + (YEAR1_TARGET - STARTING_LIQUID) * frac;
+  });
+
+  if (chart) chart.destroy();
+  const ctx = document.getElementById("chart").getContext("2d");
+
+  // Create gradient for fill
+  const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+  gradient.addColorStop(0, "rgba(227, 173, 59, 0.25)");
+  gradient.addColorStop(1, "rgba(227, 173, 59, 0)");
+
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Net worth",
+          data: data,
+          borderColor: "#E3AD3B",
+          backgroundColor: gradient,
+          borderWidth: 2.5,
+          tension: 0.3,
+          fill: true,
+          pointRadius: 4,
+          pointBackgroundColor: "#E3AD3B",
+          pointBorderColor: "#0E0E10",
+          pointBorderWidth: 2,
+          pointHoverRadius: 7,
+        },
+        {
+          label: "Target trajectory",
+          data: targetLine,
+          borderColor: "#5C5850",
+          borderWidth: 1,
+          borderDash: [4, 4],
+          tension: 0,
+          fill: false,
+          pointRadius: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 1000, easing: "easeOutCubic" },
+      interaction: { intersect: false, mode: "index" },
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+          align: "end",
+          labels: {
+            color: "#9A948A",
+            font: { family: "'JetBrains Mono', monospace", size: 11 },
+            boxWidth: 12,
+            boxHeight: 12,
+          },
+        },
+        tooltip: {
+          backgroundColor: "#16161A",
+          borderColor: "#26262C",
+          borderWidth: 1,
+          titleColor: "#F2EDE3",
+          bodyColor: "#F2EDE3",
+          titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 13 },
+          padding: 12,
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${fmt.money(ctx.parsed.y)}`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: "#26262C", drawBorder: false },
+          ticks: {
+            color: "#5C5850",
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+          },
+        },
+        y: {
+          grid: { color: "#26262C", drawBorder: false },
+          ticks: {
+            color: "#5C5850",
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            callback: (v) => fmt.compact(v),
+          },
+        },
+      },
+    },
+  });
+}
+
+function renderStats() {
+  const snaps = [...state.snapshots].sort((a, b) => b.snapshot_date.localeCompare(a.snapshot_date));
+  const latest = snaps[0];
+  const accounts = [
+    { key: "merrill", label: "Merrill" },
+    { key: "bluestone", label: "Bluestone" },
+    { key: "axos", label: "Axos HYSA" },
+    { key: "sofi", label: "SoFi HYSA" },
+    { key: "coinbase", label: "Coinbase" },
+  ];
+  const grid = document.getElementById("stats-grid");
+  grid.innerHTML = "";
+  accounts.forEach((a, i) => {
+    const val = latest[a.key] || 0;
+    const card = document.createElement("div");
+    card.className = "stat";
+    card.style.animationDelay = (i * 80) + "ms";
+    card.innerHTML = `
+      <div class="stat-label">${a.label}</div>
+      <div class="stat-value">${fmt.compact(val)}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderHistory() {
+  const snaps = [...state.snapshots].sort((a, b) => b.snapshot_date.localeCompare(a.snapshot_date));
+  const wrap = document.getElementById("history-wrap");
+  document.getElementById("history-sub").textContent = `${snaps.length} ${snaps.length === 1 ? "entry" : "entries"}`;
+  let html = `<table class="history-table">
+    <thead><tr>
+      <th>Date</th><th>Total</th><th>Merrill</th><th>Bluestone</th><th>HYSA (A+S)</th><th>Crypto</th><th>Î”</th>
+    </tr></thead><tbody>`;
+  snaps.forEach((s, i) => {
+    const prev = snaps[i + 1];
+    let deltaCell = "â€”";
+    let deltaClass = "";
+    if (prev) {
+      const d = s.total_liquid - prev.total_liquid;
+      deltaClass = d >= 0 ? "delta-pos" : "delta-neg";
+      deltaCell = (d >= 0 ? "+" : "") + Math.round(d).toLocaleString();
+    }
+    html += `<tr>
+      <td>${fmt.date(s.snapshot_date)}</td>
+      <td class="money">${fmt.compact(s.total_liquid)}</td>
+      <td>${fmt.compact(s.merrill || 0)}</td>
+      <td>${fmt.compact(s.bluestone || 0)}</td>
+      <td>${fmt.compact((s.axos || 0) + (s.sofi || 0))}</td>
+      <td>${fmt.compact(s.coinbase || 0)}</td>
+      <td class="${deltaClass}">${deltaCell}</td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  wrap.innerHTML = html;
+}
+
+// ==================== SIMULATOR ====================
+function updateSimulator() {
+  const contrib = +document.getElementById("sim-contrib").value;
+  const growth = +document.getElementById("sim-growth").value / 100;
+  const years = +document.getElementById("sim-years").value;
+
+  document.getElementById("sim-contrib-val").textContent = "$" + contrib.toLocaleString();
+  document.getElementById("sim-growth-val").textContent = growth * 100 + "%";
+  document.getElementById("sim-years-val").textContent = years + (years === 1 ? " year" : " years");
+
+  const snaps = [...state.snapshots].sort((a, b) => b.snapshot_date.localeCompare(a.snapshot_date));
+  const start = snaps.length > 0 ? snaps[0].total_liquid : STARTING_LIQUID;
+
+  // Monthly compounding
+  const monthlyRate = growth / 12;
+  const months = years * 12;
+  let balance = start;
+  for (let i = 0; i < months; i++) {
+    balance = balance * (1 + monthlyRate) + contrib;
+  }
+  const totalContribs = contrib * months;
+  const growthAmt = balance - start - totalContribs;
+
+  document.getElementById("sim-start").textContent = fmt.money(start);
+  document.getElementById("sim-contribs").textContent = fmt.money(totalContribs);
+  document.getElementById("sim-growth-val2").textContent = fmt.money(growthAmt);
+  document.getElementById("sim-ending").textContent = fmt.money(balance);
+}
+
+// ==================== SAVE SNAPSHOT (localStorage only â€” Python CLI is the "real" save) ====================
+function saveSnapshotLocal() {
+  const total = parseFloat(document.getElementById("in-total").value);
+  if (!total || isNaN(total)) {
+    showToast("Enter a total");
+    return;
+  }
+  const date = document.getElementById("in-date").value || new Date().toISOString().slice(0, 10);
+  const snap = {
+    id: Date.now(),
+    snapshot_date: date,
+    total_liquid: total,
+    merrill: parseFloat(document.getElementById("in-merrill").value) || 0,
+    bluestone: parseFloat(document.getElementById("in-bluestone").value) || 0,
+    axos: parseFloat(document.getElementById("in-axos").value) || 0,
+    sofi: parseFloat(document.getElementById("in-sofi").value) || 0,
+    coinbase: parseFloat(document.getElementById("in-coinbase").value) || 0,
+    notes: document.getElementById("in-notes").value || "",
+    created_at: new Date().toISOString(),
+  };
+
+  // Save to localStorage
+  const current = localStorage.getItem("wealth-snapshots");
+  let all = [];
+  if (current) { try { all = JSON.parse(current); } catch (e) {} }
+
+  // Merge with existing state (file + localStorage)
+  const merged = [...state.snapshots, snap];
+  localStorage.setItem("wealth-snapshots", JSON.stringify(merged));
+
+  state.snapshots = merged;
+  renderAll();
+
+  initAudio();
+  chimeSuccess();
+  showToast("Snapshot saved (browser)");
+
+  // Clear form
+  ["in-total", "in-merrill", "in-bluestone", "in-axos", "in-sofi", "in-coinbase", "in-notes"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+}
+
+// ==================== WIRE UP ====================
+document.addEventListener("DOMContentLoaded", () => {
+  // Set current date in header and form
+  const now = new Date();
+  document.getElementById("current-date").textContent = now.toLocaleDateString("en-US", {
+    weekday: "short", month: "short", day: "numeric", year: "numeric",
+  });
+  document.getElementById("in-date").value = now.toISOString().slice(0, 10);
+
+  // Sliders
+  ["sim-contrib", "sim-growth", "sim-years"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => { initAudio(); updateSimulator(); });
+  });
+
+  // Buttons
+  document.getElementById("btn-save").addEventListener("click", saveSnapshotLocal);
+  document.getElementById("btn-reload").addEventListener("click", () => {
+    state.snapshots = [];
+    state.loaded = false;
+    loadData();
+  });
+
+  // Initial load
+  loadData();
+});
+</script>
+</body>
+</html>
