@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="../data/data.js" onerror="console.log('No wealth data.js')"></script>
+<script src="../data/habits-data.js" onerror="console.log('No habits data.js')"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chief of Staff â€” Overview</title>
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1a1a1a;
+    --ink-3: #2a2a2a;
+    --text: #e8e8e6;
+    --text-2: #a6a6a4;
+    --text-3: #6e6e6c;
+    --accent: #ff8c42;
+    --green: #43d67d;
+    --red: #ff5e5e;
+    --amber: #ffb547;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.16);
+    --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--ink);
+    color: var(--text);
+    padding: 32px 24px 80px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .masthead {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  .brand {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 8px;
+  }
+  .masthead-title {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+  }
+  .date-line {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin: 40px 0 16px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-card {
+    background: var(--ink-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hero-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .hero-card-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    margin-bottom: 12px;
+  }
+  .hero-big {
+    font-family: var(--mono);
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-top: 8px;
+  }
+  .hero-delta { font-family: var(--mono); font-weight: 600; }
+  .hero-delta.up { color: var(--green); }
+  .hero-delta.down { color: var(--red); }
+  .card-link {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .card-link:hover { opacity: 0.8; }
+  .habits-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .habit-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ink-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 2px solid transparent;
+  }
+  .habit-dot.done {
+    background: rgba(67,214,125,0.15);
+    border-color: var(--green);
+  }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .skill-tile {
+    background: var(--ink-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+  .skill-tile.inactive {
+    opacity: 0.5;
+    border-style: dashed;
+  }
+  .skill-tile h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .skill-tile p {
+    font-size: 12px;
+    color: var(--text-2);
+    margin-bottom: 12px;
+  }
+  .skill-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .skill-status.active { color: var(--green); }
+  .skill-status.inactive { color: var(--text-3); }
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-3);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="masthead">
+    <div class="brand">Chief of Staff Â· Overview</div>
+    <div class="masthead-title">The Ledger</div>
+    <div class="date-line">
+      <span id="current-date">â€”</span>
+      <span id="sprint-info">Sprint 1 Â· Aprâ€“Oct 2026</span>
+    </div>
+  </div>
+
+  <!-- HERO: Wealth + Habits + Sprint -->
+  <div class="hero-grid">
+    <!-- Wealth hero -->
+    <div class="hero-card" onclick="openSkill('wealth-viewer.html')">
+      <div class="hero-card-label">Liquid Net Worth</div>
+      <div class="hero-big" id="wealth-big">â€”</div>
+      <div class="hero-sub" id="wealth-sub">Install wealth-tracker to see</div>
+      <a class="card-link">View wealth â†’</a>
+    </div>
+
+    <!-- Habits hero -->
+    <div class="hero-card" onclick="openSkill('habits-viewer.html')">
+      <div class="hero-card-label">Habits Today</div>
+      <div class="hero-big" id="habits-big">â€”</div>
+      <div class="hero-sub" id="habits-sub">Install habits-tracker to see</div>
+      <div class="habits-row" id="habits-dots"></div>
+      <a class="card-link">View habits â†’</a>
+    </div>
+
+    <!-- Placeholder for next skill -->
+    <div class="hero-card" style="opacity: 0.5;">
+      <div class="hero-card-label">Sprint Progress</div>
+      <div class="hero-big" style="color: var(--text-3);">â€”</div>
+      <div class="hero-sub">Coming soon</div>
+    </div>
+  </div>
+
+  <!-- Installed skills grid -->
+  <div class="section-title">Installed Skills</div>
+  <div class="skills-grid" id="skills-grid"></div>
+
+  <div class="footer">
+    Private Â· Local-only Â· All data on your PC
+    <br>
+    Dashboard auto-detects installed skills. Install more via their zip packages.
+  </div>
+</div>
+
+<script>
+const SKILLS = [
+  { id: "wealth", name: "Wealth Tracker", description: "Net worth snapshots, chart, what-if simulator", viewer: "wealth-viewer.html", dataKey: "WEALTH_DATA" },
+  { id: "habits", name: "Habits Tracker", description: "5 daily habits, streaks, weekly rings", viewer: "habits-viewer.html", dataKey: "HABITS_DATA" },
+  { id: "cre", name: "CRE Pipeline", description: "Deal evaluation, pipeline tracking", viewer: "cre-viewer.html", dataKey: "CRE_DATA" },
+  { id: "goals", name: "Sprint Goals", description: "15 goals, progress tracking", viewer: "goals-viewer.html", dataKey: "GOALS_DATA" },
+  { id: "captures", name: "Captures & Decisions", description: "Quick notes, decision aging", viewer: "captures-viewer.html", dataKey: "CAPTURES_DATA" },
+  { id: "family", name: "Family Goals", description: "Emergency fund, insurance, 529", viewer: "family-viewer.html", dataKey: "FAMILY_DATA" },
+];
+
+function fmtMoney(n) {
+  if (n == null) return "â€”";
+  const abs = Math.abs(n);
+  if (abs >= 1000000) return "$" + (n / 1000000).toFixed(2) + "M";
+  if (abs >= 1000) return "$" + Math.round(n / 1000) + "K";
+  return "$" + Math.round(n);
+}
+
+function fmtDelta(n) {
+  if (n == null || n === 0) return "";
+  const sign = n > 0 ? "+" : "";
+  return sign + fmtMoney(n);
+}
+
+function openSkill(viewer) {
+  window.location.href = viewer;
+}
+
+// --- Render wealth ---
+function renderWealth() {
+  const data = window.WEALTH_DATA;
+  if (!data || !data.snapshots || data.snapshots.length === 0) return;
+
+  const latest = data.snapshots[0];
+  const prev = data.snapshots[1];
+
+  document.getElementById("wealth-big").textContent = fmtMoney(latest.total_liquid);
+
+  let sub = `${data.snapshots.length} snapshot${data.snapshots.length > 1 ? "s" : ""} Â· last logged ${formatDate(latest.snapshot_date)}`;
+  if (prev) {
+    const delta = latest.total_liquid - prev.total_liquid;
+    const cls = delta >= 0 ? "up" : "down";
+    sub += ` Â· <span class="hero-delta ${cls}">${fmtDelta(delta)}</span>`;
+  }
+  document.getElementById("wealth-sub").innerHTML = sub;
+}
+
+// --- Render habits ---
+function renderHabits() {
+  const data = window.HABITS_DATA;
+  if (!data || !data.today) return;
+
+  const today = data.today;
+  document.getElementById("habits-big").textContent = `${today.logged_count}/${today.total}`;
+
+  const weekHabits = (data.week && data.week.habits) || [];
+  const onTrackCount = weekHabits.filter(h => h.on_track).length;
+  document.getElementById("habits-sub").textContent =
+    `${onTrackCount}/${weekHabits.length} on track this week`;
+
+  // Render habit dots
+  const dotsEl = document.getElementById("habits-dots");
+  dotsEl.innerHTML = "";
+  const loggedSet = new Set(today.logged || []);
+  (data.habits || []).forEach(h => {
+    const dot = document.createElement("div");
+    dot.className = "habit-dot" + (loggedSet.has(h.id) ? " done" : "");
+    dot.title = h.name + (loggedSet.has(h.id) ? " âœ“" : "");
+    dot.textContent = h.icon || "Â·";
+    dotsEl.appendChild(dot);
+  });
+}
+
+// --- Render installed skills grid ---
+function renderSkillsGrid() {
+  const grid = document.getElementById("skills-grid");
+  grid.innerHTML = "";
+  SKILLS.forEach(s => {
+    const isInstalled = !!window[s.dataKey];
+    const tile = document.createElement("div");
+    tile.className = "skill-tile" + (isInstalled ? "" : " inactive");
+    tile.innerHTML = `
+      <h3>${s.name}</h3>
+      <p>${s.description}</p>
+      <div class="skill-status ${isInstalled ? "active" : "inactive"}">
+        ${isInstalled ? "â— Installed" : "â—‹ Not installed"}
+      </div>
+    `;
+    if (isInstalled) {
+      tile.style.cursor = "pointer";
+      tile.onclick = () => openSkill(s.viewer);
+    }
+    grid.appendChild(tile);
+  });
+}
+
+function formatDate(iso) {
+  if (!iso) return "â€”";
+  const d = new Date(iso + (iso.length === 10 ? "T00:00:00" : ""));
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const that = new Date(d);
+  that.setHours(0,0,0,0);
+  const diff = Math.floor((today - that) / (1000 * 60 * 60 * 24));
+  if (diff === 0) return "today";
+  if (diff === 1) return "yesterday";
+  if (diff < 7) return diff + "d ago";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+// Boot
+document.getElementById("current-date").textContent =
+  new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
+renderWealth();
+renderHabits();
+renderSkillsGrid();
+</script>
+</body>
+</html>
