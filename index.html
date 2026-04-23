@@ -5,7 +5,7 @@
 <script src="./data/habits-data.js" onerror="console.log('No habits data.js')"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chief of Staff â€" Overview</title>
+<title>Chief of Staff -" Overview</title>
 <style>
  :root {
  --ink: #0a0a0a;
@@ -189,11 +189,11 @@
 <body>
 <div class="container">
  <div class="masthead">
- <div class="brand">Chief of Staff Â. Overview</div>
+ <div class="brand">Chief of Staff . Overview</div>
  <div class="masthead-title">The Ledger</div>
  <div class="date-line">
- <span id="current-date">â€"</span>
- <span id="sprint-info">Sprint 1 Â. Aprâ€"Oct 2026</span>
+ <span id="current-date">-"</span>
+ <span id="sprint-info">Sprint 1 . Apr-"Oct 2026</span>
  </div>
  </div>
 
@@ -202,24 +202,24 @@
  <!-- Wealth hero -->
  <div class="hero-card" onclick="openSkill('wealth-viewer.html')">
  <div class="hero-card-label">Liquid Net Worth</div>
- <div class="hero-big" id="wealth-big">â€"</div>
+ <div class="hero-big" id="wealth-big">-"</div>
  <div class="hero-sub" id="wealth-sub">Install wealth-tracker to see</div>
- <a class="card-link">View wealth â†'</a>
+ <a class="card-link">View wealth ->'</a>
  </div>
 
  <!-- Habits hero -->
  <div class="hero-card" onclick="openSkill('habits-viewer.html')">
  <div class="hero-card-label">Habits Today</div>
- <div class="hero-big" id="habits-big">â€"</div>
+ <div class="hero-big" id="habits-big">-"</div>
  <div class="hero-sub" id="habits-sub">Install habits-tracker to see</div>
  <div class="habits-row" id="habits-dots"></div>
- <a class="card-link">View habits â†'</a>
+ <a class="card-link">View habits ->'</a>
  </div>
 
  <!-- Placeholder for next skill -->
  <div class="hero-card" style="opacity: 0.5;">
  <div class="hero-card-label">Sprint Progress</div>
- <div class="hero-big" style="color: var(--text-3);">â€"</div>
+ <div class="hero-big" style="color: var(--text-3);">-"</div>
  <div class="hero-sub">Coming soon</div>
  </div>
  </div>
@@ -229,7 +229,7 @@
  <div class="skills-grid" id="skills-grid"></div>
 
  <div class="footer">
- Private Â. Local-only Â. All data on your PC
+ Private . Local-only . All data on your PC
  <br>
  Dashboard auto-detects installed skills. Install more via their zip packages.
  </div>
@@ -246,7 +246,7 @@ const SKILLS = [
 ];
 
 function fmtMoney(n) {
- if (n == null) return "â€"";
+ if (n == null) return "-"";
  const abs = Math.abs(n);
  if (abs >= 1000000) return "$" + (n / 1000000).toFixed(2) + "M";
  if (abs >= 1000) return "$" + Math.round(n / 1000) + "K";
@@ -273,11 +273,11 @@ function renderWealth() {
 
  document.getElementById("wealth-big").textContent = fmtMoney(latest.total_liquid);
 
- let sub = `${data.snapshots.length} snapshot${data.snapshots.length > 1 ? "s" : ""} Â. last logged ${formatDate(latest.snapshot_date)}`;
+ let sub = `${data.snapshots.length} snapshot${data.snapshots.length > 1 ? "s" : ""} . last logged ${formatDate(latest.snapshot_date)}`;
  if (prev) {
  const delta = latest.total_liquid - prev.total_liquid;
  const cls = delta >= 0 ? "up" : "down";
- sub += ` Â. <span class="hero-delta ${cls}">${fmtDelta(delta)}</span>`;
+ sub += ` . <span class="hero-delta ${cls}">${fmtDelta(delta)}</span>`;
  }
  document.getElementById("wealth-sub").innerHTML = sub;
 }
@@ -302,8 +302,8 @@ function renderHabits() {
  (data.habits || []).forEach(h => {
  const dot = document.createElement("div");
  dot.className = "habit-dot" + (loggedSet.has(h.id) ? " done" : "");
- dot.title = h.name + (loggedSet.has(h.id) ? " âœ"" : "");
- dot.textContent = h.icon || "Â.";
+ dot.title = h.name + (loggedSet.has(h.id) ? " "" : "");
+ dot.textContent = h.icon || ".";
  dotsEl.appendChild(dot);
  });
 }
@@ -320,7 +320,7 @@ function renderSkillsGrid() {
  <h3>${s.name}</h3>
  <p>${s.description}</p>
  <div class="skill-status ${isInstalled ? "active" : "inactive"}">
- ${isInstalled ? "â- Installed" : "â-‹ Not installed"}
+ ${isInstalled ? "- Installed" : "- Not installed"}
  </div>
  `;
  if (isInstalled) {
@@ -332,7 +332,7 @@ function renderSkillsGrid() {
 }
 
 function formatDate(iso) {
- if (!iso) return "â€"";
+ if (!iso) return "-"";
  const d = new Date(iso + (iso.length === 10 ? "T00:00:00" : ""));
  const today = new Date();
  today.setHours(0,0,0,0);
