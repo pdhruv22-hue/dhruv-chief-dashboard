@@ -106,21 +106,6 @@ window.GOALS_DATA = {
       "start_by": "2026-05-01"
     },
     {
-      "goal_id": "kavita-1031",
-      "category": "advisor",
-      "title": "1031 planning meeting with Kavita",
-      "description": "",
-      "deadline": "2026-06-30",
-      "status": "not_started",
-      "priority": "high",
-      "notes": "",
-      "created_at": "2026-04-18T22:24:23Z",
-      "updated_at": "2026-04-18T22:24:23Z",
-      "time_estimate_hrs": 1.5,
-      "deep_work_action": "Email Kavita to schedule 1031 planning session, prep AMDA financials",
-      "start_by": "2026-05-15"
-    },
-    {
       "goal_id": "preconception",
       "category": "health",
       "title": "Preconception checkups \u2014 both partners",
@@ -285,6 +270,6 @@ window.GOALS_DATA = {
       "start_by": "2026-05-01"
     }
   ],
-  "exported_at": "2026-04-28T19:35:58.215311",
-  "count": 19
+  "exported_at": "2026-04-28T19:38:18.605204",
+  "count": 18
 };
