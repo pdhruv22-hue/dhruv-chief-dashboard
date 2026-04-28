@@ -1,0 +1,657 @@
+/**
+ * Iteration 6: Context Menu & Bloomberg Features Styles
+ */
+
+/* ==================== Context Menu ==================== */
+
+.context-menu {
+    position: fixed;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    min-width: 200px;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    overflow: hidden;
+}
+
+.context-menu.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    min-height: 48px; /* Touch-friendly */
+}
+
+.context-menu-item:hover {
+    background: var(--bg);
+}
+
+.context-menu-item.destructive {
+    color: var(--red);
+}
+
+.context-menu-item.destructive:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.context-menu-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.context-menu-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Contextmenu trigger elements */
+[data-contextmenu] {
+    position: relative;
+    cursor: pointer;
+}
+
+[data-contextmenu]:active {
+    opacity: 0.9;
+}
+
+/* ==================== Search Modal ==================== */
+
+.search-modal .modal-content {
+    max-width: 600px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.search-results {
+    margin-top: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.search-result-item:hover {
+    background: var(--surface);
+}
+
+.search-result-item strong {
+    flex: 1;
+}
+
+.search-result-item .muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* ==================== Note Modal ==================== */
+
+.note-modal .modal-content {
+    max-width: 500px;
+}
+
+/* ==================== Confirm Modal ==================== */
+
+.confirm-modal .modal-content {
+    max-width: 400px;
+    text-align: center;
+}
+
+.confirm-modal h3 {
+    color: var(--red);
+}
+
+/* ==================== Split View Layout ==================== */
+
+.container.split-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.split-pane-left,
+.split-pane-right {
+    overflow-y: auto;
+    max-height: calc(100vh - 140px);
+}
+
+.split-pane-right {
+    border-left: 2px solid var(--border);
+    padding-left: 20px;
+}
+
+/* ==================== Macro Overlay ==================== */
+
+.macro-overlay {
+    position: fixed;
+    top: 70px;
+    right: -400px;
+    width: 380px;
+    max-height: calc(100vh - 140px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    z-index: 999;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.macro-overlay.visible {
+    right: 20px;
+}
+
+.macro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.macro-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.macro-header .close-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+}
+
+.macro-header .close-btn:hover {
+    background: var(--bg);
+}
+
+.macro-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.macro-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.macro-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.macro-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.macro-change {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.macro-change.positive {
+    color: var(--green);
+}
+
+.macro-change.negative {
+    color: var(--red);
+}
+
+/* Correlation Heatmap */
+
+.correlation-heatmap {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.correlation-heatmap h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+#correlationGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.correlation-cell {
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ==================== Sentiment Badges ==================== */
+
+.sentiment-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.sentiment-badge.sentiment-positive {
+    background: var(--green);
+    color: white;
+}
+
+.sentiment-badge.sentiment-negative {
+    background: var(--red);
+    color: white;
+}
+
+.sentiment-badge.sentiment-neutral {
+    background: var(--muted);
+    color: white;
+}
+
+/* ==================== Layout Button ==================== */
+
+.layout-btn {
+    font-size: 20px;
+    padding: 8px 12px;
+}
+
+/* ==================== Buttons ==================== */
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--bg);
+}
+
+.btn-danger {
+    background: var(--red);
+    color: white;
+}
+
+.btn-danger:hover {
+    opacity: 0.9;
+}
+
+/* ==================== Mobile Responsive ==================== */
+
+@media (max-width: 768px) {
+    .macro-overlay {
+        width: 100%;
+        right: -100%;
+        top: 60px;
+        border-radius: 12px 12px 0 0;
+        max-height: calc(100vh - 120px);
+    }
+    
+    .macro-overlay.visible {
+        right: 0;
+    }
+    
+    .container.split-view {
+        grid-template-columns: 1fr;
+    }
+    
+    .split-pane-right {
+        border-left: none;
+        border-top: 2px solid var(--border);
+        padding-left: 0;
+        padding-top: 20px;
+    }
+    
+    .context-menu {
+        max-width: calc(100vw - 40px);
+    }
+}
+
+/* ==================== Keyboard Shortcuts Indicator ==================== */
+
+.keyboard-hint {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 998;
+}
+
+.keyboard-hint.visible {
+    opacity: 1;
+}
+
+/* ==================== Animations ==================== */
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.macro-overlay.visible {
+    animation: slideInRight 0.3s ease;
+}
+
+/* ==================== Watchlist Styles ==================== */
+
+.watchlist-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.watchlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.watchlist-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--bg);
+    margin-bottom: 8px;
+    transition: transform 0.15s ease;
+}
+
+.watchlist-item:hover {
+    transform: translateX(4px);
+}
+
+.watchlist-ticker {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.watchlist-price {
+    font-size: 15px;
+}
+
+.watchlist-alert-icon {
+    color: var(--accent);
+    cursor: pointer;
+}
+
+/* ==================== Insider Trade Alert ==================== */
+
+.insider-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 20px;
+    max-width: 350px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 10001;
+    animation: slideInRight 0.3s ease;
+}
+
+.insider-alert-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 20px;
+    padding: 4px;
+}
+
+/* ==================== Export Progress ==================== */
+
+.export-progress {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+.export-progress-bar {
+    width: 150px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.export-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+}
+
+/* ==================== Theme Toggle Quick Access ==================== */
+
+.theme-quick-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 997;
+    font-size: 20px;
+}
+
+.theme-quick-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ==================== Data Markers ==================== */
+
+[data-ticker] {
+    position: relative;
+}
+
+[data-contextmenu]::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+[data-contextmenu]:hover::after {
+    opacity: 0.5;
+}
+
+/* ==================== Accessibility ==================== */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus indicators */
+.context-menu-item:focus,
+.btn:focus,
+.search-input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ==================== Loading States ==================== */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ==================== Print Styles ==================== */
+
+@media print {
+    .context-menu,
+    .macro-overlay,
+    .bottom-nav,
+    .tab-nav,
+    .keyboard-hint {
+        display: none !important;
+    }
+}
