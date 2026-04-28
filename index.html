@@ -1,6 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<script>
+// STATIC MODE DETECTION — injected for GitHub Pages compatibility
+// When running on GitHub Pages (no backend), suppress all /api/* calls silently
+(function() {
+  var isGitHubPages = window.location.hostname.endsWith('.github.io');
+  var isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  window.DASHBOARD_STATIC_MODE = isGitHubPages && !isLocalhost;
+  
+  if (window.DASHBOARD_STATIC_MODE) {
+    // Patch fetch to silently ignore /api/* calls
+    var _origFetch = window.fetch;
+    window.fetch = function(url, opts) {
+      if (typeof url === 'string' && url.startsWith('/api/')) {
+        // Return empty success response instead of 404
+        return Promise.resolve(new Response(JSON.stringify({ok: true, items: [], actions: [], notes: []}), {
+          status: 200, headers: {'Content-Type': 'application/json'}
+        }));
+      }
+      return _origFetch.apply(this, arguments);
+    };
+    
+    // Show subtle static-mode banner
+    document.addEventListener('DOMContentLoaded', function() {
+      var banner = document.createElement('div');
+      banner.id = 'static-mode-banner';
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;border-top:1px solid rgba(59,130,246,0.3);padding:6px 16px;font-size:11px;color:#60a5fa;z-index:9999;display:flex;justify-content:space-between;align-items:center;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
+      banner.innerHTML = '<span>View-only mode — interactions disabled on GitHub Pages</span><a href="javascript:document.getElementById('static-mode-banner').style.display='none'" style="color:#60a5fa;text-decoration:none;opacity:0.6">x</a>';
+      document.body.appendChild(banner);
+    });
+  }
+  
+  // DASHBOARD_TOKEN for API auth
+  window.DASHBOARD_TOKEN = window.DASHBOARD_TOKEN || '';
+})();
+</script>
+
 <script>
 // SW KILL - forces unregister of all service workers + clears all caches
 // Runs synchronously first before any other script
@@ -1843,7 +1880,7 @@ body[data-tab="opps"] .tab-panel.tab-entering .card { animation-name: tabRadarSw
 
 <!-- Phase 3 Enhancements -->
 <script src="./mobile_gestures.js"></script>
-<script src="/theme_system.js?v=2"></script>
+<script src="./theme_system.js?v=2"></script>
 <script>
 // Dark-mode override: runs AFTER theme_system.js
 // theme_system may apply light mode from system preference; we force dark unless user explicitly chose light
@@ -14974,8 +15011,8 @@ setInterval(() => {
 
 
 <!-- Chart Implementations -->
-<script src="/charts.js?v=3"></script>
-<script src="/wealth_charts_init.js?v=1"></script>
+<script src="./charts.js?v=3"></script>
+<script src="./wealth_charts_init.js?v=1"></script>
 
 <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
  QUICK CAPTURE Floating + Button (all tabs, fixed bottom-right)
