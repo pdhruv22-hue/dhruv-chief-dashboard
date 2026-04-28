@@ -7337,6 +7337,34 @@ function renderDeploy() {
   html += '<div style="font-size:12px;color:#3b82f6;font-weight:600">Jan 2027</div>';
   html += '</div>';
   html += '</div>';
+
+ // ── IRA RECOMMENDATION CARD (live AI, driven by current market conditions) ──
+ (function() {
+  var iraRec = dm.ira_recommendation || {};
+  var ticker = iraRec.ticker || 'QQQ';
+  var rationale = iraRec.rationale || 'QQQ recommended: highest long-term CAGR, gains fully sheltered in IRA.';
+  var alt = iraRec.alternative || '';
+  var avoid = iraRec.avoid_in_ira || '';
+  var hasRec = !!iraRec.ticker;
+  var cardBg = hasRec ? 'rgba(59,130,246,0.08)' : 'rgba(255,255,255,0.03)';
+  var borderCol = hasRec ? 'rgba(59,130,246,0.35)' : 'var(--border)';
+  html += '<div style="background:' + cardBg + ';border:1.5px solid ' + borderCol + ';border-radius:12px;padding:14px 16px;margin-bottom:16px">';
+  html += '<div style="font-size:10px;font-weight:800;color:#60a5fa;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">&#x1F4BC; IRA RECOMMENDATION — 2027+ ANNUAL $7,000</div>';
+  html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">';
+  html += '<div style="background:rgba(59,130,246,0.2);border-radius:8px;padding:10px 16px;text-align:center;flex-shrink:0">';
+  html += '<div style="font-size:22px;font-weight:900;color:#60a5fa">' + ticker + '</div>';
+  html += '<div style="font-size:10px;color:var(--muted)">$7,000/yr</div>';
+  html += '</div>';
+  html += '<div style="flex:1">';
+  html += '<div style="font-size:13px;color:var(--text);line-height:1.5;margin-bottom:6px">' + rationale + '</div>';
+  if (alt) html += '<div style="font-size:11px;color:var(--muted)">Alternative: <strong style="color:#93c5fd">' + alt + '</strong></div>';
+  if (avoid) html += '<div style="font-size:11px;color:#f87171;margin-top:4px">Avoid in IRA: ' + avoid + '</div>';
+  html += '</div></div>';
+  if (!hasRec) html += '<div style="font-size:11px;color:var(--muted)">Run deploy_monitor.py to get today\'s live AI recommendation.</div>';
+  else html += '<div style="font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;margin-top:4px">Based on current market conditions via DeepSeek R1. Updates daily with deploy_monitor.py run.</div>';
+  html += '</div>';
+ })();
+
  + buildNarrateBtn('deploy');
 
  // ══ $50K PENDING LUMP-SUM DEPLOY BANNER ══
