@@ -1,0 +1,1 @@
+window.DAILY_IDEAS_DATA = {"generated_at": "2026-04-28T06:06:39.783041", "date": "2026-04-28", "ideas": [], "count": 0, "filters_applied": {"max_setup_hours": 2, "max_weekly_hours": 0.5, "max_setup_cost": 5000, "min_annual_return": 1770, "dedup_days": 14}, "note": "Passive/semi-passive only. Separate from ai_income_scan.py business plays."};
