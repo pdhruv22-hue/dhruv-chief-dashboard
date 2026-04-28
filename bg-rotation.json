@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-04-20",
+  "rotation_day": 0,
+  "variants": {
+    "health": ["breathing", "orbital", "pulse"],
+    "cre": ["cityscape", "blueprint", "aerial"],
+    "income": ["coderain", "circuit", "datastream"],
+    "wealth": ["particles", "coins", "constellation"],
+    "goals": ["stars", "orbit", "nebula"],
+    "predictions": ["grid", "radar", "matrix"],
+    "opps": ["radar", "sonar", "scan"],
+    "calendar": ["grid", "timeline", "flow"]
+  },
+  "current_variants": {
+    "health": "breathing",
+    "cre": "cityscape",
+    "income": "coderain",
+    "wealth": "particles",
+    "goals": "stars",
+    "predictions": "grid",
+    "opps": "radar",
+    "calendar": "grid"
+  }
+}
