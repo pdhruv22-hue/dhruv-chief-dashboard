@@ -7360,8 +7360,8 @@ function renderDeploy() {
   if (alt) html += '<div style="font-size:11px;color:var(--muted)">Alternative: <strong style="color:#93c5fd">' + alt + '</strong></div>';
   if (avoid) html += '<div style="font-size:11px;color:#f87171;margin-top:4px">Avoid in IRA: ' + avoid + '</div>';
   html += '</div></div>';
-  if (!hasRec) html += '<div style="font-size:11px;color:var(--muted)">Run deploy_monitor.py to get today\'s live AI recommendation.</div>';
-  else html += '<div style="font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;margin-top:4px">Based on current market conditions via DeepSeek R1. Updates daily with deploy_monitor.py run.</div>';
+  if (!hasRec) html += '<div style="font-size:11px;color:var(--muted)">Updates monthly with deploy_monitor.py — next run will include this month\'s IRA pick.</div>';
+  else html += '<div style="font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px;margin-top:4px">Monthly recommendation via DeepSeek R1 — market conditions, valuation, tax efficiency. Refreshes with monthly deploy scan.</div>';
   html += '</div>';
  })();
 
