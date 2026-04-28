@@ -1,0 +1,1 @@
+window.SESSION_PREP_DATA = {"blocks": {"goals": {"block": "GOALS", "time": "Anytime", "goal_plans": [], "status": "ready", "refreshed_at": "2026-04-28T08:30:02.451598", "refresh_note": "Refreshed at 08:30"}}, "last_refresh": "2026-04-28T08:30:02.451598", "date": "2026-04-28"};
