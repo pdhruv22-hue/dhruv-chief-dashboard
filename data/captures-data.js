@@ -1,0 +1,11 @@
+window.CAPTURES_DATA = {
+  "captures": [
+    {
+      "id": 1,
+      "text": "Look into Starbucks NNN deal in Natick MA 8.5 cap 22k rent",
+      "category": "cre",
+      "created_at": "2026-04-18T19:26:03.110699"
+    }
+  ],
+  "count": 1
+};
