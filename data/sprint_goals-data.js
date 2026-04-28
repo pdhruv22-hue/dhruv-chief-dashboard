@@ -121,21 +121,6 @@ window.GOALS_DATA = {
       "start_by": "2026-05-15"
     },
     {
-      "goal_id": "cre-brokers",
-      "category": "cre",
-      "title": "3 active broker relationships for NNN deals",
-      "description": "",
-      "deadline": "2026-06-30",
-      "status": "not_started",
-      "priority": "high",
-      "notes": "",
-      "created_at": "2026-04-19T04:09:07.769627",
-      "updated_at": "2026-04-19T04:09:07.769627",
-      "time_estimate_hrs": 2.0,
-      "deep_work_action": "Contact LoopNet brokers, CBRE, Marcus & Millichap MA offices",
-      "start_by": "2026-04-20"
-    },
-    {
       "goal_id": "preconception",
       "category": "health",
       "title": "Preconception checkups \u2014 both partners",
@@ -149,21 +134,6 @@ window.GOALS_DATA = {
       "time_estimate_hrs": 3.0,
       "deep_work_action": "Book appointments for both partners, compile medical history",
       "start_by": "2026-06-01"
-    },
-    {
-      "goal_id": "nnn-first",
-      "category": "cre",
-      "title": "First NNN asset closed",
-      "description": "",
-      "deadline": "2026-09-30",
-      "status": "not_started",
-      "priority": "critical",
-      "notes": "[MONEY NOW 2026-04-19] priority set to critical, start_by set to today. Context: CRE income needed by Sep\n[ELEVATED 2026-04-22] Iter 9 refresh",
-      "created_at": "2026-04-18T22:24:23Z",
-      "updated_at": "2026-04-22T22:51:34Z",
-      "time_estimate_hrs": 40.0,
-      "deep_work_action": "LoopNet/Crexi search: MA, 8-10% cap, $20K+ rent. Run through cre-evaluator.",
-      "start_by": "2026-04-25"
     },
     {
       "goal_id": "529-ready",
@@ -313,23 +283,8 @@ window.GOALS_DATA = {
       "time_estimate_hrs": 0.0,
       "deep_work_action": "Block first Sunday of each month for parents. Put it in calendar now.",
       "start_by": "2026-05-01"
-    },
-    {
-      "goal_id": "nnn-second",
-      "category": "cre",
-      "title": "Second NNN asset pipeline",
-      "description": "Identify and begin diligence on 2nd NNN asset",
-      "deadline": "2027-06-30",
-      "status": "not_started",
-      "priority": "medium",
-      "notes": "",
-      "created_at": "2026-04-18",
-      "updated_at": "2026-04-18",
-      "time_estimate_hrs": 20.0,
-      "deep_work_action": "After first NNN closes, begin sourcing second deal",
-      "start_by": "2026-10-01"
     }
   ],
-  "exported_at": "2026-04-28T19:22:57.424213",
-  "count": 22
+  "exported_at": "2026-04-28T19:35:58.215311",
+  "count": 19
 };
