@@ -10549,34 +10549,67 @@ function showOMAIUpload() {
 function processOMAI(file) {
  if(!file) return;
  var status = document.getElementById('om-upload-status');
- if(status) status.textContent = 'Reading PDF...';
+ if(status) status.textContent = 'Uploading to Gemini 2.5 Pro...';
 
- var reader = new FileReader();
- reader.onload = function(e) {
- var base64 = e.target.result.split(',')[1];
- if(status) status.textContent = 'Analyzing with AI...';
+ // Use backend endpoint (Gemini 2.5 Pro — native PDF, not base64 image hack)
+ var token = window.CHIEF_TOKEN || localStorage.getItem('chief_token') || '';
+ var formData = new FormData();
+ formData.append('file', file, file.name);
 
- fetch('https://openrouter.ai/api/v1/chat/completions', {
- method: 'POST',
- headers: {
- 'Authorization': 'Bearer ' + OPENROUTER_KEY,
- 'Content-Type': 'application/json',
- 'HTTP-Referer': 'http://localhost:7003',
- 'X-Title': 'Chief Dashboard OM Analyzer'
- },
- body: JSON.stringify({
- model: 'google/gemini-flash-1.5',
- messages: [{
- role: 'user',
- content: [
- {type: 'text', text: 'Analyze this Offering Memorandum PDF for a commercial real estate deal. Extract: property name, address, tenant name, tenant credit rating, cap rate %, asking price, monthly rent, annual NOI, lease years remaining, rent escalations, property type, and any key risks. Format as JSON with these exact keys: property_name, address, tenant_name, tenant_credit, cap_rate_pct, asking_price, monthly_rent, annual_noi, lease_years_remaining, rent_escalations, property_type, risks (array), broker_notes.'},
- {type: 'image_url', image_url: {url: 'data:application/pdf;base64,' + base64}}
- ]
- }],
- max_tokens: 1000
+ fetch('/api/cre/parse-om', {
+  method: 'POST',
+  headers: { 'Authorization': 'Bearer ' + token },
+  body: formData
  })
+ .then(function(r) {
+  if (!r.ok) return r.json().then(function(e) { throw new Error(e.detail || 'Parse failed'); });
+  return r.json();
  })
- .then(function(r){return r.json();})
+ .then(function(d) {
+  if (!d.ok) throw new Error(d.error || 'Parse failed');
+  var dealData = d.deal || {};
+  document.getElementById('om-upload-overlay').style.display = 'none';
+  showToast('OM analyzed with Gemini 2.5 Pro!', 'success');
+
+  // Render verdict prominently
+  var verdictColor = dealData.verdict === 'PASS' ? '#22c55e' : dealData.verdict === 'FAIL' ? '#ef4444' : '#f59e0b';
+  var html = '<div style="background:rgba(0,0,0,0.3);border:2px solid ' + verdictColor + ';border-radius:12px;padding:16px;margin-bottom:16px">';
+  html += '<div style="font-size:22px;font-weight:900;color:' + verdictColor + '">' + (dealData.verdict || 'NEEDS-INFO') + '</div>';
+  html += '<div style="font-size:13px;color:var(--muted);margin-top:4px">' + (dealData.verdict_reason || '') + '</div>';
+  html += '</div>';
+
+  // Key metrics
+  var metrics = [
+   ['Property', dealData.property_name],
+   ['Address', dealData.address],
+   ['Tenant', dealData.tenant_name + (dealData.tenant_credit ? ' (' + dealData.tenant_credit + ')' : '')],
+   ['Cap Rate', dealData.cap_rate_pct ? dealData.cap_rate_pct + '%' : '-'],
+   ['Asking Price', dealData.asking_price ? '$' + Number(dealData.asking_price).toLocaleString() : '-'],
+   ['Monthly Rent', dealData.monthly_rent ? '$' + Number(dealData.monthly_rent).toLocaleString() : '-'],
+   ['Annual NOI', dealData.annual_noi ? '$' + Number(dealData.annual_noi).toLocaleString() : '-'],
+   ['Lease Remaining', dealData.lease_years_remaining ? dealData.lease_years_remaining + ' yrs' : '-'],
+   ['Lease Type', dealData.lease_type],
+   ['Rent Escalations', dealData.rent_escalations],
+   ['Broker', dealData.broker],
+  ];
+  metrics.forEach(function(m) {
+   if (m[1]) html += '<div class="stat-row"><span class="stat-label">' + m[0] + '</span><span>' + escHtml(String(m[1])) + '</span></div>';
+  });
+
+  if (dealData.red_flags && dealData.red_flags.length) {
+   html += '<div style="margin-top:10px;color:#f87171;font-size:12px"><strong>Red flags:</strong> ' + dealData.red_flags.join(' · ') + '</div>';
+  }
+
+  openPanel('OM Analysis — ' + (dealData.property_name || file.name), html);
+  return; // skip old .then chain
+ })
+ .catch(function(err) {
+  if(status) status.textContent = 'Error: ' + err.message;
+  showToast('OM parse failed: ' + err.message, 'error');
+ });
+
+ // Legacy path disabled — kept as dead code reference
+ if (false) { var reader = new FileReader(); reader.onload = function(e) { var base64 = ''; fetch('/dev/null', {}).then(function(r){return r.json();})
  .then(function(d) {
  var text = (d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content) || '{}';
  var jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -10602,8 +10635,7 @@ function processOMAI(file) {
  .catch(function(e) {
  if(status) status.textContent = 'Error: ' + e.message;
  });
- };
- reader.readAsDataURL(file);
+ }; reader.readAsDataURL(file); } // end legacy if(false)
 }
 
 function addOMAIDeal(data) {
@@ -15222,8 +15254,15 @@ setInterval(() => {
 <!-- Modal -->
 <div id="quick-capture-modal" onclick="qcModalBgClick(event)">
  <div id="quick-capture-box">
- <h3> Quick Capture</h3>
- <textarea id="qc-text" placeholder="What do you want to remember?&#10;Idea, note, CRE thought, action item..." autofocus></textarea>
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+   <h3 style="margin:0"> Quick Capture</h3>
+   <button id="qc-voice-btn" onclick="startVoiceCapture()" title="Speak your note (Whisper AI)" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.4);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;color:var(--accent)">🎤</button>
+ </div>
+ <div id="qc-recording-indicator" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#f87171;display:none;align-items:center;gap:8px">
+   <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;animation:pulse 1s infinite;display:inline-block"></span>
+   <span id="qc-recording-text">Recording... tap mic to stop</span>
+ </div>
+ <textarea id="qc-text" placeholder="What do you want to remember?&#10;Idea, note, CRE thought, action item...&#10;&#10;Or tap 🎤 to speak it." autofocus></textarea>
  <div class="qc-type-row">
  <button class="qc-type-btn active" data-type="note" onclick="qcSetType(this)"> Note</button>
  <button class="qc-type-btn" data-type="idea" onclick="qcSetType(this)"> Idea</button>
@@ -15325,6 +15364,92 @@ setInterval(() => {
  saveQuickCapture();
  }
  });
+
+ // ── VOICE CAPTURE via Whisper ────────────────────────────────────────────
+ var _mediaRecorder = null;
+ var _audioChunks = [];
+ var _isRecording = false;
+
+ window.startVoiceCapture = function() {
+  var btn = document.getElementById('qc-voice-btn');
+  var indicator = document.getElementById('qc-recording-indicator');
+  var statusEl = document.getElementById('qc-status');
+
+  if (_isRecording) {
+   // Stop recording
+   if (_mediaRecorder && _mediaRecorder.state !== 'inactive') {
+    _mediaRecorder.stop();
+   }
+   return;
+  }
+
+  // Check if on static GitHub Pages (no backend)
+  if (window.DASHBOARD_STATIC_MODE) {
+   statusEl.textContent = 'Voice capture needs the local server. Use /link for full features.';
+   return;
+  }
+
+  // Request mic
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+   .then(function(stream) {
+    _isRecording = true;
+    _audioChunks = [];
+    btn.textContent = '⏹';
+    btn.style.background = 'rgba(239,68,68,0.2)';
+    btn.style.borderColor = 'rgba(239,68,68,0.6)';
+    indicator.style.display = 'flex';
+    statusEl.textContent = '';
+
+    var mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+     ? 'audio/webm;codecs=opus'
+     : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
+
+    _mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+    _mediaRecorder.ondataavailable = function(e) {
+     if (e.data.size > 0) _audioChunks.push(e.data);
+    };
+    _mediaRecorder.onstop = function() {
+     _isRecording = false;
+     btn.textContent = '🎤';
+     btn.style.background = 'rgba(99,102,241,0.15)';
+     btn.style.borderColor = 'rgba(99,102,241,0.4)';
+     indicator.style.display = 'none';
+     stream.getTracks().forEach(function(t) { t.stop(); });
+
+     if (_audioChunks.length === 0) return;
+     var ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+     var blob = new Blob(_audioChunks, { type: mimeType });
+     statusEl.textContent = 'Transcribing with Whisper...';
+
+     var formData = new FormData();
+     formData.append('file', blob, 'capture.' + ext);
+
+     var token = window.CHIEF_TOKEN || localStorage.getItem('chief_token') || '';
+     fetch('/api/voice-capture', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData
+     })
+     .then(function(r) { return r.json(); })
+     .then(function(d) {
+      if (d.ok && d.transcript) {
+       document.getElementById('qc-text').value = d.transcript;
+       statusEl.textContent = '✓ Transcribed [' + (d.category || 'general') + '] — edit if needed, then Save';
+      } else {
+       statusEl.textContent = 'Transcription error: ' + (d.error || 'unknown');
+      }
+     })
+     .catch(function(e) {
+      statusEl.textContent = 'Network error: ' + e.message;
+     });
+    };
+
+    _mediaRecorder.start();
+   })
+   .catch(function(err) {
+    statusEl.textContent = 'Mic access denied: ' + err.message;
+   });
+ };
 })();
 </script>
 
