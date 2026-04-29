@@ -2237,6 +2237,7 @@ function safeLoad(src) {
 <script src="market-pulse-data.js?v=2"></script>
 <script src="cre-data.js?v=2"></script>
 <script src="cre-daily-data.js?v=2"></script>
+<script src="residential-data.js"></script>
 <script src="stocks-data.js?v=2"></script>
 <script src="opportunities-data.js?v=2"></script>
 <script src="ai-income-data.js?v=2"></script>
@@ -2552,6 +2553,7 @@ function renderTab(id) {
  else if(id==='extras') renderExtras();
  else if(id==='podcast') renderPodcast();
  else if(id==='predictions') renderPredictions();
+ else if(id==='amda') renderAMDA();
  } catch (err) {
  console.error('Tab render error:', id, err);
  var panel = document.getElementById(id);
@@ -2564,6 +2566,279 @@ function renderTab(id) {
  }
  }
 }
+
+
+
+// ===================== RESIDENTIAL DEALS =====================
+function renderResidential() {
+ var data = window.RESIDENTIAL_DATA || {};
+ var deals = data.deals || [];
+ var panel = document.getElementById('panel-residential');
+ if (!panel) return;
+
+ var verdictColors = {PURSUE:'#10b981',RESEARCH:'#f59e0b',PASS:'#ef4444'};
+ var catColors = {'value-add':'rgba(168,85,247,0.2)','turnkey':'rgba(16,185,129,0.2)'};
+ var catTextColors = {'value-add':'#c084fc','turnkey':'#6ee7b7'};
+
+ var html = '<div style="padding:14px">';
+ html += '<div style="font-size:18px;font-weight:800;color:#e5e5e5;margin-bottom:4px">\uD83C\uDFE0 Residential Investment Scan</div>';
+ html += '<div style="font-size:12px;color:#888;margin-bottom:14px">Updated: ' + (data.scan_date || 'today') + ' \u2022 ' + deals.length + ' deals \u2022 ' + (data.pursue_count||0) + ' PURSUE</div>';
+
+ // Summary card
+ if (data.summary) {
+   html += '<div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:12px;color:#93c5fd;line-height:1.6">';
+   html += '\uD83E\uDDE0 ' + data.summary.slice(0,400) + '</div>';
+ }
+
+ // Capital summary
+ var totalCap = data.total_capital_needed || deals.reduce(function(s,d){ return s + (d.down_payment_20pct||0); }, 0);
+ html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
+ html += '<div style="text-align:center;background:rgba(255,255,255,0.04);border-radius:8px;padding:10px"><div style="font-size:16px;font-weight:800;color:#e5e5e5">' + deals.length + '</div><div style="font-size:10px;color:#888">Deals Found</div></div>';
+ html += '<div style="text-align:center;background:rgba(16,185,129,0.1);border-radius:8px;padding:10px"><div style="font-size:16px;font-weight:800;color:#10b981">' + (data.pursue_count||0) + '</div><div style="font-size:10px;color:#888">PURSUE</div></div>';
+ html += '<div style="text-align:center;background:rgba(59,130,246,0.1);border-radius:8px;padding:10px"><div style="font-size:14px;font-weight:800;color:#60a5fa">$' + (totalCap/1000).toFixed(0) + 'K</div><div style="font-size:10px;color:#888">Total Capital</div></div>';
+ html += '</div>';
+
+ // Category headers
+ ['value-add','turnkey'].forEach(function(cat) {
+   var catDeals = deals.filter(function(d){ return d.category === cat; });
+   if (catDeals.length === 0) return;
+   html += '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:' + (cat==='value-add'?'#c084fc':'#6ee7b7') + ';margin-bottom:8px">';
+   html += (cat==='value-add'?'\uD83D\uDD28 Value-Add (BRRRR Potential)':'\u2705 Turnkey (Cash Flow Day 1)') + '</div>';
+
+   catDeals.forEach(function(d) {
+     var vc = verdictColors[d.r1_verdict] || '#888';
+     html += '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-left:4px solid ' + vc + ';border-radius:10px;padding:12px;margin-bottom:10px">';
+     // Header row
+     html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">';
+     html += '<div style="flex:1;min-width:0">';
+     html += '<div style="font-size:13px;font-weight:700;color:#e5e5e5">' + (d.address||'Property') + '</div>';
+     html += '<div style="font-size:11px;color:#888;margin-top:2px">' + (d.city||'') + (d.state?', '+d.state:'') + ' \u2022 ' + (d.type||'multifamily') + '</div>';
+     html += '</div>';
+     html += '<span style="background:' + vc + ';color:#000;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap;margin-left:8px">' + (d.r1_verdict||'?') + '</span>';
+     html += '</div>';
+     // Metrics grid
+     html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px">';
+     if (d.asking_price) html += '<div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:700;color:#e5e5e5">$' + (d.asking_price/1000).toFixed(0) + 'K</div><div style="font-size:9px;color:#888">Ask Price</div></div>';
+     if (d.estimated_monthly_rent || d.monthly_rent_current) html += '<div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:700;color:#10b981">$' + ((d.estimated_monthly_rent||d.monthly_rent_current||0)/1000).toFixed(1) + 'K</div><div style="font-size:9px;color:#888">Mo. Rent</div></div>';
+     if (d.cap_rate_pct) html += '<div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:700;color:#f59e0b">' + parseFloat(d.cap_rate_pct).toFixed(1) + '%</div><div style="font-size:9px;color:#888">Cap Rate</div></div>';
+     if (d.down_payment_20pct) html += '<div style="background:rgba(0,0,0,0.3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;font-weight:700;color:#c084fc">$' + (d.down_payment_20pct/1000).toFixed(0) + 'K</div><div style="font-size:9px;color:#888">Down (20%)</div></div>';
+     html += '</div>';
+     // Rationale
+     if (d.r1_rationale) {
+       html += '<div style="font-size:12px;color:#9ca3af;line-height:1.5;margin-bottom:8px">' + d.r1_rationale + '</div>';
+     }
+     // Work & time
+     if (d.work_required && d.work_required !== 'None') {
+       html += '<div style="font-size:11px;color:#888;margin-bottom:4px">\uD83D\uDD27 <span style="color:#ccc">' + d.work_required + '</span></div>';
+     }
+     if (d.time_commitment_hrs_week !== undefined) {
+       html += '<div style="font-size:11px;color:#888;margin-bottom:6px">\u23F1\uFE0F <span style="color:#ccc">' + d.time_commitment_hrs_week + ' hrs/week commitment</span></div>';
+     }
+     // Risk flags
+     if (d.risk_flags && d.risk_flags.length > 0) {
+       html += '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px">';
+       d.risk_flags.slice(0,3).forEach(function(r) {
+         html += '<span style="background:rgba(239,68,68,0.15);color:#f87171;border-radius:12px;padding:2px 8px;font-size:10px">\u26A0\uFE0F ' + r + '</span>';
+       });
+       html += '</div>';
+     }
+     // Source link
+     if (d.url) {
+       html += '<a href="' + d.url + '" target="_blank" style="font-size:11px;color:#3b82f6;text-decoration:none">\uD83D\uDD17 View Listing (' + (d.source||'Source') + ')</a>';
+     }
+     html += '</div>';
+   });
+ });
+
+ html += '</div>';
+ panel.innerHTML = html;
+}
+// ===================== END RESIDENTIAL =====================
+
+// ===================== AMDA STORE OPS TAB =====================
+function renderAMDA() {
+ var panel = document.getElementById('panel-amda');
+ if (!panel) return;
+
+ // Load tasks from localStorage
+ var tasks = [];
+ try { tasks = JSON.parse(localStorage.getItem('amda_tasks') || '[]'); } catch(e) {}
+
+ var now = new Date();
+ var todayStr = now.toISOString().slice(0,10);
+
+ // Helper: get week days starting from today's Monday
+ function getWeekDays() {
+   var days = [];
+   var d = new Date(now);
+   d.setDate(d.getDate() - d.getDay() + 1); // Monday
+   for (var i = 0; i < 7; i++) {
+     var dd = new Date(d);
+     days.push({
+       date: dd.toISOString().slice(0,10),
+       label: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i],
+       isToday: dd.toISOString().slice(0,10) === todayStr
+     });
+     d.setDate(d.getDate() + 1);
+   }
+   return days;
+ }
+
+ var weekDays = getWeekDays();
+ var priorityColors = {urgent:'#ef4444',high:'#f59e0b',normal:'#3b82f6',low:'#6b7280'};
+ var catIcons = {inventory:'\uD83D\uDCE6',staff:'\uD83D\uDC65',compliance:'\uD83D\uDCCB',finance:'\uD83D\uDCB0',maintenance:'\uD83D\uDD27',other:'\uD83D\uDD39'};
+
+ // Stats
+ var overdueCount = tasks.filter(function(t){ return t.status==='pending' && t.due_date < todayStr; }).length;
+ var todayCount = tasks.filter(function(t){ return t.status==='pending' && t.due_date === todayStr; }).length;
+ var doneCount = tasks.filter(function(t){ return t.status==='done'; }).length;
+
+ var html = '';
+
+ // Header + stats
+ html += '<div style="padding:14px">';
+ html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
+ html += '<div><div style="font-size:18px;font-weight:800;color:#e5e5e5">\uD83C\uDFEA AMDA Store Ops</div>';
+ html += '<div style="font-size:12px;color:#888;margin-top:2px">Max 2 hrs/day \u2022 Deep work starts 8:30am</div></div>';
+ html += '<div style="display:flex;gap:8px">';
+ html += '<div style="text-align:center;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:8px 12px"><div style="font-size:18px;font-weight:800;color:#ef4444">' + overdueCount + '</div><div style="font-size:10px;color:#888">Overdue</div></div>';
+ html += '<div style="text-align:center;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:8px 12px"><div style="font-size:18px;font-weight:800;color:#f59e0b">' + todayCount + '</div><div style="font-size:10px;color:#888">Today</div></div>';
+ html += '<div style="text-align:center;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:8px 12px"><div style="font-size:18px;font-weight:800;color:#10b981">' + doneCount + '</div><div style="font-size:10px;color:#888">Done</div></div>';
+ html += '</div></div>';
+
+ // Quick add form
+ html += '<div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);border-radius:10px;padding:12px;margin-bottom:14px">';
+ html += '<div style="font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">\u2795 Quick Add Task</div>';
+ html += '<input id="amda-task-title" type="text" placeholder="Task title (e.g. Order Marlboro Gold cartons)" style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#e5e5e5;padding:8px 10px;font-size:13px;box-sizing:border-box;margin-bottom:8px">';
+ html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">';
+ html += '<div><label style="font-size:10px;color:#888;display:block;margin-bottom:3px">Due Date</label>';
+ html += '<input id="amda-task-date" type="date" value="' + todayStr + '" style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#e5e5e5;padding:6px 8px;font-size:12px;box-sizing:border-box"></div>';
+ html += '<div><label style="font-size:10px;color:#888;display:block;margin-bottom:3px">Priority</label>';
+ html += '<select id="amda-task-priority" style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#e5e5e5;padding:6px 8px;font-size:12px;box-sizing:border-box">';
+ html += '<option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option><option value="low">Low</option>';
+ html += '</select></div>';
+ html += '<div><label style="font-size:10px;color:#888;display:block;margin-bottom:3px">Category</label>';
+ html += '<select id="amda-task-cat" style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#e5e5e5;padding:6px 8px;font-size:12px;box-sizing:border-box">';
+ html += '<option value="inventory">Inventory</option><option value="staff">Staff</option><option value="compliance">Compliance</option><option value="finance">Finance</option><option value="maintenance">Maintenance</option><option value="other">Other</option>';
+ html += '</select></div>';
+ html += '</div>';
+ html += '<button onclick="amdaAddTask()" style="width:100%;background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:9px;font-size:13px;font-weight:700;cursor:pointer">\u2795 Add Task</button>';
+ html += '</div>';
+
+ // Week calendar
+ html += '<div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">This Week</div>';
+ html += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:14px">';
+ weekDays.forEach(function(day) {
+   var dayTasks = tasks.filter(function(t){ return t.due_date === day.date && t.status !== 'done'; });
+   var bgColor = day.isToday ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)';
+   var borderColor = day.isToday ? 'rgba(59,130,246,0.5)' : 'rgba(255,255,255,0.08)';
+   html += '<div style="background:' + bgColor + ';border:1px solid ' + borderColor + ';border-radius:8px;padding:6px 4px;min-height:80px">';
+   html += '<div style="font-size:10px;font-weight:700;color:' + (day.isToday ? '#60a5fa' : '#888') + ';text-align:center;margin-bottom:4px">' + day.label + '</div>';
+   html += '<div style="font-size:9px;color:#555;text-align:center;margin-bottom:4px">' + day.date.slice(5) + '</div>';
+   dayTasks.slice(0,3).forEach(function(t) {
+     var pc = priorityColors[t.priority] || '#6b7280';
+     var ci = catIcons[t.category] || '\uD83D\uDD39';
+     html += '<div style="background:rgba(255,255,255,0.06);border-left:2px solid ' + pc + ';border-radius:3px;padding:3px 4px;margin-bottom:2px;font-size:9px;color:#ccc;cursor:pointer" onclick="amdaToggleDone(\'' + t.id + '\')" title="' + (t.title||'') + '">' + ci + ' ' + (t.title||'').slice(0,18) + (t.title && t.title.length > 18 ? '...' : '') + '</div>';
+   });
+   if (dayTasks.length > 3) {
+     html += '<div style="font-size:9px;color:#888;text-align:center">+' + (dayTasks.length-3) + ' more</div>';
+   }
+   html += '</div>';
+ });
+ html += '</div>';
+
+ // Task list - pending
+ var pendingTasks = tasks.filter(function(t){ return t.status !== 'done'; })
+   .sort(function(a,b){
+     var po = {urgent:0,high:1,normal:2,low:3};
+     if ((po[a.priority]||2) !== (po[b.priority]||2)) return (po[a.priority]||2) - (po[b.priority]||2);
+     return (a.due_date||'').localeCompare(b.due_date||'');
+   });
+
+ html += '<div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">All Pending Tasks (' + pendingTasks.length + ')</div>';
+ if (pendingTasks.length === 0) {
+   html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:14px;text-align:center;color:#10b981;font-size:13px">\u2705 All clear - no pending tasks!</div>';
+ }
+ pendingTasks.forEach(function(t) {
+   var pc = priorityColors[t.priority] || '#6b7280';
+   var ci = catIcons[t.category] || '\uD83D\uDD39';
+   var isOverdue = t.due_date < todayStr;
+   var isToday2 = t.due_date === todayStr;
+   var rowBg = isOverdue ? 'rgba(239,68,68,0.08)' : isToday2 ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.03)';
+   var rowBorder = isOverdue ? 'rgba(239,68,68,0.3)' : isToday2 ? 'rgba(245,158,11,0.3)' : 'rgba(255,255,255,0.08)';
+   html += '<div style="background:' + rowBg + ';border:1px solid ' + rowBorder + ';border-left:3px solid ' + pc + ';border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
+   html += '<button onclick="amdaToggleDone(\'' + t.id + '\')" style="width:20px;height:20px;border-radius:50%;border:2px solid ' + pc + ';background:transparent;cursor:pointer;flex-shrink:0"></button>';
+   html += '<div style="flex:1;min-width:0">';
+   html += '<div style="font-size:13px;color:#e5e5e5;font-weight:600">' + ci + ' ' + (t.title||'Untitled') + '</div>';
+   html += '<div style="font-size:11px;color:#888;margin-top:2px">';
+   html += '<span style="color:' + pc + ';font-weight:700;text-transform:uppercase;font-size:10px">' + (t.priority||'normal') + '</span>';
+   if (t.due_date) html += ' \u2022 ' + (isOverdue ? '<span style="color:#ef4444">Overdue: ' + t.due_date + '</span>' : isToday2 ? '<span style="color:#f59e0b">Today</span>' : t.due_date);
+   if (t.category) html += ' \u2022 ' + t.category;
+   html += '</div></div>';
+   html += '<button onclick="amdaDeleteTask(\'' + t.id + '\')" style="background:transparent;border:none;color:#555;cursor:pointer;font-size:14px;flex-shrink:0">\u2715</button>';
+   html += '</div>';
+ });
+
+ // Done tasks (collapsed)
+ var doneTasks = tasks.filter(function(t){ return t.status === 'done'; });
+ if (doneTasks.length > 0) {
+   html += '<details style="margin-top:10px"><summary style="font-size:11px;color:#555;cursor:pointer">\u2705 ' + doneTasks.length + ' completed tasks</summary>';
+   doneTasks.slice(0,10).forEach(function(t) {
+     html += '<div style="background:rgba(255,255,255,0.02);border-radius:6px;padding:8px 12px;margin-top:4px;display:flex;align-items:center;gap:8px;opacity:0.5">';
+     html += '<span style="font-size:12px;color:#10b981">\u2713</span>';
+     html += '<span style="font-size:12px;color:#888;text-decoration:line-through">' + (t.title||'Untitled') + '</span>';
+     html += '<button onclick="amdaUndone(\'' + t.id + '\')" style="margin-left:auto;background:transparent;border:none;color:#555;font-size:10px;cursor:pointer">Undo</button>';
+     html += '</div>';
+   });
+   html += '</details>';
+ }
+
+ html += '</div>'; // end padding
+
+ panel.innerHTML = html;
+}
+
+// AMDA task helpers
+function amdaAddTask() {
+ var title = document.getElementById('amda-task-title').value.trim();
+ if (!title) { alert('Enter a task title'); return; }
+ var tasks = [];
+ try { tasks = JSON.parse(localStorage.getItem('amda_tasks') || '[]'); } catch(e) {}
+ var newTask = {
+   id: 'amda-' + Date.now(),
+   title: title,
+   due_date: document.getElementById('amda-task-date').value || new Date().toISOString().slice(0,10),
+   priority: document.getElementById('amda-task-priority').value || 'normal',
+   category: document.getElementById('amda-task-cat').value || 'other',
+   status: 'pending',
+   created_at: new Date().toISOString()
+ };
+ tasks.push(newTask);
+ localStorage.setItem('amda_tasks', JSON.stringify(tasks));
+ renderAMDA();
+}
+function amdaToggleDone(id) {
+ var tasks = [];
+ try { tasks = JSON.parse(localStorage.getItem('amda_tasks') || '[]'); } catch(e) {}
+ tasks = tasks.map(function(t){ if(t.id===id) t.status = t.status==='done' ? 'pending' : 'done'; return t; });
+ localStorage.setItem('amda_tasks', JSON.stringify(tasks));
+ renderAMDA();
+}
+function amdaDeleteTask(id) {
+ var tasks = [];
+ try { tasks = JSON.parse(localStorage.getItem('amda_tasks') || '[]'); } catch(e) {}
+ tasks = tasks.filter(function(t){ return t.id !== id; });
+ localStorage.setItem('amda_tasks', JSON.stringify(tasks));
+ renderAMDA();
+}
+function amdaUndone(id) {
+ var tasks = [];
+ try { tasks = JSON.parse(localStorage.getItem('amda_tasks') || '[]'); } catch(e) {}
+ tasks = tasks.map(function(t){ if(t.id===id) t.status='pending'; return t; });
+ localStorage.setItem('amda_tasks', JSON.stringify(tasks));
+ renderAMDA();
+}
+// ===================== END AMDA =====================
 
 // ===================== SLIDE PANEL =====================
 function openPanel(title, bodyHTML) {
@@ -14339,6 +14614,8 @@ showTab = function(id, btn) {
  <button class="bottom-nav-item" onclick="showTab('wealth',this)"><span class="nav-icon"></span>Wealth</button>
  <button class="bottom-nav-item" onclick="showTab('predictions',this)"><span class="nav-icon"></span>Predictions</button>
  <button class="bottom-nav-item" onclick="showTab('clients',this)"><span class="nav-icon"></span>Clients</button>
+ <button class="bottom-nav-item" onclick="showTab('residential',this)"><span class="nav-icon">??</span>Homes</button>
+ <button class="bottom-nav-item" onclick="showTab('amda',this)"><span class="nav-icon">??</span>Store</button>
 </nav>
 
 <!-- QUICK PROMPTS -->
@@ -18169,6 +18446,10 @@ window.filterCmdK = function(query) {
 };
 </script>
 
+
+<!-- ===================== AMDA STORE OPS TAB ===================== -->
+<div class="tab-panel" id="panel-residential" style="display:none"></div>
+<div class="tab-panel" id="panel-amda" style="display:none"></div>
 </body>
 </html>
 
