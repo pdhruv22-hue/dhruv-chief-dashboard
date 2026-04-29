@@ -5256,6 +5256,66 @@ function renderCRE() {
  var urgencyText = daysToDeadline <= 30 ? 'CRITICAL - deadline imminent' : daysToDeadline <= 60 ? 'Time to close is running out' : 'On track - keep sourcing';
 
  var html = buildRefreshBtn('cre') + buildNarrateBtn('cre');
+
+ // === CRE SEARCH CRITERIA CARD (Iteration 1 - Apr 28 2026) ===
+ (function() {
+  var _defaultCriteria = {
+    ne_cap_min: 5.0, ne_cap_max: 7.0,
+    growth_cap_min: 7.0, growth_cap_max: 8.5,
+    price_min: 1000000, price_max: 4000000,
+    noi_target: 25000,
+    lease_min_years: 10,
+    tenants: "Dollar General, AutoZone, CVS, Walgreens, McDonald's, Starbucks, 7-Eleven",
+    structure: 'Absolute NNN preferred',
+    regions_ne: 'MA, NH, CT, RI, VT, ME',
+    regions_growth: 'TX, FL, TN, NC'
+  };
+  var _stored = {};
+  try { _stored = JSON.parse(localStorage.getItem('cre_criteria') || '{}'); } catch(e) {}
+  var _crit = Object.assign({}, _defaultCriteria, _stored);
+  var _loopnetUrl = 'https://www.loopnet.com/search/net-lease-investment/for-sale/?sk=nnn&capRate=6';
+  var _crexiUrl = 'https://www.crexi.com/properties?type=retail&transactionType=sale&capRateMin=6';
+  var _loopnetMaUrl = 'https://www.loopnet.com/search/net-lease/massachusetts/for-sale/?sk=nnn';
+  var _crexiMaUrl = 'https://www.crexi.com/properties?type=retail&transactionType=sale&state=MA&keywords=NNN';
+  var _editOpen = localStorage.getItem('cre_criteria_open') === '1';
+
+  var _card = '<div id="cre-criteria-card" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-left:4px solid #10b981;border-radius:12px;padding:14px;margin-bottom:14px">';
+  _card += '<div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="(function(el){var b=document.getElementById(\'cre-criteria-body\');var isOpen=b.style.display!==\'none\';b.style.display=isOpen?\'none\':\'block\';localStorage.setItem(\'cre_criteria_open\',isOpen?\'0\':\'1\');el.querySelector(\'.cre-caret\').textContent=isOpen?\'\u25b6\':\'\u25bc\';})(this)">';
+  _card += '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:#10b981">\uD83C\uDFAF Your Active Search Criteria</div>';
+  _card += '<span class="cre-caret" style="color:#10b981;font-size:12px">' + (_editOpen ? '\u25bc' : '\u25b6') + '</span>';
+  _card += '</div>';
+  _card += '<div id="cre-criteria-body" style="display:' + (_editOpen ? 'block' : 'none') + ';margin-top:12px">';
+  _card += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">';
+  _card += '<span style="background:rgba(16,185,129,0.2);color:#10b981;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700">NE Cap: ' + _crit.ne_cap_min + '-' + _crit.ne_cap_max + '%</span>';
+  _card += '<span style="background:rgba(59,130,246,0.2);color:#60a5fa;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700">Growth Cap: ' + _crit.growth_cap_min + '-' + _crit.growth_cap_max + '%</span>';
+  _card += '<span style="background:rgba(168,85,247,0.2);color:#c084fc;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700">Price: $' + (_crit.price_min/1e6).toFixed(1) + 'M\u2013$' + (_crit.price_max/1e6).toFixed(1) + 'M</span>';
+  _card += '<span style="background:rgba(245,158,11,0.2);color:#fbbf24;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700">NOI: $' + (_crit.noi_target/1000).toFixed(0) + 'K+/yr</span>';
+  _card += '<span style="background:rgba(239,68,68,0.2);color:#f87171;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700">Lease: ' + _crit.lease_min_years + '+ yrs</span>';
+  _card += '<span style="background:rgba(16,185,129,0.15);color:#6ee7b7;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600">' + _crit.structure + '</span>';
+  _card += '</div>';
+  _card += '<div style="font-size:11px;color:#888;margin-bottom:6px"><span style="color:#ccc;font-weight:600">Target Tenants:</span> ' + _crit.tenants + '</div>';
+  _card += '<div style="font-size:11px;color:#888;margin-bottom:12px"><span style="color:#ccc;font-weight:600">NE:</span> ' + _crit.regions_ne + ' &nbsp;|&nbsp; <span style="color:#ccc;font-weight:600">Growth:</span> ' + _crit.regions_growth + '</div>';
+  _card += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+  _card += '<a href="' + _loopnetUrl + '" target="_blank" style="background:#3b82f6;color:#fff;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;display:block">\uD83D\uDD0D LoopNet National</a>';
+  _card += '<a href="' + _crexiUrl + '" target="_blank" style="background:#10b981;color:#fff;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;display:block">\uD83D\uDD0D Crexi National</a>';
+  _card += '<a href="' + _loopnetMaUrl + '" target="_blank" style="background:rgba(59,130,246,0.25);color:#93c5fd;border:1px solid rgba(59,130,246,0.4);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;display:block">\uD83C\uDFE0 LoopNet MA</a>';
+  _card += '<a href="' + _crexiMaUrl + '" target="_blank" style="background:rgba(16,185,129,0.25);color:#6ee7b7;border:1px solid rgba(16,185,129,0.4);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;display:block">\uD83C\uDFE0 Crexi MA</a>';
+  _card += '</div>';
+  _card += '<details><summary style="font-size:11px;color:#888;cursor:pointer">\u2699\uFE0F Edit Criteria (saved locally)</summary>';
+  _card += '<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  [{key:"ne_cap_min",label:"NE Cap Min %",step:"0.1"},{key:"ne_cap_max",label:"NE Cap Max %",step:"0.1"},{key:"growth_cap_min",label:"Growth Cap Min %",step:"0.1"},{key:"growth_cap_max",label:"Growth Cap Max %",step:"0.1"},{key:"price_min",label:"Price Min ($)",step:"50000"},{key:"price_max",label:"Price Max ($)",step:"50000"},{key:"noi_target",label:"NOI Target ($/yr)",step:"1000"},{key:"lease_min_years",label:"Min Lease (yrs)",step:"1"}].forEach(function(f) {
+    _card += '<div><label style="font-size:10px;color:#888;display:block;margin-bottom:3px">' + f.label + '</label>';
+    _card += '<input class="cre-crit-input" data-key="' + f.key + '" type="number" step="' + f.step + '" value="' + _crit[f.key] + '" style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#e5e5e5;padding:6px 8px;font-size:12px;box-sizing:border-box"></div>';
+  });
+  _card += '</div>';
+  _card += '<div style="margin-top:8px"><label style="font-size:10px;color:#888;display:block;margin-bottom:3px">Target Tenants</label>';
+  _card += '<input class="cre-crit-text" data-key="tenants" type="text" value="' + _crit.tenants + '" style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#e5e5e5;padding:6px 8px;font-size:12px;box-sizing:border-box"></div>';
+  _card += '<button onclick="(function(){var obj={};document.querySelectorAll(\'.cre-crit-input\').forEach(function(i){obj[i.dataset.key]=parseFloat(i.value)||i.value;});document.querySelectorAll(\'.cre-crit-text\').forEach(function(i){obj[i.dataset.key]=i.value;});localStorage.setItem(\'cre_criteria\',JSON.stringify(obj));setTimeout(function(){renderCRE();},200);})()" style="margin-top:10px;background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;width:100%">\uD83D\uDCBE Save Criteria</button>';
+  _card += '</details>';
+  _card += '</div></div>';
+  html = _card + html;
+ })();
+
  // === BROKER EMAIL LAUNCHER (Kimi K2, 2026-04-23) ===
  // Permanent: inside renderCRE() - shows ready-to-send broker emails
  // Key insight: removes 'what do I write' barrier - one click to Gmail
