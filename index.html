@@ -6290,16 +6290,21 @@ function renderStocks() {
   html += '<span style="font-size:10px;font-weight:800;letter-spacing:0.12em;color:#1d9bf0;text-transform:uppercase">Grok Intelligence — X/Twitter Real-Time</span>';
   html += '<span style="font-size:10px;color:var(--muted);margin-left:auto">' + (grokIntel.generated_at ? new Date(grokIntel.generated_at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '') + '</span>';
   html += '</div>';
-  if (tslaX) {
-   var tslaSig = tslaX.split('—')[0].trim().toUpperCase();
-   var tslaTxt = tslaX.split('—').slice(1).join('—').trim();
-   var tslaCol = signalColor[tslaSig] || '#f59e0b';
+  function grokSentRow(label, raw) {
+   if (!raw) return;
+   var parts = raw.split('—');
+   var sig = parts[0].trim().toUpperCase();
+   var txt = parts.slice(1).join('—').trim();
+   var col = signalColor[sig] || '#f59e0b';
    html += '<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06)">';
-   html += '<span style="font-size:11px;font-weight:800;color:#fff;min-width:40px">TSLA</span>';
-   html += '<span style="font-size:11px;font-weight:700;color:' + tslaCol + ';min-width:60px">' + tslaSig + '</span>';
-   html += '<span style="font-size:11px;color:var(--muted);flex:1">' + escHtml(tslaTxt) + '</span>';
+   html += '<span style="font-size:11px;font-weight:800;color:#fff;min-width:56px">' + label + '</span>';
+   html += '<span style="font-size:11px;font-weight:700;color:' + col + ';min-width:60px">' + sig + '</span>';
+   html += '<span style="font-size:11px;color:var(--muted);flex:1">' + escHtml(txt) + '</span>';
    html += '</div>';
   }
+  grokSentRow('TSLA', tslaX);
+  grokSentRow('XPEV', grokIntel.xpev_sentiment || '');
+  grokSentRow('NUCLEAR', grokIntel.nuclear_sentiment || '');
   stories.forEach(function(s) {
    var sig = (s.signal || 'NEUTRAL').toUpperCase();
    var col = signalColor[sig] || '#9ca3af';
