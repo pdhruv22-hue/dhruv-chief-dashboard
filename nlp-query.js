@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Natural Language Query Interface
  * Chat-style data exploration using DeepSeek Chat via OpenRouter
  */
@@ -6,7 +6,7 @@
 class NLPQuery {
   constructor() {
     this.apiKey = null;
-    this.model = 'deepseek/deepseek-chat';
+    this.model = 'anthropic/claude-haiku-4-5';
     this.queryHistory = [];
     this.maxHistory = 10;
     this.isProcessing = false;
@@ -55,7 +55,7 @@ class NLPQuery {
       <div class="nlp-panel" style="display: none;">
         <div class="nlp-header">
           <div class="nlp-title"> Ask Your Dashboard</div>
-          <button class="nlp-close" onclick="nlpQuery.hide()">×</button>
+          <button class="nlp-close" onclick="nlpQuery.hide()">Ã—</button>
         </div>
         
         <div class="nlp-chat" id="nlp-chat"></div>
