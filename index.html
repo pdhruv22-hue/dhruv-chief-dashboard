@@ -6314,8 +6314,24 @@ function renderStocks() {
    html += '<span style="font-size:10px;font-weight:700;color:' + col + ';flex-shrink:0">' + sig + '</span>';
    html += '</div>';
   });
+  // AI company news feed
+  var aiNews = grokIntel.ai_news || [];
+  if (aiNews.length) {
+   var impactColor = {'income opportunity':'#4ade80','competitor move':'#f59e0b','regulatory':'#f87171','model release':'#60a5fa'};
+   html += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06)">';
+   html += '<div style="font-size:10px;font-weight:700;color:#a78bfa;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">AI Company Moves</div>';
+   aiNews.forEach(function(n) {
+    var ic = impactColor[(n.impact||'').toLowerCase()] || '#94a3b8';
+    html += '<div style="display:flex;gap:8px;align-items:flex-start;padding:4px 0">';
+    html += '<span style="font-size:10px;font-weight:700;color:#e2e8f0;min-width:70px;flex-shrink:0">' + escHtml(n.company||'') + '</span>';
+    html += '<span style="font-size:11px;color:var(--muted);flex:1">' + escHtml(n.headline||'') + '</span>';
+    if (n.impact) html += '<span style="font-size:9px;font-weight:700;color:' + ic + ';flex-shrink:0;white-space:nowrap">' + escHtml(n.impact) + '</span>';
+    html += '</div>';
+   });
+   html += '</div>';
+  }
   if (aiShift) {
-   html += '<div style="font-size:11px;color:#a78bfa;margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.06)">&#x26A1; AI shift: ' + escHtml(aiShift) + '</div>';
+   html += '<div style="font-size:11px;color:#a78bfa;margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.06)">&#x26A1; ' + escHtml(aiShift) + '</div>';
   }
   if (elon) {
    html += '<div style="font-size:11px;color:#60a5fa;margin-top:4px">Elon: ' + escHtml(elon) + '</div>';
