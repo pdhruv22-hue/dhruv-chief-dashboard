@@ -1,4 +1,4 @@
-window.GOALS_DATA = {
+window.SPRINT_GOALS_DATA = {
   "goals": [
     {
       "goal_id": "kavita-hysa-entity",
