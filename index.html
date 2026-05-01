@@ -2459,6 +2459,12 @@ body[data-tab="opps"] .tab-panel.tab-entering .card { animation-name: tabRadarSw
 .market-ticker-change.flat{background:rgba(85,87,112,0.15);color:var(--muted)}
 .market-sep{width:1px;height:40px;background:var(--border);flex-shrink:0;margin:0 4px;align-self:center}
 </style>
+<div id="market-radar-card" style="border-left:3px solid #60A5FA;background:rgba(96,165,250,0.06);padding:16px 20px;border-radius:8px;margin-bottom:20px;display:none;"></div>
+<div id="chief-wealth-take" style="border-left:3px solid #D97757;background:rgba(217,119,87,0.06);padding:16px 20px;border-radius:8px;margin-bottom:20px;display:none;">
+<div style="font-size:11px;font-weight:600;letter-spacing:0.07em;color:#D97757;margin-bottom:8px;">⚡ CHIEF'S TAKE — WEALTH</div>
+<div id="chief-wealth-text" style="font-size:14px;line-height:1.6;color:#FAFAF8;"></div>
+<div id="chief-cagr-bar" style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#A8A398;"></div>
+</div>
 
 <!-- Chart Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -2863,6 +2869,10 @@ function safeLoad(src) {
 <script src="prediction-data.js?v=1"></script>
 <script src="memory-context-data.js?v=1"></script>
 <script src="podcast-data.js?v=1"></script>
+<script src="goal-analysis-data.js?v=1" onerror="window.GOAL_ANALYSIS_DATA=null"></script>
+<script src="./franchise-intel-data.js"></script>
+<script src="./nnn-market-intel-data.js"></script>
+<script src="wealth-history-cumulative-data.js?v=1" onerror="window.WEALTH_HISTORY_CUMULATIVE=null"></script>
 
 <script>
 
@@ -4995,6 +5005,24 @@ function renderWealth() {
  var tabNotes = (ga.tab_notes || {});
 
  var html = buildRefreshBtn('wealth') + buildNarrateBtn('wealth');
+
+ // === CHIEF'S TAKE — WEALTH (Goal-Aware Analysis) ===
+ (function() {
+  var ga = window.GOAL_ANALYSIS_DATA;
+  if(ga && ga.insights && ga.insights.wealth_trajectory) {
+   var needed = ga.needed_cagr || 0;
+   var cagrColor = needed > 15 ? '#F87171' : needed > 12 ? '#FCD34D' : '#4ADE80';
+   html += '<div style="border-left:3px solid #D97757;background:rgba(217,119,87,0.06);padding:16px 20px;border-radius:8px;margin-bottom:16px;">';
+   html += '<div style="font-size:11px;font-weight:600;letter-spacing:0.07em;color:#D97757;margin-bottom:8px">⚡ CHIEF\'S TAKE — WEALTH</div>';
+   html += '<div style="font-size:14px;line-height:1.6;color:#FAFAF8">' + ga.insights.wealth_trajectory.replace(/\n/g,'<br>') + '</div>';
+   html += '<div style="margin-top:10px;font-family:\'JetBrains Mono\',monospace;font-size:12px;color:#A8A398">';
+   html += 'CAGR needed to $1M: <span style="color:' + cagrColor + ';font-weight:600">' + needed + '%/yr</span>';
+   html += ' | History: ' + (ga.history_points || 0) + ' data points';
+   html += ' | ' + (ga.actual_cagr || 'building history');
+   html += '</div></div>';
+  }
+ })();
+
  // === CRE DEPLOY READINESS CARD (Claude claude-opus-4-5, 2026-04-23) ===
  // Permanent: inside renderWealth() - fires every Wealth tab load
  (function() {
@@ -6208,6 +6236,17 @@ function renderCRE() {
 
  var html = buildRefreshBtn('cre') + buildNarrateBtn('cre');
 
+ // === CHIEF'S TAKE — CRE (Goal-Aware Analysis) ===
+ (function() {
+  var ga = window.GOAL_ANALYSIS_DATA;
+  if(ga && ga.insights && ga.insights.cre) {
+   html += '<div style="border-left:3px solid #10b981;background:rgba(16,185,129,0.08);padding:16px 20px;border-radius:8px;margin-bottom:16px;">';
+   html += '<div style="font-size:11px;font-weight:600;letter-spacing:0.07em;color:#10b981;margin-bottom:8px">🏢 CHIEF\'S TAKE — CRE</div>';
+   html += '<div style="font-size:14px;line-height:1.6;color:#FAFAF8">' + ga.insights.cre.replace(/\n/g,'<br>') + '</div>';
+   html += '</div>';
+  }
+ })();
+
  // === CRE SEARCH CRITERIA CARD (Iteration 1 - Apr 28 2026) ===
  (function() {
   var _defaultCriteria = {
@@ -7284,6 +7323,17 @@ function renderStocks() {
  var grokIntel = sd.grok_intel || {};
 
  var html = buildRefreshBtn('stocks') + buildNarrateBtn('stocks') + renderGapWidget(stkNote);
+
+ // === CHIEF'S TAKE — PORTFOLIO (Goal-Aware Analysis) ===
+ (function() {
+  var ga = window.GOAL_ANALYSIS_DATA;
+  if(ga && ga.insights && ga.insights.portfolio) {
+   html += '<div style="border-left:3px solid #60a5fa;background:rgba(96,165,250,0.08);padding:16px 20px;border-radius:8px;margin-bottom:16px;">';
+   html += '<div style="font-size:11px;font-weight:600;letter-spacing:0.07em;color:#60a5fa;margin-bottom:8px">📊 PORTFOLIO INTELLIGENCE</div>';
+   html += '<div style="font-size:14px;line-height:1.6;color:#FAFAF8">' + ga.insights.portfolio.replace(/\n/g,'<br>') + '</div>';
+   html += '</div>';
+  }
+ })();
 
  // === PORTFOLIO ALERTS from news (top relevance items) ===
  (function() {
@@ -19903,6 +19953,65 @@ window._triggerFTPulse = function() {
 })();
 
 </script>
+
+<script>
+// ===== CHIEF'S TAKE INTELLIGENCE LAYER =====
+function renderChiefsTake() {
+  var a = window.GOAL_ANALYSIS_DATA;
+  if (!a || !a.insights) return;
+
+  // Wealth tab Chief's Take
+  var wt = document.getElementById('chief-wealth-take');
+  var wtxt = document.getElementById('chief-wealth-text');
+  var cagr = document.getElementById('chief-cagr-bar');
+  if (wt && wtxt) {
+    var insight = (a.insights.wealth_trajectory || 'Loading...').replace(/\n/g,'<br>');
+    wtxt.innerHTML = insight;
+    if (cagr) {
+      var needed = a.needed_cagr || 0;
+      var col = needed > 15 ? '#F87171' : needed > 12 ? '#FCD34D' : '#4ADE80';
+      var hist = a.actual_cagr || 'building history — check back tomorrow';
+      cagr.innerHTML = 'CAGR needed to $1M: <span style="color:'+col+';font-weight:600">'+needed+'%/yr</span> &nbsp;|&nbsp; '+hist;
+    }
+    wt.style.display = 'block';
+  }
+
+  // Market Radar on Today tab
+  var regime = (a.insights && a.insights.regime) ? a.insights.regime : '';
+  var radar = document.getElementById('market-radar-card');
+  if (radar && regime) {
+    radar.innerHTML = '<div style="font-size:11px;font-weight:600;letter-spacing:0.07em;color:#60A5FA;margin-bottom:8px;">\u📡 MARKET RADAR</div>'
+      + '<div style="font-size:14px;line-height:1.6;color:#FAFAF8;">'+regime.replace(/\n/g,'<br>')+'</div>';
+    radar.style.display = 'block';
+  }
+
+  // Opportunity Cost alert
+  var opp = (a.insights && a.insights.opportunity_cost) ? a.insights.opportunity_cost : '';
+  var oppEl = document.getElementById('chief-opportunity-cost');
+  if (oppEl && opp) {
+    oppEl.innerHTML = '<div style="font-size:11px;font-weight:600;color:#FCD34D;margin-bottom:6px;">⏰ OPPORTUNITY COST THIS WEEK</div>'
+      + '<div style="font-size:13px;line-height:1.5;color:#FAFAF8;">'+opp.replace(/\n/g,'<br>')+'</div>';
+    oppEl.style.display = 'block';
+  }
+}
+
+// Run on load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() { setTimeout(renderChiefsTake, 800); });
+} else {
+  setTimeout(renderChiefsTake, 800);
+}
+
+// Re-run when tab switches
+var _origShowTab = window.showTab;
+if (typeof _origShowTab === 'function') {
+  window.showTab = function(tab) {
+    _origShowTab(tab);
+    setTimeout(renderChiefsTake, 200);
+  };
+}
+</script>
+
 </body>
 </html>
 
