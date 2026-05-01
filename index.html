@@ -2838,6 +2838,9 @@ function safeLoad(src) {
 <script src="cre-daily-data.js?v=2"></script>
 <script src="residential-data.js"></script>
 <script src="stocks-data.js?v=2"></script>
+<script src="stocks-wsb-data.js?v=1"></script>
+<script src="stocks-analyst-data.js?v=1"></script>
+<script src="stocks-ai-rec-data.js?v=1"></script>
 <script src="opportunities-data.js?v=2"></script>
 <script src="ai-income-data.js?v=2"></script>
 <script src="health-tips-data.js?v=2"></script>
@@ -8420,6 +8423,50 @@ function renderStockCard(t) {
  if(t.sentiment_reason) { html += '<div style="font-size:11px;color:#888;margin-top:4px">'+t.sentiment_reason+'</div>'; }
  html += '</div>';
  }
+
+ // WSB + WALL STREET + AI REC BADGES
+ (function() {
+ var wsbData = (window.STOCKS_WSB_DATA || {}).tickers || {};
+ var analystData = (window.STOCKS_ANALYST_DATA || {}).tickers || {};
+ var aiRecData = (window.STOCKS_AI_REC_DATA || {}).tickers || {};
+ var sym = t.symbol;
+ var wsb = wsbData[sym];
+ var analyst2 = analystData[sym];
+ var aiRec = aiRecData[sym];
+ if(wsb || analyst2 || aiRec) {
+ html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;padding:8px 10px;background:rgba(30,30,40,0.6);border-radius:6px">';
+ // WSB Sentiment Badge
+ if(wsb && wsb.sentiment) {
+ var wsbIcon = wsb.sentiment==='BULLISH'?'🚀':wsb.sentiment==='BEARISH'?'🐻':'😴';
+ var wsbLabel = wsb.sentiment==='BULLISH'?'WSB Hot':wsb.sentiment==='BEARISH'?'WSB Bearish':'WSB Quiet';
+ var wsbColor = wsb.sentiment==='BULLISH'?'#22c55e':wsb.sentiment==='BEARISH'?'#ef4444':'#6b7280';
+ html += '<span title="'+(wsb.summary||'').substring(0,150)+'" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba('+wsb.sentiment==='BULLISH'?'34,197,94':wsb.sentiment==='BEARISH'?'239,68,68':'107,114,128'+',0.12);color:'+wsbColor+';cursor:help">'+wsbIcon+' '+wsbLabel+'</span>';
+ }
+ // Wall Street Analyst Badge
+ if(analyst2 && analyst2.summary) {
+ var wsMatch = analyst2.summary.match(/(BUY|HOLD|SELL)/i);
+ var wsRating = wsMatch ? wsMatch[1].toUpperCase() : 'HOLD';
+ var wsColor = wsRating==='BUY'?'#22c55e':wsRating==='SELL'?'#ef4444':'#eab308';
+ var priceMatch = analyst2.summary.match(/\$[\d,.]+/);
+ var wsPrice = priceMatch ? priceMatch[0] : '';
+ html += '<span title="'+analyst2.summary.substring(0,200)+'" style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;background:rgba(59,130,246,0.08);color:#93c5fd;cursor:help;font-family:monospace">WS: '+wsRating+(wsPrice?' '+wsPrice:'')+'</span>';
+ }
+ // AI Recommendation Badge
+ if(aiRec && aiRec.verdict) {
+ var aiIcon = aiRec.verdict==='BUY MORE'?'📈':aiRec.verdict==='TRIM'?'📉':aiRec.verdict==='HARVEST'?'⚠️':'🔒';
+ var aiColor = aiRec.verdict==='BUY MORE'?'#3b82f6':aiRec.verdict==='TRIM'?'#f97316':aiRec.verdict==='HARVEST'?'#ef4444':'#9ca3af';
+ html += '<span title="'+(aiRec.recommendation||'').substring(0,200)+'" style="font-size:10px;font-style:italic;padding:3px 8px;border-radius:4px;background:rgba(139,92,246,0.08);color:'+aiColor+';cursor:help">'+aiIcon+' AI: '+aiRec.verdict+'</span>';
+ }
+ // Special flags
+ if(sym==='LCID') {
+ html += '<span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;background:rgba(239,68,68,0.15);color:#ef4444">⚠️ HARVEST CANDIDATE</span>';
+ }
+ if(sym==='TSLA') {
+ html += '<span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;background:rgba(34,197,94,0.12);color:#22c55e">🔒 LOCKED HOLD</span>';
+ }
+ html += '</div>';
+ }
+ })();
 
  // AI MARKET READ
  if(t.ai_read) {
