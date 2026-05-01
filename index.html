@@ -1264,6 +1264,373 @@ function connectSSE() {
   };
 }
 
+// ===================== CHIEF'S TAKE - INTELLIGENCE LAYER =====================
+function renderChiefsTake(tab) {
+  const cardHtml = (body, action) => `
+    <div class="card chiefs-take-card" style="border-left: 3px solid #D97757; margin-bottom: 16px;">
+      <div class="section-label" style="color: #D97757; margin-bottom: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">⚡ CHIEF'S TAKE</div>
+      <div class="chiefs-body" style="font-size: 14px; line-height: 1.6; color: #FAFAF8;">
+        ${body}
+      </div>
+      ${action ? `<div class="chiefs-action" style="margin-top: 12px; color: #D97757; font-size: 13px; font-weight: 600;">→ ${action}</div>` : ''}
+    </div>
+  `;
+
+  switch(tab) {
+    case 'wealth': {
+      const data = window.WEALTH_DATA || {};
+      const liquid = data.liquid || data.liquid_net_worth || 0;
+      const tslaPct = data.tsla_pct || data.tsla_concentration_pct || 0;
+      const hysaAxos = data.hysa_axos || data.breakdown?.hysa_axos || 0;
+      const hysaPending = data.hysa_pending || 75000;
+      const hysaFunded = data.hysa_funded || hysaAxos >= 70000;
+      
+      let body = '';
+      let action = '';
+      
+      // HYSA not opened - biggest opportunity cost
+      if (!hysaFunded && hysaPending > 0) {
+        const dailyLoss = (hysaPending * 0.0466 / 365).toFixed(2);
+        const yearlyLoss = Math.round(hysaPending * 0.0466);
+        body += `<strong>$${hysaPending.toLocaleString()} is sitting in Bluestone earning 0%.</strong> At Axos 4.66% APY, that's $${dailyLoss}/day in lost interest — $${yearlyLoss.toLocaleString()}/year. Every day this stays in checking is money you're leaving on the table.`;
+        action = 'Open Axos HYSA today: axosbank.com (15 min)';
+      }
+      
+      // TSLA concentration
+      if (tslaPct > 15) {
+        if (body) body += '<br><br>';
+        body += `TSLA is <strong>${tslaPct.toFixed(1)}%</strong> of your portfolio — at your 15% target ceiling. Don't add more.`;
+      }
+      
+      // LCID tax-loss harvest flag
+      const lcidLoss = data.lcid_harvestable_loss || 15836;
+      if (lcidLoss > 0) {
+        if (body) body += '<br><br>';
+        body += `LCID has ~$${lcidLoss.toLocaleString()} in harvestable losses — use this before Dec 31 to offset gains.`;
+      }
+      
+      if (!body) body = 'Portfolio in good shape. No urgent actions.';
+      
+      const container = document.getElementById('wealth-chiefs-take');
+      if (container) container.innerHTML = cardHtml(body, action);
+      break;
+    }
+    
+    case 'goals': {
+      const data = window.SPRINT_GOALS_DATA || {};
+      const active = data.active || [];
+      const urgent = data.urgent || [];
+      const overdueGoals = active.filter(g => g.days_left != null && g.days_left <= 0);
+      
+      let body = '';
+      let action = '';
+      
+      // Count overdue
+      if (overdueGoals.length > 0) {
+        body += `<span style="color: #F87171;"><strong>${overdueGoals.length} goal(s) overdue!</strong></span> `;
+        const mostOverdue = overdueGoals.reduce((a, b) => (a.days_left < b.days_left ? a : b));
+        body += `"${mostOverdue.title}" is ${Math.abs(mostOverdue.days_left)} days past due.`;
+      }
+      
+      // Find the most expensive delay (financial goals first)
+      const financialUrgent = urgent.filter(g => 
+        g.title.toLowerCase().includes('transfer') || 
+        g.title.toLowerCase().includes('hysa') ||
+        g.title.toLowerCase().includes('voo') ||
+        g.title.toLowerCase().includes('deploy')
+      );
+      
+      if (financialUrgent.length > 0) {
+        const topFinancial = financialUrgent[0];
+        if (body) body += '<br><br>';
+        body += `<strong>$60K Bluestone→Merrill transfer</strong> is ${topFinancial.days_left || 3} days from May 3 deadline. VOO at current prices — every day delayed is opportunity cost.`;
+        action = 'Do the $60K transfer today. Takes 10 minutes online.';
+      } else if (urgent.length > 0) {
+        const top = urgent[0];
+        if (body) body += '<br><br>';
+        body += `Highest priority: <strong>${top.title}</strong> — ${top.days_left} days left.`;
+        action = 'Knock this out today.';
+      }
+      
+      if (!body) body = 'All goals on track. Keep the momentum!';
+      
+      const container = document.getElementById('goals-chiefs-take');
+      if (container) container.innerHTML = cardHtml(body, action);
+      break;
+    }
+    
+    case 'deploy': {
+      const data = window.DEPLOY_DATA || {};
+      const regime = data.latest?.regime || data.regime || 'UNKNOWN';
+      const ytd = data.ytd_deployed || 0;
+      const allocations = data.latest?.allocations || data.allocations || [];
+      
+      let body = '';
+      let action = '';
+      
+      // Current regime
+      const regimeUpper = regime.toUpperCase();
+      if (regimeUpper.includes('DEPLOY') || regimeUpper.includes('NOW') || regimeUpper.includes('BUY')) {
+        body += `Regime: <strong style="color: #4ADE80;">DEPLOY NOW</strong> — market conditions favor immediate deployment.`;
+      } else if (regimeUpper.includes('WAIT') || regimeUpper.includes('HOLD')) {
+        body += `Regime: <strong style="color: #FCD34D;">WAIT</strong> — hold cash, market signals caution.`;
+      } else {
+        body += `Regime: <strong>${regime}</strong>`;
+      }
+      
+      // Monthly allocation
+      body += '<br><br>$4,167 this month. Allocation: ';
+      if (allocations.length > 0) {
+        body += allocations.map(a => `${a.ticker} $${Math.round(a.amount).toLocaleString()}`).join(' / ');
+      } else {
+        body += 'QQQ $1,433 / VOO $896 / SCHD $717 / VIG $537';
+      }
+      
+      // YTD progress
+      if (ytd > 0) {
+        body += `<br><br>YTD deployed: $${ytd.toLocaleString()}`;
+      }
+      
+      action = 'Buy via Merrill: QQQ first, then VOO, SCHD, VIG';
+      
+      const container = document.getElementById('deploy-chiefs-take');
+      if (container) container.innerHTML = cardHtml(body, action);
+      break;
+    }
+    
+    case 'cre': {
+      const data = window.CRE_DATA || {};
+      const goDeals = data.go || [];
+      const maybeDeals = data.maybe || [];
+      const daysLeft = data.days_to_deadline || 153;
+      
+      let body = '';
+      let action = '';
+      
+      if (goDeals.length === 0 && maybeDeals.length === 0) {
+        body = `Pipeline is empty — <strong>0 deals in GO/Maybe.</strong> ${daysLeft} days to Sep 30 target.`;
+        action = 'Search LoopNet now: Dollar General, NNN, 8%+ cap, Massachusetts or Southeast';
+      } else if (goDeals.length > 0) {
+        const best = goDeals[0];
+        body = `<span style="color: #4ADE80;"><strong>${goDeals.length} GO deal(s) ready!</strong></span> `;
+        body += `Best: <strong>${best.tenant || best.address}</strong> at ${best.cap_rate || 0}% cap.`;
+        action = best.next_action || 'Contact broker and schedule site visit';
+      } else {
+        body = `${maybeDeals.length} deal(s) need more info. ${daysLeft} days to target.`;
+        action = 'Follow up on NEEDS INFO deals or source new ones';
+      }
+      
+      const container = document.getElementById('cre-chiefs-take');
+      if (container) container.innerHTML = cardHtml(body, action);
+      break;
+    }
+    
+    case 'hysa': {
+      const data = window.HYSA_DATA || {};
+      const current = data.current || {};
+      const axosApy = current.axos_apy || 0;
+      const sofiApy = current.sofi_apy || 0;
+      const marketTop = current.market_top_apy || 0;
+      const hysaOpened = axosApy > 0 || data.hysa_opened;
+      
+      let body = '';
+      let action = '';
+      
+      if (!hysaOpened) {
+        const gap = (marketTop || 5.0) - 0; // comparing to 0% if not opened
+        const yearlyCost = Math.round(100000 * gap / 100);
+        body = `<strong>HYSA not yet opened.</strong> $75K should be at Axos (4.66%) + $25K at SoFi (4.20%). You're ${gap.toFixed(2)}% below market top — that gap costs $${yearlyCost.toLocaleString()}/year per $100K.`;
+        action = 'axosbank.com for $75K — sofi.com for $25K';
+      } else {
+        const monthlyInterest = Math.round(75000 * (axosApy / 100) / 12);
+        const gap = marketTop - axosApy;
+        body = `Earning <strong>$${monthlyInterest}/mo</strong> on your $75K at Axos (${axosApy}% APY).`;
+        
+        if (gap > 0.5) {
+          body += `<br><br><span style="color: #F87171;">You're ${gap.toFixed(2)}% below market top (${current.market_top_bank || 'competitor'}). Consider switching.</span>`;
+        } else if (gap > 0) {
+          body += `<br><br>Only ${gap.toFixed(2)}% below market top — acceptable.`;
+        } else {
+          body += `<br><br><span style="color: #4ADE80;">You're at or above market rate. Nice!</span>`;
+        }
+        action = gap > 0.5 ? `Check ${current.market_top_bank || 'bankrate.com'} for better rates` : 'No action needed — stay put';
+      }
+      
+      const container = document.getElementById('hysa-chiefs-take');
+      if (container) container.innerHTML = cardHtml(body, action);
+      break;
+    }
+    
+    case 'schedule': {
+      const data = window.SCHEDULE_DATA || {};
+      const blocks = data.blocks || [];
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMin = now.getMinutes();
+      const currentTime = currentHour * 60 + currentMin;
+      const dayType = data.today_type || (now.getDay() === 0 || now.getDay() === 6 ? 'weekend' : 'weekday');
+      
+      // Find current and next block
+      let currentBlock = null;
+      let nextBlock = null;
+      
+      const relevantBlocks = blocks.filter(b => b.day_type === dayType || b.day_type === 'all');
+      
+      for (const block of relevantBlocks) {
+        const timeRange = block.time_range || '';
+        const match = timeRange.match(/(\d{1,2}):?(\d{2})?\s*(AM|PM)?/i);
+        if (match) {
+          let hour = parseInt(match[1]);
+          const min = parseInt(match[2] || '0');
+          const ampm = (match[3] || '').toUpperCase();
+          if (ampm === 'PM' && hour < 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+          const blockTime = hour * 60 + min;
+          
+          if (blockTime <= currentTime) {
+            currentBlock = block;
+          } else if (!nextBlock) {
+            nextBlock = block;
+          }
+        }
+      }
+      
+      const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      let body = `It's <strong>${timeStr}</strong>. `;
+      
+      if (currentBlock) {
+        body += `You're in: <strong>${currentBlock.activity}</strong>`;
+        if (currentBlock.protected) body += ' 🔒';
+      } else {
+        body += `No scheduled block right now.`;
+      }
+      
+      if (nextBlock) {
+        body += `<br><br>Next: <strong>${nextBlock.activity}</strong> at ${nextBlock.time_range}`;
+        if (nextBlock.protected) body += ' 🔒';
+      }
+      
+      const action = currentBlock?.protected ? 'This block is protected — no interruptions!' : 'Stay focused on the current block';
+      
+      const container = document.getElementById('panel-schedule');
+      const existingChiefs = container?.querySelector('.chiefs-take-card');
+      if (existingChiefs) existingChiefs.remove();
+      const pageHeader = container?.querySelector('.page-header');
+      if (pageHeader) {
+        pageHeader.insertAdjacentHTML('afterend', cardHtml(body, action));
+      }
+      break;
+    }
+    
+    case 'habits': {
+      const data = window.HABITS_DATA || {};
+      const habits = data.habits || [];
+      const totalWeek = data.total_week || 0;
+      const totalTarget = data.total_target || 32;
+      
+      let body = `<strong>${totalWeek}/${totalTarget}</strong> habits this week.`;
+      
+      // Find habit most at risk of breaking streak
+      const atRisk = habits.filter(h => h.streak > 0 && !h.today_logged).sort((a, b) => b.streak - a.streak)[0];
+      if (atRisk) {
+        body += `<br><br><span style="color: #FCD34D;">⚠️ "${atRisk.name}" has a ${atRisk.streak}-day streak — don't break it today!</span>`;
+      }
+      
+      const notLogged = habits.filter(h => !h.today_logged);
+      if (notLogged.length > 0) {
+        body += `<br><br>${notLogged.length} habit(s) not yet logged today.`;
+      }
+      
+      const action = 'Log today before midnight';
+      
+      const container = document.getElementById('panel-habits');
+      const existingChiefs = container?.querySelector('.chiefs-take-card');
+      if (existingChiefs) existingChiefs.remove();
+      const pageHeader = container?.querySelector('.page-header');
+      if (pageHeader) {
+        pageHeader.insertAdjacentHTML('afterend', cardHtml(body, action));
+      }
+      break;
+    }
+    
+    case 'review': {
+      const data = window.WEEKLY_REVIEW_DATA || {};
+      const latest = data.latest || {};
+      
+      let body = '';
+      let action = '';
+      
+      if (latest.observation) {
+        body = `<strong>Last week's observation:</strong> ${latest.observation}`;
+        if (latest.carry_forward) {
+          body += `<br><br><strong>Carry forward:</strong> ${latest.carry_forward}`;
+        }
+      } else {
+        body = 'No weekly review data yet. Run a review to get started.';
+      }
+      
+      action = "Log this week's habits before Sunday";
+      
+      const container = document.getElementById('panel-review');
+      const existingChiefs = container?.querySelector('.chiefs-take-card');
+      if (existingChiefs) existingChiefs.remove();
+      const pageHeader = container?.querySelector('.page-header');
+      if (pageHeader) {
+        pageHeader.insertAdjacentHTML('afterend', cardHtml(body, action));
+      }
+      break;
+    }
+    
+    case 'captures': {
+      const data = window.CAPTURES_DATA || {};
+      const captures = data.captures || [];
+      
+      let body = '';
+      
+      if (captures.length > 0) {
+        const latest = captures[0];
+        body = `You have <strong>${captures.length} capture(s)</strong>. Last: "${latest.content?.substring(0, 60) || 'Unknown'}${latest.content?.length > 60 ? '...' : ''}"`;
+      } else {
+        body = `Nothing captured this week — any decisions, ideas, or things to remember? Type above.`;
+      }
+      
+      const container = document.getElementById('panel-captures');
+      const existingChiefs = container?.querySelector('.chiefs-take-card');
+      if (existingChiefs) existingChiefs.remove();
+      const pageHeader = container?.querySelector('.page-header');
+      if (pageHeader) {
+        pageHeader.insertAdjacentHTML('afterend', cardHtml(body, ''));
+      }
+      break;
+    }
+    
+    case 'partner': {
+      const data = window.PARTNER_DATA || {};
+      const notes = data.notes || [];
+      
+      let body = '';
+      
+      if (notes.length > 0) {
+        const latest = notes[0];
+        body = `<strong>${notes.length} partner note(s)</strong> logged. Latest: "${latest.raw?.substring(0, 80) || 'Unknown'}${latest.raw?.length > 80 ? '...' : ''}"`;
+      } else {
+        body = `No partner notes yet. Log her input to surface it in planning.`;
+      }
+      
+      const action = 'Her input matters — capture it here';
+      
+      const container = document.getElementById('panel-partner');
+      const existingChiefs = container?.querySelector('.chiefs-take-card');
+      if (existingChiefs) existingChiefs.remove();
+      const pageHeader = container?.querySelector('.page-header');
+      if (pageHeader) {
+        pageHeader.insertAdjacentHTML('afterend', cardHtml(body, action));
+      }
+      break;
+    }
+  }
+}
+
 // ===================== RENDER: WEALTH =====================
 function renderWealth() {
   const data = window.WEALTH_DATA;
@@ -1281,30 +1648,8 @@ function renderWealth() {
   document.getElementById('wealth-progress').style.width = Math.min(pct, 100) + '%';
   document.getElementById('wealth-date').textContent = 'As of ' + (data.snapshot_date || new Date().toLocaleDateString());
   
-  // Chief's Take - Actionable Intelligence
-  let insight = '';
-  let action = '';
-  
-  // TSLA concentration check
-  if (tslaPct > 20) {
-    insight += '<strong>TSLA is ' + tslaPct.toFixed(1) + '% of portfolio</strong> — above 20% threshold. ';
-  } else if (tslaPct > 0) {
-    insight += 'TSLA is ' + tslaPct.toFixed(1) + '% of portfolio — within target range. ';
-  }
-  
-  // HYSA opportunity cost
-  const hysaPending = data.hysa_pending || 75000;
-  if (!data.hysa_funded && hysaPending > 0) {
-    const monthlyLoss = Math.round(hysaPending * 0.0466 / 12);
-    insight += '<span class="text-red">$' + hysaPending.toLocaleString() + ' HYSA still not opened — costing ~$' + monthlyLoss + '/mo in lost interest at 4.66% APY.</span> ';
-    action = '<button class="action-btn" onclick="showTab('hysa')">🏦 Open Axos HYSA Today</button>';
-  }
-  
-  // Gap analysis
-  insight += '<br><br>You\'re <strong>' + fmtPct(pct) + ' to $1M</strong>. At current deploy rate ($4,167/mo), you\'ll hit target in ~' + Math.ceil(gap / 4167 / 12) + ' years with market growth.';
-  
-  document.getElementById('wealth-insight').innerHTML = insight || 'Portfolio in good shape.';
-  document.getElementById('wealth-action').innerHTML = action;
+  // Render Chief's Take
+  renderChiefsTake('wealth');
   
   // Breakdown
   const breakdown = data.breakdown || {};
@@ -1341,24 +1686,8 @@ function renderDeploy() {
   document.getElementById('deploy-regime').textContent = (data.latest?.regime || '—');
   document.getElementById('deploy-spy').textContent = (data.spy_change_pct ? (data.spy_change_pct > 0 ? '+' : '') + data.spy_change_pct.toFixed(1) + '%' : '—');
   
-  // Chief's Take
-  const ytd = data.ytd_deployed || 0;
-  const target = data.ytd_target || 43000;
-  const pct = Math.round(ytd / target * 100);
-  const monthsLeft = 12 - new Date().getMonth();
-  const remaining = target - ytd;
-  const monthlyNeeded = Math.round(remaining / monthsLeft);
-  
-  let insight = 'You\'ve deployed <strong>' + fmt$(ytd) + '</strong> of ' + fmt$(target) + ' (<strong>' + pct + '%</strong> of annual target). ';
-  insight += remaining > 0 ? 'Need <strong>' + fmt$(monthlyNeeded) + '/mo</strong> for remaining ' + monthsLeft + ' months.' : 'On track!';
-  
-  if (data.spy_change_pct > 5) {
-    insight += '<br><br><span class="text-green">Market is up ' + data.spy_change_pct.toFixed(1) + '% in 30d — bullish momentum.</span>';
-  } else if (data.spy_change_pct < -5) {
-    insight += '<br><br><span class="text-red">Market is down ' + Math.abs(data.spy_change_pct).toFixed(1) + '% in 30d — buying opportunity?</span>';
-  }
-  
-  document.getElementById('deploy-insight').innerHTML = insight;
+  // Render Chief's Take
+  renderChiefsTake('deploy');
   
   // Allocation
   const allocs = data.latest?.allocations || [];
@@ -1399,19 +1728,8 @@ function renderCRE() {
   const daysLeft = data.days_to_deadline || 153;
   document.getElementById('cre-deadline').textContent = daysLeft + ' days to Sep 30 deadline';
   
-  // Chief's Take
-  let insight = '';
-  if (goDeals.length === 0) {
-    insight = '<span class="text-yellow">No GO deals in pipeline.</span> You need to review more deals or lower criteria. ';
-    insight += '<br><br>Goal: 3-5 NNN assets with $75-125K/yr NOI. ';
-    insight += 'Criteria: 8%+ cap, absolute NNN, $20K+/mo rent, 15yr+ lease, BBB+ tenant.';
-  } else {
-    const topDeal = goDeals[0];
-    insight = '<span class="text-green">' + goDeals.length + ' GO deal(s) ready!</span> ';
-    insight += 'Top: <strong>' + (topDeal.tenant || topDeal.address) + '</strong> at ' + (topDeal.cap_rate || 0) + '% cap.';
-    insight += '<br><br>Next step: ' + (topDeal.next_action || 'Contact broker');
-  }
-  document.getElementById('cre-insight').innerHTML = insight;
+  // Render Chief's Take
+  renderChiefsTake('cre');
   
   // Kanban
   function dealCard(deal, idx) {
@@ -1445,18 +1763,8 @@ function renderGoals() {
   document.getElementById('goals-active').textContent = active.length;
   document.getElementById('goals-done').textContent = done.length;
   
-  // Chief's Take
-  const notStarted = active.filter(g => g.status === 'not_started').length;
-  const momentum = active.length > 0 ? Math.round((active.length - notStarted) / active.length * 100) : 0;
-  
-  let insight = '<strong>' + active.length + ' active goals</strong>, ' + done.length + ' completed. ';
-  insight += 'Momentum: <strong>' + momentum + '%</strong> started. ';
-  
-  if (urgent.length > 0) {
-    insight += '<br><br><span class="text-red">' + urgent.length + ' urgent goals due within 14 days!</span>';
-  }
-  
-  document.getElementById('goals-insight').innerHTML = insight;
+  // Render Chief's Take
+  renderChiefsTake('goals');
   
   // Urgent section
   if (urgent.length === 0) {
@@ -1507,20 +1815,8 @@ function renderHYSA() {
   document.getElementById('hysa-market-bank').textContent = current.market_top_bank || '—';
   document.getElementById('hysa-date').textContent = 'Last checked: ' + (current.check_date || '—');
   
-  // Chief's Take
-  let insight = 'Axos: <strong>' + fmtPct(axos) + '</strong> | SoFi: <strong>' + fmtPct(sofi) + '</strong> | Market top: <strong>' + fmtPct(market) + '</strong>';
-  
-  if (delta > 0.5) {
-    insight += '<br><br><span class="text-red">You\'re ' + delta.toFixed(2) + '% below market top — consider switching to ' + (current.market_top_bank || 'a higher-yield bank') + '.</span>';
-    const monthlyLoss = Math.round(75000 * (delta / 100) / 12);
-    insight += '<br>Lost potential: ~<strong>$' + monthlyLoss + '/mo</strong> on $75K.';
-  } else if (delta > 0) {
-    insight += '<br><br><span class="text-yellow">You\'re ' + delta.toFixed(2) + '% below market top. Acceptable, but watch for drift.</span>';
-  } else {
-    insight += '<br><br><span class="text-green">You\'re at or above market rate. Nice!</span>';
-  }
-  
-  document.getElementById('hysa-insight').innerHTML = insight;
+  // Render Chief's Take
+  renderChiefsTake('hysa');
   
   // Chart
   renderHYSAChart(data.history || []);
@@ -1562,6 +1858,9 @@ function renderHabits() {
   const data = window.HABITS_DATA;
   if (!data) return;
   
+  // Render Chief's Take
+  renderChiefsTake('habits');
+  
   const habits = data.habits || [];
   document.getElementById('habits-week-progress').textContent = (data.total_week || 0) + '/' + (data.total_target || 0);
   
@@ -1577,6 +1876,9 @@ function renderHabits() {
 function renderSchedule() {
   const data = window.SCHEDULE_DATA;
   if (!data) return;
+  
+  // Render Chief's Take
+  renderChiefsTake('schedule');
   
   const dayType = data.today_type || 'weekday';
   document.getElementById('schedule-day').textContent = 'Today: ' + new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
@@ -1594,6 +1896,10 @@ function renderSchedule() {
 // ===================== RENDER: REVIEW =====================
 function renderReview() {
   const data = window.WEEKLY_REVIEW_DATA;
+  
+  // Render Chief's Take
+  renderChiefsTake('review');
+  
   if (!data || !data.latest) return;
   
   const latest = data.latest;
@@ -1604,6 +1910,9 @@ function renderReview() {
 
 // ===================== RENDER: CAPTURES =====================
 function renderCaptures() {
+  // Render Chief's Take
+  renderChiefsTake('captures');
+  
   const data = window.CAPTURES_DATA;
   if (!data) return;
   
@@ -1617,6 +1926,9 @@ function renderCaptures() {
 
 // ===================== RENDER: PARTNER =====================
 function renderPartner() {
+  // Render Chief's Take
+  renderChiefsTake('partner');
+  
   const data = window.PARTNER_DATA;
   if (!data) return;
   
