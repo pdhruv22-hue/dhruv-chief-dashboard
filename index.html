@@ -1634,7 +1634,11 @@ function toggleMoreTray() {
 
 // ===================== API CALLS =====================
 async function loadAllData() {
-  if (window.DASHBOARD_STATIC_MODE) return;
+  if (window.DASHBOARD_STATIC_MODE) {
+    // Static mode: data already loaded via <script> tags — just render
+    renderTab(currentTab);
+    return;
+  }
   
   try {
     const res = await fetch('/api/all', { headers: apiHeaders() });
