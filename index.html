@@ -19227,10 +19227,14 @@ window.renderCRE = function() {
 <!-- FRANCHISE PIPELINE TAB (ITER 7 - permanent 2026-04-23) -->
 <div id="panel-franchise" class="tab-panel" style="display:none">
   <div style="padding:var(--s4) 16px 100px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s4)">
+
+    <!-- AI PICKS SECTION — injected 2026-05-02 -->
+    <div id="franchise-ai-section"></div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s4);margin-top:var(--s4)">
       <div>
-        <div style="font-size:18px;font-weight:800">Franchise Pipeline</div>
-        <div style="font-size:12px;color:var(--muted)">Evaluate franchise opportunities alongside CRE</div>
+        <div style="font-size:18px;font-weight:800">My Pipeline</div>
+        <div style="font-size:12px;color:var(--muted)">Track candidates you're actively evaluating</div>
       </div>
       <button onclick="addFranchiseCandidate()" style="background:var(--accent,#3b82f6);color:white;border:none;border-radius:var(--r2);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;touch-action:manipulation">+ Add Candidate</button>
     </div>
@@ -19372,11 +19376,169 @@ window.moveFranchiseStage = function(idx) {
   renderFranchisePipeline();
 };
 
+// ── Franchise AI Intel Renderer ─────────────────────────────────
+function renderFranchiseAI() {
+  var el = document.getElementById('franchise-ai-section');
+  if (!el) return;
+  var d = window.FRANCHISE_INTEL_DATA || {};
+  var picks = d.picks || [];
+  var summary = d.summary || {};
+  var genAt = d.generated_at ? new Date(d.generated_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+
+  var html = '';
+
+  // Header card
+  html += '<div style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04));border:1.5px solid rgba(245,158,11,0.4);border-radius:var(--r3);padding:14px 16px;margin-bottom:14px">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+  html += '<div style="font-size:11px;font-weight:800;color:#f59e0b;text-transform:uppercase;letter-spacing:0.1em">🏪 AI Franchise Picks — MA 2026</div>';
+  html += '<div style="font-size:10px;color:var(--muted)">' + genAt + ' · Perplexity + R1</div>';
+  html += '</div>';
+  html += '<div style="font-size:12px;color:var(--muted);line-height:1.5">Based on your retail ops background, semi-absentee requirement, $200–350K budget, and MA location. Scored for buildout vs existing space fit.</div>';
+  if (summary.this_week_action) {
+    html += '<div style="margin-top:10px;padding:10px 12px;background:rgba(245,158,11,0.15);border-radius:8px;font-size:12px;font-weight:700;color:#f59e0b">→ This week: ' + escHtml(summary.this_week_action) + '</div>';
+  }
+  html += '</div>';
+
+  // Picks cards
+  if (picks.length > 0) {
+    picks.forEach(function(p) {
+      var scoreColor = p.score >= 8 ? '#22c55e' : p.score >= 6 ? '#f59e0b' : '#9395a8';
+      var fitColor   = p.dhruv_fit_score >= 8 ? '#22c55e' : p.dhruv_fit_score >= 6 ? '#f59e0b' : '#9395a8';
+      var saRating   = p.semi_absentee_rating === 'HIGH' ? '#22c55e' : p.semi_absentee_rating === 'MEDIUM' ? '#f59e0b' : '#ef4444';
+
+      html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);margin-bottom:12px;overflow:hidden">';
+
+      // Card header
+      html += '<div style="padding:14px 16px;background:var(--surface2);display:flex;justify-content:space-between;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'\':\'none\'">';
+      html += '<div>';
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">';
+      html += '<span style="font-size:18px;font-weight:900;color:var(--text)">#'+p.rank+' '+escHtml(p.name||'')+'</span>';
+      html += '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;background:'+scoreColor+'22;color:'+scoreColor+'">'+p.score+'/10</span>';
+      html += '</div>';
+      html += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+      if (p.investment_min) html += '<span style="font-size:11px;color:var(--muted)">$'+Math.round(p.investment_min/1000)+'K–$'+Math.round(p.investment_max/1000)+'K</span>';
+      if (p.space_type) html += '<span style="font-size:11px;color:var(--accent)">• '+escHtml(p.space_type)+'</span>';
+      html += '</div></div>';
+      html += '<span style="font-size:18px;color:var(--muted)">▾</span>';
+      html += '</div>';
+
+      // Card body (expanded by default for top 2)
+      html += '<div style="'+(p.rank <= 2 ? '' : 'display:none')+'">';
+      html += '<div style="padding:14px 16px">';
+
+      // Stats grid
+      html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+      var stats = [
+        ['Fit Score', (p.dhruv_fit_score||'-')+'/10', fitColor],
+        ['Semi-Absentee', p.semi_absentee_rating||'?', saRating],
+        ['Owner Hrs/Wk', (p.owner_hours_per_week||'?')+'h', 'var(--text)'],
+        ['Avg Revenue', p.auverage_unit_revenue ? '$'+Math.round(p.auverage_unit_revenue/1000)+'K/yr' : '?', '#22c55e'],
+        ['EBITDA', (p.ebitda_margin_pct||'?')+'%', '#22c55e'],
+        ['Payback', (p.payback_years||'?')+' yrs', '#f59e0b'],
+      ];
+      stats.forEach(function(s) {
+        html += '<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 10px">';
+        html += '<div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:2px">'+s[0]+'</div>';
+        html += '<div style="font-size:13px;font-weight:700;color:'+s[2]+'">'+s[1]+'</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+
+      // Space/buildout
+      if (p.buildout_or_existing) {
+        html += '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">';
+        html += '<span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(99,102,241,0.15);color:#a5b4fc">'+escHtml(p.buildout_or_existing)+'</span>';
+        if (p.sqft_min) html += '<span style="font-size:11px;color:var(--muted);padding:4px 10px;background:rgba(255,255,255,0.05);border-radius:6px">'+p.sqft_min+'–'+p.sqft_max+' sq ft</span>';
+        if (p.ma_territory) html += '<span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:'+(p.ma_territory==='open'?'rgba(34,197,94,0.15)':'rgba(245,158,11,0.15)')+';color:'+(p.ma_territory==='open'?'#22c55e':'#f59e0b')+'">MA: '+p.ma_territory.toUpperCase()+'</span>';
+        html += '</div>';
+      }
+
+      // MA towns
+      if (p.best_ma_towns && p.best_ma_towns.length) {
+        html += '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">📍 Best MA markets: <strong style="color:var(--text)">'+p.best_ma_towns.join(', ')+'</strong></div>';
+      }
+
+      // Why it fits Dhruv
+      if (p.dhruv_fit_reason) {
+        html += '<div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:10px 12px;margin-bottom:10px">';
+        html += '<div style="font-size:10px;font-weight:800;color:#22c55e;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">Why This Fits You</div>';
+        html += '<div style="font-size:12px;color:var(--text);line-height:1.6">'+escHtml(p.dhruv_fit_reason)+'</div>';
+        html += '</div>';
+      }
+
+      // Key risk
+      if (p.key_risk) {
+        html += '<div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px 12px;margin-bottom:10px">';
+        html += '<div style="font-size:10px;font-weight:800;color:#ef4444;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">⚠️ Key Risk</div>';
+        html += '<div style="font-size:12px;color:var(--text);line-height:1.6">'+escHtml(p.key_risk)+'</div>';
+        html += '</div>';
+      }
+
+      // Action
+      if (p.action_this_week) {
+        html += '<div style="font-size:12px;font-weight:700;color:#f59e0b;padding:8px 0">→ '+escHtml(p.action_this_week)+'</div>';
+      }
+
+      // Add to pipeline button
+      html += '<button onclick="quickAddFranchise(\''+escHtml(p.name||'')+'\','+p.investment_min+')" style="width:100%;margin-top:8px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);border-radius:var(--r2);color:#3b82f6;font-size:12px;font-weight:700;padding:9px;cursor:pointer;font-family:inherit;touch-action:manipulation">+ Add to My Pipeline</button>';
+
+      html += '</div></div></div>';
+    });
+  } else {
+    // Fallback — show raw ranking text
+    var ranking = d.full_ranking_analysis || d.personalized_ranking || d.market_research || '';
+    if (ranking) {
+      html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:14px 16px;margin-bottom:14px">';
+      html += '<div style="font-size:11px;font-weight:700;color:#f59e0b;margin-bottom:10px">AI RANKING ANALYSIS</div>';
+      html += '<div style="font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap">'+escHtml(ranking.substring(0,3000))+'</div>';
+      html += '</div>';
+    }
+  }
+
+  // Deal maker / killer
+  if (summary.deal_maker || summary.deal_killer) {
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">';
+    if (summary.deal_maker) {
+      html += '<div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:10px 12px">';
+      html += '<div style="font-size:10px;font-weight:800;color:#22c55e;margin-bottom:4px">✅ DEAL MAKER</div>';
+      html += '<div style="font-size:11px;color:var(--text);line-height:1.5">'+escHtml(summary.deal_maker)+'</div>';
+      html += '</div>';
+    }
+    if (summary.deal_killer) {
+      html += '<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:10px 12px">';
+      html += '<div style="font-size:10px;font-weight:800;color:#ef4444;margin-bottom:4px">❌ DEAL KILLER</div>';
+      html += '<div style="font-size:11px;color:var(--text);line-height:1.5">'+escHtml(summary.deal_killer)+'</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+window.quickAddFranchise = function(brand, capex) {
+  frCandidates.push({
+    brand: brand,
+    location: 'Massachusetts',
+    capex: capex || 0,
+    auv: 0,
+    notes: 'Added from AI picks',
+    stage: 'research',
+    added: new Date().toISOString()
+  });
+  localStorage.setItem('franchise_candidates', JSON.stringify(frCandidates));
+  renderFranchisePipeline();
+  showToast('✓ Added ' + brand + ' to pipeline', '');
+};
+
 // Render on tab switch
 var _origShowTabFr = window.showTab;
 window.showTab = function(id, btn) {
   _origShowTabFr(id, btn);
-  if (id === 'franchise') setTimeout(renderFranchisePipeline, 200);
+  if (id === 'franchise') {
+    setTimeout(renderFranchisePipeline, 200);
+    setTimeout(renderFranchiseAI, 250);
+  }
 };
 </script>
 
@@ -20322,6 +20484,7 @@ function openStockDeepDive(symbol) {
   var sent     = sentData[symbol] || {};
   var conv     = (sd.conviction_ratings || {})[symbol] || {};
   var tslaAn   = sd.tsla_analysis || {};
+  var newsData = (window.NEWS_DATA || {}).headlines || [];
 
   // Signal color
   var sigColor = t.signal === 'BULLISH' ? '#22c55e' : t.signal === 'BEARISH' ? '#ef4444' : '#9395a8';
@@ -20340,237 +20503,259 @@ function openStockDeepDive(symbol) {
 
   var body = '';
 
-  // ── 1. Price & Technicals ───────────────────────────────────
-  body += '<div class="sdd-section">';
-  body += '<div class="sdd-section-label" style="color:#60a5fa">📊 Technicals</div>';
-  body += '<div class="sdd-grid3">';
-  var techs = [
-    ['RSI', (t.rsi||'-').toString(), t.rsi > 70 ? '#ef4444' : t.rsi < 30 ? '#22c55e' : 'var(--text)'],
-    ['vs 50MA', t.ma50_pct !== undefined ? (t.ma50_pct>0?'+':'')+t.ma50_pct+'%' : '-', t.ma50_pct > 0 ? '#22c55e' : '#ef4444'],
-    ['vs 200MA', t.ma200_pct !== undefined ? (t.ma200_pct>0?'+':'')+t.ma200_pct+'%' : '-', t.ma200_pct > 0 ? '#22c55e' : '#ef4444'],
-    ['β Vol', (t.vol_ratio||'-').toString(), 'var(--text)'],
-    ['Support', t.support ? '$'+t.support : '-', '#22c55e'],
-    ['Resist', t.resistance ? '$'+t.resistance : '-', '#ef4444'],
-    ['52W High', t.year_high ? '$'+t.year_high : '-', 'var(--muted)'],
-    ['52W Low', t.year_low ? '$'+t.year_low : '-', 'var(--muted)'],
-    ['YTD', t.year_return_pct !== undefined ? (t.year_return_pct>0?'+':'')+t.year_return_pct+'%' : '-', t.year_return_pct > 0 ? '#22c55e' : '#ef4444'],
-  ];
-  techs.forEach(function(tc) {
-    body += '<div class="sdd-stat-box">';
-    body += '<div class="sdd-stat-lbl">'+tc[0]+'</div>';
-    body += '<div class="sdd-stat-val" style="color:'+tc[2]+'">'+tc[1]+'</div>';
-    body += '</div>';
-  });
-  body += '</div>';
-  // RSI gauge bar
+  // Helper for section wrapper
+  function sddSec(label, color, content) {
+    return '<div class="sdd-section"><div class="sdd-section-label" style="color:'+color+'">'+label+'</div>'+content+'</div>';
+  }
+
+  // ── SECTION 1: PRICE SNAPSHOT + KEY STATS ─────────────────
   var rsi = t.rsi || 50;
   var rsiColor = rsi > 70 ? '#ef4444' : rsi < 30 ? '#22c55e' : '#6366f1';
-  body += '<div style="margin-top:12px">';
-  body += '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px">';
-  body += '<span>Oversold (30)</span><span>Neutral (50)</span><span>Overbought (70)</span></div>';
-  body += '<div style="height:6px;background:rgba(255,255,255,0.08);border-radius:99px;position:relative">';
-  body += '<div style="position:absolute;left:'+Math.max(1,Math.min(99,(rsi/100*100)))+'%;top:-3px;width:12px;height:12px;border-radius:50%;background:'+rsiColor+';transform:translateX(-50%);box-shadow:0 0 6px '+rsiColor+'"></div>';
-  body += '</div>';
-  body += '<div style="font-size:12px;font-weight:700;color:'+rsiColor+';text-align:center;margin-top:6px">RSI '+rsi+' — '+(rsi>70?'Overbought':rsi<30?'Oversold':'Neutral')+'</div>';
-  body += '</div></div>';
-
-  // ── 2. AI Market Read (main analysis) ─────────────────────
-  if (t.ai_read && t.ai_read !== 'AI analysis unavailable') {
-    body += '<div class="sdd-ai-box">';
-    body += '<div class="sdd-section-label" style="color:#a5b4fc">🤖 AI Market Read</div>';
-    body += '<div style="font-size:13px;color:var(--text);line-height:1.75">'+escHtml(t.ai_read)+'</div>';
-    body += '</div>';
+  var rsiLabel = rsi > 75 ? 'Severely Overbought' : rsi > 70 ? 'Overbought' : rsi < 25 ? 'Severely Oversold' : rsi < 30 ? 'Oversold' : 'Neutral';
+  var snapHtml = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">';
+  [
+    ['Open', '$'+(t.prev_close||'-'), 'var(--text)'],
+    ['Day High', t.day_high?'$'+t.day_high:'-', '#22c55e'],
+    ['Day Low',  t.day_low ?'$'+t.day_low :'-', '#ef4444'],
+    ['Volume', t.vol_today ? (t.vol_today/1e6).toFixed(1)+'M' : '-', 'var(--text)'],
+    ['52W High', t.year_high?'$'+t.year_high:'-', 'var(--muted)'],
+    ['52W Low',  t.year_low ?'$'+t.year_low :'-', 'var(--muted)'],
+    ['YTD', t.year_return_pct!==undefined?(t.year_return_pct>0?'+':'')+t.year_return_pct+'%':'-', t.year_return_pct>0?'#22c55e':'#ef4444'],
+    ['Beta Vol', t.vol_ratio?t.vol_ratio+'x':'-', 'var(--text)'],
+  ].forEach(function(s){
+    snapHtml += '<div class="sdd-stat-box"><div class="sdd-stat-lbl">'+s[0]+'</div><div class="sdd-stat-val" style="color:'+s[2]+'">'+s[1]+'</div></div>';
+  });
+  snapHtml += '</div>';
+  // Moving averages
+  snapHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">';
+  var maStats = [
+    ['50-Day MA', t.ma50_pct!==undefined?(t.ma50_pct>0?'+':'')+t.ma50_pct+'% vs MA':'-', t.ma50_pct>0?'#22c55e':'#ef4444'],
+    ['200-Day MA', t.ma200_pct!==undefined?(t.ma200_pct>0?'+':'')+t.ma200_pct+'% vs MA':'-', t.ma200_pct>0?'#22c55e':'#ef4444'],
+    ['RSI', rsi+' — '+rsiLabel, rsiColor],
+  ];
+  maStats.forEach(function(s){
+    snapHtml += '<div class="sdd-stat-box"><div class="sdd-stat-lbl">'+s[0]+'</div><div style="font-size:12px;font-weight:700;color:'+s[2]+'">'+s[1]+'</div></div>';
+  });
+  snapHtml += '</div>';
+  // Support/resistance range bar
+  if (t.support && t.resistance) {
+    var range = t.resistance - t.support;
+    var pos = range > 0 ? Math.max(2, Math.min(98, ((t.price - t.support) / range * 100))) : 50;
+    snapHtml += '<div style="margin-top:8px">';
+    snapHtml += '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px"><span>Support $'+t.support+'</span><span style="color:var(--text);font-weight:700">Now $'+t.price.toFixed(2)+'</span><span>Resist $'+t.resistance+'</span></div>';
+    snapHtml += '<div style="height:8px;background:linear-gradient(90deg,rgba(34,197,94,0.3),rgba(239,68,68,0.3));border-radius:99px;position:relative">';
+    snapHtml += '<div style="position:absolute;left:'+pos+'%;top:-3px;width:14px;height:14px;border-radius:50%;background:#fff;transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,0.5)"></div>';
+    snapHtml += '</div></div>';
   }
+  body += sddSec('📊 Price Snapshot', '#60a5fa', snapHtml);
 
-  // ── 3. Conviction Rating + AI Thought Process ──────────────
+  // ── SECTION 2: ANGLE 1 — WALL STREET (Institutional) ──────
+  var ws = sent.wall_st || {};
+  var wsColor = ws.signal === 'BUY'||ws.signal === 'BULLISH' ? '#22c55e' : ws.signal === 'SELL'||ws.signal === 'BEARISH' ? '#ef4444' : '#9395a8';
+  var wsHtml = '';
+  // Verdict banner
+  wsHtml += '<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(59,130,246,0.1);border-radius:10px;margin-bottom:12px">';
+  wsHtml += '<div style="font-size:22px;font-weight:900;color:'+wsColor+'">'+(ws.signal||conv.conviction||'HOLD')+'</div>';
+  if (t.analyst && t.analyst.mean) wsHtml += '<div><div style="font-size:13px;font-weight:700;color:#60a5fa">Consensus PT: $'+t.analyst.mean+'</div><div style="font-size:11px;color:var(--muted)">'+(t.upside_pct>0?'+':'')+t.upside_pct+'% upside</div></div>';
+  wsHtml += '</div>';
+  // Full rationale
+  if (ws.rationale) {
+    wsHtml += '<div style="font-size:13px;color:var(--text);line-height:1.75;margin-bottom:10px">'+escHtml(ws.rationale)+'</div>';
+  }
+  // Analyst price target bar
+  if (t.analyst && t.analyst.mean && t.analyst.low && t.analyst.high) {
+    var an = t.analyst;
+    var ptPct = Math.max(2, Math.min(96, ((t.price - an.low) / (an.high - an.low) * 100)));
+    wsHtml += '<div style="margin-bottom:12px">';
+    wsHtml += '<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Analyst Price Target Range</div>';
+    wsHtml += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px"><span>Bear $'+an.low+'</span><span style="font-weight:700;color:#60a5fa">Median $'+an.median+'</span><span>Bull $'+an.high+'</span></div>';
+    wsHtml += '<div style="height:6px;background:linear-gradient(90deg,rgba(239,68,68,0.4),rgba(34,197,94,0.4));border-radius:99px;position:relative">';
+    wsHtml += '<div style="position:absolute;left:'+ptPct+'%;top:-4px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #60a5fa;transform:translateX(-50%);box-shadow:0 2px 4px rgba(0,0,0,0.5)" title="Current price"></div>';
+    wsHtml += '</div>';
+    wsHtml += '<div style="text-align:center;font-size:11px;font-weight:700;color:'+(t.upside_pct>20?'#22c55e':t.upside_pct>0?'#f59e0b':'#ef4444')+';margin-top:6px">';
+    wsHtml += t.upside_pct > 0 ? 'Trading '+t.upside_pct+'% BELOW Wall St consensus' : 'Trading '+Math.abs(t.upside_pct)+'% ABOVE Wall St consensus';
+    wsHtml += '</div></div>';
+  }
+  // Conviction rating from AI
   if (conv && conv.conviction) {
-    var cvColor = conv.conviction === 'STRONG HOLD' ? '#22c55e'
-                : conv.conviction === 'BUY MORE'    ? '#3b82f6'
-                : conv.conviction === 'WATCH'       ? '#f59e0b'
-                : '#9395a8';
-    body += '<div class="sdd-conviction-box" style="background:'+cvColor+'15;border:1px solid '+cvColor+'40">';
-    body += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-    body += '<div class="sdd-section-label" style="color:'+cvColor+';margin-bottom:0">🎯 Conviction</div>';
-    body += '<span style="font-size:13px;font-weight:900;color:'+cvColor+'">'+conv.conviction+'</span>';
-    body += '</div>';
-    // Thesis
-    if (conv.thesis_note) {
-      body += '<div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:10px">'+escHtml(conv.thesis_note)+'</div>';
+    var cvColor = conv.conviction==='STRONG HOLD'?'#22c55e':conv.conviction==='BUY MORE'?'#3b82f6':conv.conviction==='WATCH'?'#f59e0b':'#9395a8';
+    wsHtml += '<div style="background:'+cvColor+'12;border:1px solid '+cvColor+'35;border-radius:10px;padding:12px 14px;margin-bottom:10px">';
+    wsHtml += '<div style="font-size:10px;font-weight:800;color:'+cvColor+';text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Chief\'s Conviction Rating</div>';
+    wsHtml += '<div style="font-size:16px;font-weight:900;color:'+cvColor+';margin-bottom:6px">'+conv.conviction+'</div>';
+    if (conv.thesis_note) wsHtml += '<div style="font-size:12px;color:var(--text);line-height:1.65;margin-bottom:8px">'+escHtml(conv.thesis_note)+'</div>';
+    wsHtml += '<div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px">How the AI reached this:</div>';
+    wsHtml += '<div class="sdd-ai-thinking">';
+    wsHtml += '1. Thesis check: '+(conv.thesis_intact?'✅ INTACT — no thesis-breaking news':'⚠️ AT RISK — review thesis')+'<br>';
+    wsHtml += '2. Concentration: '+((conv.concentration_pct||0).toFixed(1))+'% of portfolio (limit is 25%)<br>';
+    if (conv.risk_factor) wsHtml += '3. Key risk identified: '+escHtml(conv.risk_factor)+'<br>';
+    if (conv.action) wsHtml += '4. Recommended action: '+escHtml(conv.action)+'<br>';
+    if (conv.urgency && conv.urgency!=='none') wsHtml += '5. Urgency: '+conv.urgency.toUpperCase();
+    wsHtml += '</div></div>';
+  }
+  if (ws.risk) wsHtml += '<div style="font-size:12px;color:#f59e0b;padding:8px 0">⚠️ '+escHtml(ws.risk)+'</div>';
+  body += sddSec('🏛️ Angle 1: Wall Street + Chief AI', '#60a5fa', wsHtml);
+
+  // ── SECTION 3: ANGLE 2 — X/TWITTER (Retail Sentiment) ─────
+  var xt = sent.x_twitter || {};
+  var xtHtml = '';
+  if (xt.sentiment || t.news_today) {
+    var xtColor = xt.sentiment==='BULLISH'?'#22c55e':xt.sentiment==='BEARISH'?'#ef4444':'#f59e0b';
+    xtHtml += '<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(29,155,240,0.1);border-radius:10px;margin-bottom:12px">';
+    xtHtml += '<div style="font-size:22px;font-weight:900;color:'+xtColor+'">'+(xt.sentiment||t.sentiment||'NEUTRAL')+'</div>';
+    if (xt.heat_score) xtHtml += '<div><div style="font-size:13px;font-weight:700;color:#1d9bf0">Heat Score: '+xt.heat_score+'/10</div><div style="font-size:11px;color:var(--muted)">'+(xt.heat_score>=7?'Trending heavily':'Normal chatter')+'</div></div>';
+    xtHtml += '</div>';
+    // Full X narrative
+    if (xt.narrative) xtHtml += '<div style="font-size:13px;color:var(--text);line-height:1.75;margin-bottom:10px">'+escHtml(xt.narrative)+'</div>';
+    // Today's news (from Perplexity)
+    if (t.news_today) {
+      var nBg = t.sentiment==='BULLISH'?'rgba(34,197,94,0.08)':t.sentiment==='BEARISH'?'rgba(239,68,68,0.08)':'rgba(255,255,255,0.04)';
+      xtHtml += '<div style="background:'+nBg+';border-radius:10px;padding:12px 14px;margin-bottom:10px">';
+      xtHtml += '<div style="font-size:10px;font-weight:800;color:#1d9bf0;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Today\'s Top Story</div>';
+      xtHtml += '<div style="font-size:13px;color:var(--text);font-weight:600;line-height:1.5;margin-bottom:6px">'+escHtml(t.news_today)+'</div>';
+      if (t.sentiment_reason) xtHtml += '<div style="font-size:12px;color:var(--muted);line-height:1.6">'+escHtml(t.sentiment_reason)+'</div>';
+      xtHtml += '</div>';
     }
-    // AI reasoning / thought process
-    body += '<div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">AI Reasoning Process</div>';
-    body += '<div class="sdd-ai-thinking">';
-    body += '→ Checking thesis integrity: '+(conv.thesis_intact ? '✅ INTACT' : '⚠️ AT RISK')+'<br>';
-    body += '→ Concentration: '+((conv.concentration_pct||0).toFixed(1))+'% of portfolio<br>';
-    if (conv.risk_factor) body += '→ Key risk: '+escHtml(conv.risk_factor)+'<br>';
-    if (conv.action) body += '→ Recommended action: '+escHtml(conv.action);
-    body += '</div>';
-    if (conv.urgency && conv.urgency !== 'none') {
-      var urgColor = conv.urgency === 'now' ? '#ef4444' : '#f59e0b';
-      body += '<div style="margin-top:8px;font-size:11px;font-weight:700;color:'+urgColor+'">⚡ Urgency: '+conv.urgency.toUpperCase()+'</div>';
-    }
-    body += '</div>';
+    // Key voice/influencer
+    if (xt.key_voice) xtHtml += '<div style="font-size:12px;color:var(--muted);font-style:italic;padding:6px 0;border-left:2px solid rgba(29,155,240,0.4);padding-left:10px">'+escHtml(xt.key_voice)+'</div>';
+  } else {
+    xtHtml = '<div style="font-size:12px;color:var(--muted)">No X/Twitter sentiment data for this ticker yet. Run stocks refresh to pull latest.</div>';
   }
+  body += sddSec('🐦 Angle 2: X/Twitter Retail Sentiment', '#1d9bf0', xtHtml);
 
-  // ── 4. Sentiment: Wall St / X / WSB ───────────────────────
-  if (sent && (sent.wall_st || sent.x_twitter || sent.wsb)) {
-    body += '<div style="margin:14px 20px 0">';
-    body += '<div class="sdd-section-label" style="color:var(--text2);margin-bottom:8px">📡 Three-Angle Sentiment</div>';
-    body += '<div class="sdd-sentiment-row" style="margin:0">';
-    var ws = sent.wall_st || {};
-    var xt = sent.x_twitter || {};
-    var wsb = sent.wsb || {};
-    var angles = [
-      {label:'Wall St', color:'#60a5fa', bg:'rgba(59,130,246,0.1)', sig:ws.signal, detail:ws.rationale, pt:ws.price_target ? 'PT $'+Number(ws.price_target).toFixed(0) : null},
-      {label:'X/Twitter', color:'#1d9bf0', bg:'rgba(29,155,240,0.1)', sig:xt.sentiment, detail:xt.narrative, heat:xt.heat_score},
-      {label:'WSB', color:'#ff4500', bg:'rgba(255,69,0,0.1)', sig:wsb.sentiment, detail:wsb.narrative, squeeze:wsb.squeeze_score},
-    ];
-    angles.forEach(function(a) {
-      if (!a.sig) return;
-      var aColor = a.sig === 'BULLISH'||a.sig === 'BUY'||a.sig === 'MOON' ? '#22c55e'
-                 : a.sig === 'BEARISH'||a.sig === 'SELL'||a.sig === 'PUTS' ? '#ef4444' : '#f59e0b';
-      body += '<div class="sdd-sentiment-pill" style="background:'+a.bg+';border:1px solid '+a.color+'33">';
-      body += '<div style="font-size:9px;font-weight:800;color:'+a.color+';text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px">'+a.label+'</div>';
-      body += '<div style="font-size:13px;font-weight:900;color:'+aColor+'">'+a.sig+'</div>';
-      if (a.pt)     body += '<div style="font-size:10px;color:'+a.color+';margin-top:3px">'+a.pt+'</div>';
-      if (a.heat)   body += '<div style="font-size:10px;color:'+a.color+';margin-top:3px">Heat '+a.heat+'/10</div>';
-      if (a.squeeze)body += '<div style="font-size:10px;color:'+a.color+';margin-top:3px">Squeeze '+a.squeeze+'/10</div>';
-      body += '</div>';
-    });
-    body += '</div>';
-    // Detail narratives
-    [
-      {label:'Wall St rationale', text: ws.rationale, color:'#60a5fa'},
-      {label:'X/Twitter narrative', text: xt.narrative, color:'#1d9bf0'},
-      {label:'WSB narrative', text: wsb.narrative, color:'#ff4500'},
-    ].forEach(function(r) {
-      if (!r.text) return;
-      body += '<div style="margin-top:8px;font-size:11px;color:var(--muted);border-left:2px solid '+r.color+'44;padding-left:10px;line-height:1.6">';
-      body += '<strong style="color:'+r.color+'">'+r.label+':</strong> '+escHtml(r.text);
-      body += '</div>';
-    });
-    body += '</div>';
+  // ── SECTION 4: ANGLE 3 — WALLSTREETBETS (Crowd/Momentum) ──
+  var wsb = sent.wsb || {};
+  var wsbHtml = '';
+  if (wsb.sentiment) {
+    var wsbColor = wsb.sentiment==='BULLISH'||wsb.sentiment==='MOON'?'#22c55e':wsb.sentiment==='BEARISH'||wsb.sentiment==='PUTS'?'#ef4444':'#f59e0b';
+    wsbHtml += '<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,69,0,0.1);border-radius:10px;margin-bottom:12px">';
+    wsbHtml += '<div style="font-size:22px;font-weight:900;color:'+wsbColor+'">'+wsb.sentiment+'</div>';
+    if (wsb.squeeze_score) wsbHtml += '<div><div style="font-size:13px;font-weight:700;color:#ff4500">Squeeze Score: '+wsb.squeeze_score+'/10</div><div style="font-size:11px;color:var(--muted)">'+(wsb.squeeze_score>=7?'High squeeze potential':'Low squeeze pressure')+'</div></div>';
+    wsbHtml += '</div>';
+    if (wsb.narrative) wsbHtml += '<div style="font-size:13px;color:var(--text);line-height:1.75;margin-bottom:10px">'+escHtml(wsb.narrative)+'</div>';
+    if (wsb.meme_factor) wsbHtml += '<div style="font-size:12px;color:var(--muted);font-style:italic;border-left:2px solid rgba(255,69,0,0.4);padding-left:10px">'+escHtml(wsb.meme_factor)+'</div>';
+  } else {
+    wsbHtml = '<div style="font-size:12px;color:var(--muted)">No WSB data available for this ticker.</div>';
   }
-
-  // ── 5. News sentiment ─────────────────────────────────────
-  if (t.news_today) {
-    var sentBg = t.sentiment === 'BULLISH' ? 'rgba(34,197,94,0.08)' : t.sentiment === 'BEARISH' ? 'rgba(239,68,68,0.08)' : 'rgba(255,255,255,0.04)';
-    var sentBorder = t.sentiment === 'BULLISH' ? 'rgba(34,197,94,0.3)' : t.sentiment === 'BEARISH' ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.08)';
-    body += '<div class="sdd-section" style="background:'+sentBg+';border-color:'+sentBorder+'">';
-    body += '<div class="sdd-section-label" style="color:var(--muted)">📰 Today\'s News</div>';
-    body += '<div style="font-size:13px;color:var(--text);margin-bottom:6px">'+escHtml(t.news_today)+'</div>';
-    if (t.sentiment_reason) body += '<div style="font-size:11px;color:var(--muted);line-height:1.5">'+escHtml(t.sentiment_reason)+'</div>';
-    body += '</div>';
-  }
-
-  // ── 6. Options Intelligence ────────────────────────────────
+  // Options as crowd signal
   if (t.options && t.options.atm_iv) {
     var opts = t.options;
     var ivColor2 = opts.atm_iv > 80 ? '#ef4444' : opts.atm_iv > 50 ? '#f59e0b' : '#22c55e';
-    var pcText = opts.pc_ratio > 1.2 ? 'Bearish skew' : opts.pc_ratio < 0.7 ? 'Bullish skew' : 'Balanced';
-    body += '<div class="sdd-section">';
-    body += '<div class="sdd-section-label" style="color:#a78bfa">⚡ Options Intelligence</div>';
-    body += '<div class="sdd-options-grid">';
-    var optStats = [
-      ['IV (ATM)', opts.atm_iv+'%', ivColor2],
-      ['Implied Move', '±'+opts.implied_move_pct+'%', 'var(--text)'],
-      ['P/C Ratio', (opts.pc_ratio||'-').toString(), opts.pc_ratio>1?'#ef4444':'#22c55e'],
-      ['P/C Read', pcText, opts.pc_ratio > 1.2 ? '#ef4444' : opts.pc_ratio < 0.7 ? '#22c55e' : '#9395a8'],
-      ['Max Pain', opts.max_pain ? '$'+opts.max_pain : '-', 'var(--muted)'],
-      ['Call Vol', opts.call_volume ? Number(opts.call_volume).toLocaleString() : '-', '#22c55e'],
-      ['Put Vol', opts.put_volume ? Number(opts.put_volume).toLocaleString() : '-', '#ef4444'],
-      ['Unusual', opts.unusual_activity ? '⚠️ YES' : 'No', opts.unusual_activity ? '#f59e0b' : 'var(--muted)'],
-    ];
-    optStats.forEach(function(os) {
-      body += '<div class="sdd-stat-box"><div class="sdd-stat-lbl">'+os[0]+'</div>';
-      body += '<div class="sdd-stat-val" style="color:'+os[2]+'">'+os[1]+'</div></div>';
+    var pcText = opts.pc_ratio > 1.3 ? 'Heavy puts — crowd is bearish' : opts.pc_ratio < 0.6 ? 'Heavy calls — crowd is bullish' : 'Balanced — no strong crowd bet';
+    wsbHtml += '<div style="margin-top:12px">';
+    wsbHtml += '<div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Options Flow (Crowd Signal)</div>';
+    wsbHtml += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px">';
+    [
+      ['IV', opts.atm_iv+'%', ivColor2],
+      ['P/C Ratio', opts.pc_ratio||'-', opts.pc_ratio>1.2?'#ef4444':'#22c55e'],
+      ['Max Pain', '$'+(opts.max_pain||'-'), 'var(--muted)'],
+      ['Call Vol', opts.call_volume?Number(opts.call_volume).toLocaleString():'-', '#22c55e'],
+      ['Put Vol', opts.put_volume?Number(opts.put_volume).toLocaleString():'-', '#ef4444'],
+      ['Unusual', opts.unusual_activity?'⚠️ YES':'No', opts.unusual_activity?'#f59e0b':'var(--muted)'],
+    ].forEach(function(s){
+      wsbHtml += '<div class="sdd-stat-box"><div class="sdd-stat-lbl">'+s[0]+'</div><div class="sdd-stat-val" style="color:'+s[2]+'">'+s[1]+'</div></div>';
     });
-    body += '</div>';
-    // AI options interpretation
-    body += '<div class="sdd-ai-thinking" style="margin-top:10px">';
-    body += '→ IV at '+opts.atm_iv+'% = '+(opts.atm_iv>70?'elevated premium — good time to sell calls':'normal — wait for vol spike')+'<br>';
-    body += '→ Market pricing ±'+opts.implied_move_pct+'% move by expiry ('+opts.expiry+')<br>';
-    body += '→ P/C ratio '+opts.pc_ratio+': '+pcText+'<br>';
-    if (symbol === 'TSLA' && tslaAn.covered_call_recommended !== undefined) {
-      body += '→ Covered call recommendation: '+(tslaAn.covered_call_recommended?'✅ YES':'❌ NOT NOW')+' — '+escHtml((tslaAn.covered_call_details||'').substring(0,120));
+    wsbHtml += '</div>';
+    wsbHtml += '<div class="sdd-ai-thinking">';
+    wsbHtml += '→ IV at '+opts.atm_iv+'%: '+(opts.atm_iv>70?'elevated — premiums fat, good for selling calls':'normal — premiums thin, not ideal for selling')+'<br>';
+    wsbHtml += '→ P/C ratio '+opts.pc_ratio+': '+pcText+'<br>';
+    wsbHtml += '→ Market pricing ±'+opts.implied_move_pct+'% move by '+opts.expiry;
+    if (symbol === 'TSLA' && tslaAn.covered_call_details) {
+      wsbHtml += '<br>→ Covered call take: '+escHtml(tslaAn.covered_call_details.substring(0,150));
     }
-    body += '</div>';
-    body += '</div>';
+    wsbHtml += '</div>';
+    wsbHtml += '</div>';
+  }
+  body += sddSec('🎰 Angle 3: WallStreetBets + Options Flow', '#ff4500', wsbHtml);
+
+  // ── SECTION 5: COMBINED VERDICT ───────────────────────────
+  // Build a combined read from all three angles + conviction
+  var verdictHtml = '';
+  var allSignals = [
+    ws.signal || conv.conviction || '',
+    xt.sentiment || t.sentiment || '',
+    wsb.sentiment || '',
+  ].map(function(s){ return s.toUpperCase(); });
+
+  var bullCount = allSignals.filter(function(s){ return s.includes('BULL')||s.includes('BUY')||s.includes('STRONG HOLD')||s.includes('MOON'); }).length;
+  var bearCount = allSignals.filter(function(s){ return s.includes('BEAR')||s.includes('SELL')||s.includes('PUTS'); }).length;
+
+  var combinedSignal, combinedColor, combinedBg;
+  if (bullCount >= 2 && bearCount === 0) {
+    combinedSignal = 'BULLISH CONSENSUS'; combinedColor = '#22c55e'; combinedBg = 'rgba(34,197,94,0.1)';
+  } else if (bearCount >= 2 && bullCount === 0) {
+    combinedSignal = 'BEARISH CONSENSUS'; combinedColor = '#ef4444'; combinedBg = 'rgba(239,68,68,0.1)';
+  } else if (bullCount > bearCount) {
+    combinedSignal = 'LEANING BULLISH'; combinedColor = '#a3e635'; combinedBg = 'rgba(163,230,53,0.08)';
+  } else if (bearCount > bullCount) {
+    combinedSignal = 'LEANING BEARISH'; combinedColor = '#fb923c'; combinedBg = 'rgba(251,146,60,0.08)';
+  } else {
+    combinedSignal = 'MIXED / NEUTRAL'; combinedColor = '#9395a8'; combinedBg = 'rgba(147,149,168,0.08)';
   }
 
-  // ── 7. Earnings ───────────────────────────────────────────
+  // Scorecard
+  verdictHtml += '<div style="background:'+combinedBg+';border:2px solid '+combinedColor+'55;border-radius:12px;padding:16px;margin-bottom:14px;text-align:center">';
+  verdictHtml += '<div style="font-size:11px;font-weight:800;color:'+combinedColor+';text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Combined 3-Angle Verdict</div>';
+  verdictHtml += '<div style="font-size:28px;font-weight:900;color:'+combinedColor+'">'+combinedSignal+'</div>';
+  verdictHtml += '<div style="font-size:12px;color:var(--muted);margin-top:6px">'+bullCount+'/3 bullish signals · '+bearCount+'/3 bearish signals</div>';
+  verdictHtml += '</div>';
+
+  // Three-way scorecard
+  verdictHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
+  [
+    {label:'Wall St', sig: ws.signal||conv.conviction||'HOLD', color:'#60a5fa', bg:'rgba(59,130,246,0.1)'},
+    {label:'X/Twitter', sig: xt.sentiment||t.sentiment||'NEUTRAL', color:'#1d9bf0', bg:'rgba(29,155,240,0.1)'},
+    {label:'WSB', sig: wsb.sentiment||'N/A', color:'#ff4500', bg:'rgba(255,69,0,0.1)'},
+  ].forEach(function(a){
+    var aC = a.sig.includes('BULL')||a.sig.includes('BUY')||a.sig.includes('MOON')||a.sig.includes('HOLD')?'#22c55e':a.sig.includes('BEAR')||a.sig.includes('SELL')||a.sig.includes('PUTS')?'#ef4444':'#9395a8';
+    verdictHtml += '<div style="background:'+a.bg+';border:1px solid '+a.color+'33;border-radius:10px;padding:10px;text-align:center">';
+    verdictHtml += '<div style="font-size:9px;font-weight:800;color:'+a.color+';text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px">'+a.label+'</div>';
+    verdictHtml += '<div style="font-size:12px;font-weight:900;color:'+aC+'">'+a.sig+'</div>';
+    verdictHtml += '</div>';
+  });
+  verdictHtml += '</div>';
+
+  // What this means for Dhruv's portfolio specifically
+  verdictHtml += '<div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:12px;padding:14px;margin-bottom:10px">';
+  verdictHtml += '<div style="font-size:10px;font-weight:800;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">What This Means for Your Portfolio</div>';
+  verdictHtml += '<div class="sdd-ai-thinking" style="font-size:12px">';
+  if (t.ai_read && t.ai_read !== 'AI analysis unavailable') {
+    verdictHtml += escHtml(t.ai_read);
+  } else if (conv.action) {
+    verdictHtml += escHtml(conv.action);
+  } else {
+    verdictHtml += 'Monitor position. No clear action required today.';
+  }
+  verdictHtml += '</div></div>';
+
+  // TSLA special
+  if (symbol === 'TSLA' && tslaAn.merger_thesis_note) {
+    verdictHtml += '<div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:12px 14px;margin-bottom:10px">';
+    verdictHtml += '<div style="font-size:10px;font-weight:800;color:#22c55e;text-transform:uppercase;margin-bottom:6px">🔒 Merger Thesis Check</div>';
+    verdictHtml += '<div style="font-size:12px;color:var(--text);line-height:1.65">'+escHtml(tslaAn.merger_thesis_note)+'</div>';
+    if (tslaAn.weekly_note) verdictHtml += '<div style="font-size:11px;color:var(--muted);margin-top:6px;font-style:italic">This week: '+escHtml(tslaAn.weekly_note)+'</div>';
+    verdictHtml += '</div>';
+  }
+
+  // Earnings alert
   if (t.earnings_date && !t.is_etf) {
     var eDays = t.earnings_days;
-    var eColor = eDays !== null && eDays <= 7 ? '#ef4444' : eDays <= 21 ? '#f59e0b' : '#9395a8';
-    body += '<div class="sdd-section" style="border-color:'+eColor+'33;background:'+eColor+'08">';
-    body += '<div class="sdd-section-label" style="color:'+eColor+'">📅 Earnings</div>';
-    body += '<div style="display:flex;justify-content:space-between;align-items:center">';
-    body += '<div><div style="font-size:16px;font-weight:800;color:var(--text)">'+t.earnings_date+'</div>';
-    body += '<div style="font-size:12px;color:var(--muted)">Next earnings announcement</div></div>';
-    if (eDays !== null) {
-      body += '<div style="font-size:24px;font-weight:900;color:'+eColor+'">'+eDays+'d</div>';
-    }
-    body += '</div>';
-    if (eDays !== null && eDays <= 14) {
-      body += '<div style="margin-top:8px;font-size:11px;color:'+eColor+';font-weight:700">⚠️ EARNINGS ZONE — elevated volatility expected. Consider IV crush risk on options.</div>';
-    }
-    body += '</div>';
+    var eColor = eDays!==null && eDays<=7?'#ef4444':eDays<=21?'#f59e0b':'#9395a8';
+    verdictHtml += '<div style="background:'+eColor+'10;border:1px solid '+eColor+'35;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">';
+    verdictHtml += '<div><div style="font-size:11px;font-weight:700;color:'+eColor+'">📅 Earnings: '+t.earnings_date+'</div>';
+    verdictHtml += '<div style="font-size:11px;color:var(--muted)'+(eDays!==null&&eDays<=14?';font-weight:700;color:'+eColor:'')+'">'+( eDays!==null&&eDays<=14?'⚠️ EARNINGS ZONE — elevated volatility':'No immediate earnings risk')+'</div></div>';
+    if (eDays!==null) verdictHtml += '<div style="font-size:20px;font-weight:900;color:'+eColor+'">'+eDays+'d</div>';
+    verdictHtml += '</div>';
   }
 
-  // ── 8. Analyst targets ─────────────────────────────────────
-  if (t.analyst && t.analyst.mean && !t.is_etf) {
-    var an = t.analyst;
-    var upside = t.upside_pct || 0;
-    var uColor = upside > 20 ? '#22c55e' : upside > 0 ? '#f59e0b' : '#ef4444';
-    body += '<div class="sdd-section">';
-    body += '<div class="sdd-section-label" style="color:#fbbf24">🎯 Analyst Targets</div>';
-    body += '<div class="sdd-grid2">';
-    var anStats = [
-      ['Consensus PT', '$'+an.mean, uColor],
-      ['Upside', (upside>0?'+':'')+upside+'%', uColor],
-      ['Bull Case', '$'+(an.high||'-'), '#22c55e'],
-      ['Bear Case', '$'+(an.low||'-'), '#ef4444'],
-    ];
-    anStats.forEach(function(as) {
-      body += '<div class="sdd-stat-box"><div class="sdd-stat-lbl">'+as[0]+'</div>';
-      body += '<div class="sdd-stat-val" style="color:'+as[2]+'">'+as[1]+'</div></div>';
-    });
-    body += '</div>';
-    // PT vs current price bar
-    var ptPct = an.mean > 0 ? Math.min(100, (t.price / an.mean * 100)) : 50;
-    body += '<div style="margin-top:12px">';
-    body += '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px">';
-    body += '<span>Bear $'+an.low+'</span><span>Now $'+t.price.toFixed(0)+'</span><span>Bull $'+an.high+'</span></div>';
-    body += '<div style="height:6px;background:rgba(255,255,255,0.08);border-radius:99px;position:relative">';
-    body += '<div style="position:absolute;left:'+ptPct+'%;top:-3px;width:12px;height:12px;border-radius:50%;background:#f59e0b;transform:translateX(-50%);box-shadow:0 0 6px #f59e0b44"></div>';
-    body += '<div style="position:absolute;width:2px;height:12px;background:#22c55e;left:calc(100% - 2px);top:-3px;border-radius:2px" title="Bull target"></div>';
-    body += '</div>';
-    body += '<div style="font-size:11px;color:'+uColor+';text-align:center;margin-top:6px;font-weight:700">';
-    body += upside > 0 ? 'Trading '+Math.abs(upside)+'% BELOW consensus target' : 'Trading '+Math.abs(upside)+'% ABOVE consensus target';
-    body += '</div></div></div>';
-  }
-
-  // ── 9. TSLA special section ───────────────────────────────
-  if (symbol === 'TSLA' && tslaAn.merger_thesis_note) {
-    body += '<div class="sdd-section" style="border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.06)">';
-    body += '<div class="sdd-section-label" style="color:#22c55e">🔒 TSLA Merger Thesis Status</div>';
-    body += '<div style="font-size:13px;color:var(--text);line-height:1.65;margin-bottom:8px">'+escHtml(tslaAn.merger_thesis_note)+'</div>';
-    body += '<div class="sdd-ai-thinking">';
-    body += '→ Earnings: '+tslaAn.earnings_date+' ('+tslaAn.earnings_days+' days)<br>';
-    body += '→ '+escHtml(tslaAn.earnings_action||'')+'<br>';
-    if (tslaAn.weekly_note) body += '→ This week: '+escHtml(tslaAn.weekly_note);
-    body += '</div>';
-    body += '</div>';
-  }
-
-  // ── 10. Harvest alert ─────────────────────────────────────
+  // Harvest alert
   if (t.harvest && t.harvest_loss) {
-    body += '<div style="margin:14px 20px 0;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:12px;padding:14px 16px">';
-    body += '<div class="sdd-section-label" style="color:#ef4444;margin-bottom:6px">🌾 Tax-Loss Harvest Alert</div>';
-    body += '<div style="font-size:15px;font-weight:800;color:#ef4444">$'+Number(t.harvest_loss).toLocaleString()+' harvestable loss</div>';
-    body += '<div style="font-size:12px;color:var(--muted);margin-top:4px">Coordinate with Kavita (Shah Dixit) — 30-day wash-sale window applies. Dec 31, 2026 deadline.</div>';
-    body += '</div>';
+    verdictHtml += '<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:10px;padding:10px 14px">';
+    verdictHtml += '<div style="font-size:11px;font-weight:800;color:#ef4444;margin-bottom:4px">🌾 Tax-Loss Harvest: $'+Number(t.harvest_loss).toLocaleString()+' available</div>';
+    verdictHtml += '<div style="font-size:11px;color:var(--muted)">Coordinate with Kavita — 30-day wash-sale rule applies. Dec 31 deadline.</div>';
+    verdictHtml += '</div>';
   }
+
+  body += sddSec('⚡ Combined Verdict', combinedColor, verdictHtml);
 
   document.getElementById('sdd-body').innerHTML = body;
 
