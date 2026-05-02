@@ -2067,6 +2067,165 @@ window.WEALTH_DATA = {
           "value": 80.27
         }
       ]
+    },
+    {
+      "date": "2026-05-01",
+      "label": "May 2026",
+      "merrill_portfolio": 208279.38,
+      "crypto": 7279.13,
+      "hysa_tbills": 0.0,
+      "roth_ira": 0,
+      "amda_equity": 150000,
+      "storebot_equity": 0,
+      "cre_equity": 0,
+      "total_liabilities": 50000,
+      "liquid_net_worth": 215558.51,
+      "total_assets": 365558.51,
+      "total_net_worth": 315558.51,
+      "notes": "Auto-snapshot via chief-of-staff (run)",
+      "positions": {
+        "GOOGL": {
+          "qty": 85.0,
+          "value": 32793.0,
+          "price": 385.8
+        },
+        "AAPL": {
+          "qty": 13.6369,
+          "value": 3821.33,
+          "price": 280.22
+        },
+        "ACHR": {
+          "qty": 138.0,
+          "value": 809.37,
+          "price": 5.865
+        },
+        "ARKK": {
+          "qty": 125.0,
+          "value": 9606.88,
+          "price": 76.855
+        },
+        "INSM": {
+          "qty": 45.0,
+          "value": 5995.35,
+          "price": 133.23
+        },
+        "JOBY": {
+          "qty": 128.0,
+          "value": 1184.64,
+          "price": 9.255
+        },
+        "LCID": {
+          "qty": 66.0,
+          "value": 432.96,
+          "price": 6.56
+        },
+        "NVDA": {
+          "qty": 44.0,
+          "value": 8736.2,
+          "price": 198.55
+        },
+        "SCHD": {
+          "qty": 200.0,
+          "value": 6370.8,
+          "price": 31.854
+        },
+        "TSLA": {
+          "qty": 165.0,
+          "value": 64473.75,
+          "price": 390.75
+        },
+        "VIG": {
+          "qty": 6.0,
+          "value": 1370.54,
+          "price": 228.423
+        },
+        "XPEV": {
+          "qty": 1346.0,
+          "value": 21313.91,
+          "price": 15.835
+        },
+        "AMZN": {
+          "qty": 33.0,
+          "value": 8857.53,
+          "price": 268.41
+        },
+        "AEXA": {
+          "qty": 4.0,
+          "value": 44.2,
+          "price": 11.05
+        },
+        "ARKW": {
+          "qty": 84.0,
+          "value": 11766.72,
+          "price": 140.08
+        },
+        "CEG": {
+          "qty": 15.0,
+          "value": 4616.4,
+          "price": 307.76
+        },
+        "UUUU": {
+          "qty": 43.0,
+          "value": 933.92,
+          "price": 21.719
+        },
+        "NNE": {
+          "qty": 130.0,
+          "value": 3045.9,
+          "price": 23.43
+        },
+        "NXE": {
+          "qty": 75.0,
+          "value": 928.5,
+          "price": 12.38
+        },
+        "SMR": {
+          "qty": 200.0,
+          "value": 2427.0,
+          "price": 12.135
+        },
+        "OKLO": {
+          "qty": 155.0,
+          "value": 10918.2,
+          "price": 70.44
+        },
+        "TNYA": {
+          "qty": 10.0,
+          "value": 7.06,
+          "price": 0.7057
+        }
+      },
+      "bucket_values": {
+        "Nuclear": 22869.92,
+        "eVTOL": 1994.01,
+        "EV/China": 21746.87,
+        "Core": 118681.81,
+        "ARK": 21373.6,
+        "Income": 7741.34,
+        "Biotech": 6002.41,
+        "Other": 44.2
+      },
+      "tsla_pct": 30.96,
+      "crypto_detail": [
+        {
+          "symbol": "SOL",
+          "qty": 57.64287559,
+          "price": 83.86,
+          "value": 4833.93
+        },
+        {
+          "symbol": "XRP",
+          "qty": 1700.55298,
+          "price": 1.39,
+          "value": 2363.77
+        },
+        {
+          "symbol": "ADA",
+          "qty": 326.058631,
+          "price": 0.249741,
+          "value": 81.43
+        }
+      ]
     }
   ],
   "config": {
