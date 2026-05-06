@@ -564,3 +564,11 @@ window.SPRINT_GOALS_DATA = {
     window.SPRINT_GOALS_DATA_ARRAY = d;
   }
 })();
+// Normalize: add goal_id field from id for dashboard compatibility
+if(typeof window.SPRINT_GOALS_DATA !== 'undefined' && window.SPRINT_GOALS_DATA.goals) {
+  window.SPRINT_GOALS_DATA.goals = window.SPRINT_GOALS_DATA.goals.map(function(g) {
+    if(!g.goal_id && g.id) { g.goal_id = 'goal-' + g.id; }
+    return g;
+  });
+}
+// goal_id_normalized
