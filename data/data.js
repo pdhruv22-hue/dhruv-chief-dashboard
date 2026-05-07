@@ -2866,159 +2866,159 @@ window.WEALTH_DATA = {
     {
       "date": "2026-05-06",
       "label": "May 2026",
-      "merrill_portfolio": 211635.17,
-      "crypto": 7591.98,
+      "merrill_portfolio": 215522.35,
+      "crypto": 7660.99,
       "hysa_tbills": 0.0,
       "roth_ira": 0,
       "amda_equity": 150000,
       "storebot_equity": 0,
       "cre_equity": 0,
       "total_liabilities": 50000,
-      "liquid_net_worth": 219227.15,
-      "total_assets": 369227.15,
-      "total_net_worth": 319227.15,
+      "liquid_net_worth": 223183.34,
+      "total_assets": 373183.34,
+      "total_net_worth": 323183.34,
       "notes": "Auto-snapshot via chief-of-staff (run)",
       "positions": {
         "GOOGL": {
           "qty": 85.0,
-          "value": 33442.4,
-          "price": 393.44
+          "value": 33832.55,
+          "price": 398.03
         },
         "AAPL": {
           "qty": 13.6369,
-          "value": 3901.65,
-          "price": 286.11
+          "value": 3921.22,
+          "price": 287.545
         },
         "ACHR": {
           "qty": 138.0,
-          "value": 855.6,
-          "price": 6.2
+          "value": 884.58,
+          "price": 6.41
         },
         "ARKK": {
           "qty": 125.0,
-          "value": 9778.75,
-          "price": 78.23
+          "value": 9947.5,
+          "price": 79.58
         },
         "INSM": {
           "qty": 45.0,
-          "value": 6371.77,
-          "price": 141.595
+          "value": 6166.8,
+          "price": 137.04
         },
         "JOBY": {
           "qty": 128.0,
-          "value": 1272.96,
-          "price": 9.945
+          "value": 1349.12,
+          "price": 10.54
         },
         "LCID": {
           "qty": 66.0,
-          "value": 400.29,
-          "price": 6.065
+          "value": 409.2,
+          "price": 6.2
         },
         "NVDA": {
           "qty": 44.0,
-          "value": 8983.7,
-          "price": 204.175
+          "value": 9154.2,
+          "price": 208.05
         },
         "SCHD": {
           "qty": 200.0,
-          "value": 6329.0,
-          "price": 31.645
+          "value": 6333.0,
+          "price": 31.665
         },
         "TSLA": {
           "qty": 165.0,
-          "value": 64927.5,
-          "price": 393.5
+          "value": 65823.61,
+          "price": 398.931
         },
         "VIG": {
           "qty": 6.0,
-          "value": 1377.9,
-          "price": 229.65
+          "value": 1379.28,
+          "price": 229.88
         },
         "XPEV": {
           "qty": 1346.0,
-          "value": 21186.04,
-          "price": 15.74
+          "value": 21428.32,
+          "price": 15.92
         },
         "AMZN": {
           "qty": 33.0,
-          "value": 9045.3,
-          "price": 274.1
+          "value": 9076.49,
+          "price": 275.045
         },
         "AEXA": {
           "qty": 4.0,
-          "value": 45.08,
-          "price": 11.27
+          "value": 45.44,
+          "price": 11.36
         },
         "ARKW": {
           "qty": 84.0,
-          "value": 12148.08,
-          "price": 144.62
+          "value": 12269.46,
+          "price": 146.065
         },
         "CEG": {
           "qty": 15.0,
-          "value": 4716.15,
-          "price": 314.41
+          "value": 4841.18,
+          "price": 322.745
         },
         "UUUU": {
           "qty": 43.0,
-          "value": 949.87,
-          "price": 22.09
+          "value": 1010.71,
+          "price": 23.505
         },
         "NNE": {
           "qty": 130.0,
-          "value": 3403.4,
-          "price": 26.18
+          "value": 3779.1,
+          "price": 29.07
         },
         "NXE": {
           "qty": 75.0,
-          "value": 927.75,
-          "price": 12.37
+          "value": 965.25,
+          "price": 12.87
         },
         "SMR": {
           "qty": 200.0,
-          "value": 2539.8,
-          "price": 12.699
+          "value": 2711.0,
+          "price": 13.555
         },
         "OKLO": {
           "qty": 155.0,
-          "value": 11198.75,
-          "price": 72.25
+          "value": 12361.25,
+          "price": 79.75
         },
         "TNYA": {
           "qty": 10.0,
-          "value": 8.19,
-          "price": 0.8193
+          "value": 7.85,
+          "price": 0.7853
         }
       },
       "bucket_values": {
-        "Nuclear": 23735.72,
-        "eVTOL": 2128.56,
-        "EV/China": 21586.33,
-        "Core": 120300.55,
-        "ARK": 21926.83,
-        "Income": 7706.9,
-        "Biotech": 6379.97,
-        "Other": 45.08
+        "Nuclear": 25668.49,
+        "eVTOL": 2233.7,
+        "EV/China": 21837.52,
+        "Core": 121808.07,
+        "ARK": 22216.96,
+        "Income": 7712.28,
+        "Biotech": 6174.65,
+        "Other": 45.44
       },
-      "tsla_pct": 30.68,
+      "tsla_pct": 30.54,
       "crypto_detail": [
         {
           "symbol": "SOL",
           "qty": 57.64287559,
-          "price": 88.31,
-          "value": 5090.44
+          "price": 89.21,
+          "value": 5142.32
         },
         {
           "symbol": "XRP",
           "qty": 1700.55298,
-          "price": 1.42,
-          "value": 2414.79
+          "price": 1.43,
+          "value": 2431.79
         },
         {
           "symbol": "ADA",
           "qty": 326.058631,
-          "price": 0.266062,
-          "value": 86.75
+          "price": 0.266452,
+          "value": 86.88
         }
       ]
     }
