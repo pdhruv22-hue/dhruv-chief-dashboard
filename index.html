@@ -21496,26 +21496,29 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- END MISSING PANELS -->
 
 <script>
-// PANEL NESTING FIX — hoists all nested tab-panels to be siblings at DOM load
+// PANEL NESTING FIX v2 — recursively hoists ALL nested tab-panels to BODY
 (function() {
   function hoistPanels() {
-    var panelToday = document.getElementById('panel-today');
-    if (!panelToday) return;
-    var parentEl = panelToday.parentElement;
-    if (!parentEl) return;
-    // Collect all .tab-panel elements nested inside panel-today
-    var innerPanels = Array.prototype.slice.call(panelToday.querySelectorAll('.tab-panel'));
-    if (!innerPanels.length) return;
-    // Insert them as siblings right after panel-today, in order
-    var insertAfter = panelToday;
-    innerPanels.forEach(function(p) {
-      // Remove from current nested position
-      if (p.parentElement !== parentEl) {
-        parentEl.insertBefore(p, insertAfter.nextSibling);
-        insertAfter = p;
+    var body = document.body;
+    var moved = 0;
+    // Keep running until no more nested panels remain
+    var maxPasses = 10;
+    for (var pass = 0; pass < maxPasses; pass++) {
+      var nested = document.querySelectorAll('.tab-panel .tab-panel');
+      if (!nested.length) break;
+      nested.forEach(function(p) {
+        body.appendChild(p);
+        moved++;
+      });
+    }
+    // Hide all except today (the default)
+    document.querySelectorAll('.tab-panel').forEach(function(p) {
+      if (p.id !== 'panel-today') {
+        p.style.display = 'none';
+        p.classList.remove('active');
       }
     });
-    console.log('[PanelFix] Hoisted ' + innerPanels.length + ' nested panels to top level');
+    console.log('[PanelFix v2] Hoisted ' + moved + ' nested panels to body');
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', hoistPanels);
