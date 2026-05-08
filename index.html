@@ -6273,7 +6273,7 @@ function renderWealth() {
  });
  html += '</div>'; // card
 
- document.getElementById('wealth-content').innerHTML = html;
+ var _wc = document.getElementById('wealth-content'); if (_wc) { _wc.innerHTML = html; }
 }
 
 // openL3DeployScenarios
