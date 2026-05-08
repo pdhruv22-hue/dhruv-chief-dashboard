@@ -6273,7 +6273,7 @@ function renderWealth() {
  });
  html += '</div>'; // card
 
- var _wc = document.getElementById('wealth-content'); if (_wc) { _wc.innerHTML = html; }
+ var _wc = document.getElementById('wealth-content') || document.getElementById('panel-wealth'); if (_wc) { _wc.innerHTML = html; }
 }
 
 // openL3DeployScenarios
@@ -11868,7 +11868,7 @@ var _origRenderWealth = renderWealth;
 renderWealth = function() {
  try { _origRenderWealth(); } catch(e) { console.error('[renderWealth] base failed:', e); }
  try {
- var el = document.getElementById('wealth-content');
+ var el = document.getElementById('wealth-content') || document.getElementById('panel-wealth');
  if(el) {
  var chartHtml = renderNWChart();
  el.innerHTML = chartHtml + el.innerHTML;
