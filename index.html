@@ -21494,6 +21494,37 @@ document.addEventListener('DOMContentLoaded',function(){
 <div style="background:#1a1a2e;border-radius:12px;padding:14px;margin:12px 0"><div style="font-size:0.7rem;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">RECURRING REMINDERS</div><div style="font-size:0.83rem;color:#ccc;padding:5px 0;border-bottom:1px solid #222">📅 Sunday 10 AM — Upload Merrill CSV</div><div style="font-size:0.83rem;color:#ccc;padding:5px 0;border-bottom:1px solid #222">📅 25th of month — Deploy check</div><div style="font-size:0.83rem;color:#ccc;padding:5px 0;border-bottom:1px solid #222">📅 Sunday 5 PM — Finance meeting</div><div style="font-size:0.83rem;color:#ccc;padding:5px 0">📅 Friday 7 PM — Date night</div></div>
 </div>
 <!-- END MISSING PANELS -->
+
+<script>
+// PANEL NESTING FIX — hoists all nested tab-panels to be siblings at DOM load
+(function() {
+  function hoistPanels() {
+    var panelToday = document.getElementById('panel-today');
+    if (!panelToday) return;
+    var parentEl = panelToday.parentElement;
+    if (!parentEl) return;
+    // Collect all .tab-panel elements nested inside panel-today
+    var innerPanels = Array.prototype.slice.call(panelToday.querySelectorAll('.tab-panel'));
+    if (!innerPanels.length) return;
+    // Insert them as siblings right after panel-today, in order
+    var insertAfter = panelToday;
+    innerPanels.forEach(function(p) {
+      // Remove from current nested position
+      if (p.parentElement !== parentEl) {
+        parentEl.insertBefore(p, insertAfter.nextSibling);
+        insertAfter = p;
+      }
+    });
+    console.log('[PanelFix] Hoisted ' + innerPanels.length + ' nested panels to top level');
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', hoistPanels);
+  } else {
+    hoistPanels();
+  }
+})();
+</script>
+
 </body>
 </html>
 
