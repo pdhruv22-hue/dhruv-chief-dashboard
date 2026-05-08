@@ -16071,7 +16071,7 @@ showTab = function(id, btn) {
 function toggleMoreMenu(b){var d=document.getElementById("more-menu-drawer"),bk=document.getElementById("more-menu-backdrop"),o=d.style.display!=="none";if(o){closeMoreMenu();}else{d.style.display="block";bk.style.display="block";b.classList.add("active");}}
 function closeMoreMenu(){document.getElementById("more-menu-drawer").style.display="none";document.getElementById("more-menu-backdrop").style.display="none";var m=document.querySelector(".bottom-nav-item[data-tab='__more']");if(m)m.classList.remove("active");}
 var _onav=window.showTab;window.showTab=function(id,btn){closeMoreMenu();if(_onav)_onav(id,btn);document.querySelectorAll(".bottom-nav-item[data-tab]").forEach(function(b){b.classList.toggle("active",b.getAttribute("data-tab")===id);});};
-<\/script>
+</script>
 
 <!-- MORE MENU DRAWER -->
 <div id="more-menu-drawer" style="display:none;position:fixed;bottom:60px;left:0;right:0;background:rgba(6,6,8,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);z-index:199;padding:12px 8px;animation:fadeUp 0.15s var(--ease)">
@@ -16109,7 +16109,7 @@ window.showTab = function(id, btn) {
     b.classList.toggle('active', b.getAttribute('data-tab') === id);
   });
 };
-<\/script>
+</script>
 
 <!-- QUICK PROMPTS -->
 <div class="quick-prompts-row" id="quick-prompts"></div>
@@ -20487,7 +20487,7 @@ window.filterCmdK = function(query) {
      c += '</div>';
      openPanel(sym+" Analysis", c);
    };
-<\/script>
+</script>
 <script>
 // Financial Trajectory pulse on data refresh
 window._triggerFTPulse = function() {
