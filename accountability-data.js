@@ -1,21 +1,17 @@
 window.ACCOUNTABILITY_DATA = {
-  "generated_at": "2026-05-07T06:00:37.959999",
+  "generated_at": "2026-05-08T06:00:30.871194",
   "week_start": "2026-05-04",
   "week_end": "2026-05-10",
   "scores": {
     "cre_reviewed": {
-      "count": 1,
+      "count": 0,
       "target": 5,
-      "days": [
-        "2026-05-06"
-      ]
+      "days": []
     },
     "deep_work": {
-      "count": 1,
+      "count": 0,
       "target": 5,
-      "days": [
-        "2026-05-06"
-      ]
+      "days": []
     },
     "amda_boundary": {
       "count": 0,
