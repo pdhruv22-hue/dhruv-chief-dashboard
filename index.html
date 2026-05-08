@@ -5212,11 +5212,12 @@ function renderWealth() {
  // ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ 1. TODAY'S WEALTH BRIEF (Session Brief) ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬ÃƒÂ¢"Ã¢â€šÂ¬
  (function() {
  var dr = pd.deploy_recommendation || {};
+ var deployNow = !!dr.deploy_now;
  var traj = pd.trajectory || {};
  var sb = pd.session_brief || '';
  var hysa = pd.hysa_rates || {};
- var deployStatus = dr.deploy_now ? 'DEPLOY NOW' : 'HOLD';
- var deployColor = dr.deploy_now ? '#22c55e' : '#f59e0b';
+ var deployStatus = deployNow ? 'DEPLOY NOW' : 'HOLD';
+ var deployColor = deployNow ? '#22c55e' : '#f59e0b';
  var deployReason = dr.deploy_now
  ? 'Market conditions favor deployment.'
  : (dr.reason ? dr.reason.split('.')[0].substring(0,90) : 'Wait for normalization.');
