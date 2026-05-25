@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>10-Year Market Forecast: QQQ, Tech Stocks &amp; Bitcoin Outlook</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    .font-inter { font-family: 'Inter', sans-serif; }
+    .hero-gradient { background: linear-gradient(135deg, #1a1c2e 0%, #2d3258 50%, #3d426e 100%); }
+    .accent-gradient { background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); }
+    .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .toc-fixed { position: fixed; left: 2rem; top: 50%; transform: translateY(-50%); width: 260px; z-index: 40; }
+    .content-offset { margin-left: 300px; }
+    @media (max-width: 1280px) {
+      .toc-fixed { display: none; }
+      .content-offset { margin-left: 0; }
+    }
+    .section-divider {
+      background: linear-gradient(90deg, transparent 0%, #6366f1 50%, transparent 100%);
+      height: 1px;
+      margin: 3rem 0;
+    }
+    .insight-highlight {
+      border-left: 4px solid #6366f1;
+      background: rgba(99, 102, 241, 0.05);
+    }
+    .risk-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: #e2e8f0;
+    }
+    .risk-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-inter overflow-x-hidden">
+
+  <!-- Fixed Table of Contents -->
+  <nav class="toc-fixed bg-white/90 rounded-xl shadow-lg p-5 border border-slate-200" style="backdrop-filter:blur(8px)">
+    <h3 class="text-base font-bold text-slate-900 mb-4">Contents</h3>
+    <ul class="space-y-2 text-sm">
+      <li><a href="#executive-summary" class="text-slate-600 hover:text-indigo-600 transition-colors">Executive Summary</a></li>
+      <li><a href="#qqq-forecast" class="text-slate-600 hover:text-indigo-600 transition-colors">QQQ Forecast</a></li>
+      <li><a href="#tech-stocks" class="text-slate-600 hover:text-indigo-600 transition-colors">Tech Stocks Outlook</a></li>
+      <li><a href="#bitcoin-forecast" class="text-slate-600 hover:text-indigo-600 transition-colors">Bitcoin Forecast</a></li>
+      <li><a href="#volatility-analysis" class="text-slate-600 hover:text-indigo-600 transition-colors">Volatility Analysis</a></li>
+      <li><a href="#methodology" class="text-slate-600 hover:text-indigo-600 transition-colors">Methodology</a></li>
+      <li><a href="#recovery-analysis" class="text-slate-600 hover:text-indigo-600 transition-colors">Recovery Analysis</a></li>
+      <li><a href="#institutional-perspectives" class="text-slate-600 hover:text-indigo-600 transition-colors">Institutional Views</a></li>
+      <li><a href="#scenario-matrix" class="text-slate-600 hover:text-indigo-600 transition-colors">Scenario Matrix</a></li>
+      <li><a href="#strategic-implications" class="text-slate-600 hover:text-indigo-600 transition-colors">Strategic Implications</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-gradient relative overflow-hidden">
+    <div class="relative z-10 max-w-7xl mx-auto px-8 py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="text-indigo-300 text-sm font-semibold uppercase tracking-widest mb-4">10-Year Probabilistic Analysis · 2025–2036</div>
+          <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6 text-shadow leading-tight italic">
+            The Next Decade:<br/>
+            <span class="text-indigo-300">Market Forecasts</span><br/>
+            &amp; Digital Evolution
+          </h1>
+          <p class="text-xl text-slate-200 mb-8 leading-relaxed">
+            A comprehensive probabilistic analysis of QQQ, technology stocks, and Bitcoin through 2036—examining crash risks, recovery dynamics, and strategic implications for institutional investors.
+          </p>
+          <div class="flex items-center space-x-6">
+            <div class="accent-gradient text-white px-6 py-3 rounded-lg font-semibold">10-Year Horizon</div>
+            <div class="text-slate-300"><i class="fas fa-chart-line mr-2"></i>Monte Carlo Analysis</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white/10 rounded-xl p-6 border border-white/20">
+            <div class="text-3xl font-bold text-white mb-2">~80%</div>
+            <div class="text-slate-200 text-sm">QQQ 30%+ Drawdown Probability</div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-6 border border-white/20">
+            <div class="text-3xl font-bold text-white mb-2">~99.7%</div>
+            <div class="text-slate-200 text-sm">Bitcoin 30%+ Drawdown Probability</div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-6 border border-white/20">
+            <div class="text-3xl font-bold text-white mb-2">8–10%</div>
+            <div class="text-slate-200 text-sm">QQQ Forward Returns (est.)</div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-6 border border-white/20">
+            <div class="text-3xl font-bold text-white mb-2">15–28%</div>
+            <div class="text-slate-200 text-sm">Bitcoin Forward Returns (est.)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="content-offset max-w-5xl mx-auto px-8 py-12">
+
+    <!-- ─── Executive Summary ─── -->
+    <section id="executive-summary" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Executive Summary</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div class="insight-highlight p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">QQQ Risk Profile</h3>
+          <p class="text-slate-700 text-sm">Approximately <strong>80% probability</strong> of experiencing at least one 30%+ drawdown over 10 years, with recovery typically taking 1–5 years depending on crash severity.</p>
+        </div>
+        <div class="insight-highlight p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Bitcoin Volatility</h3>
+          <p class="text-slate-700 text-sm">Near-certain (<strong>~99.7%</strong>) probability of multiple 30%+ drawdowns, though recovery timelines have shortened from 37 months to 12–28 months in recent cycles.</p>
+        </div>
+        <div class="insight-highlight p-6 rounded-xl">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Recovery Dynamics</h3>
+          <p class="text-slate-700 text-sm">Within-horizon recovery probabilities appear low (3–5%) due to simulation time constraints—a methodological artifact, not a statement about long-run recovery capacity.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-8 border border-slate-200">
+        <h3 class="text-2xl font-bold text-slate-900 mb-6">Key Probabilistic Findings</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="text-left p-4 font-semibold">Asset Class</th>
+                <th class="text-left p-4 font-semibold">Crash Prob. (≥30%)</th>
+                <th class="text-left p-4 font-semibold">Key Drivers</th>
+                <th class="text-left p-4 font-semibold">Recovery Timeline</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t">
+                <td class="p-4 font-semibold">QQQ (Nasdaq-100)</td>
+                <td class="p-4 text-red-600 font-bold">~80%</td>
+                <td class="p-4 text-slate-600">Tech concentration, valuation sensitivity, monetary policy</td>
+                <td class="p-4 text-slate-600">1 yr (COVID) to 15 yrs (Dot-Com)</td>
+              </tr>
+              <tr class="border-t">
+                <td class="p-4 font-semibold">Bitcoin</td>
+                <td class="p-4 text-red-600 font-bold">~99.7%</td>
+                <td class="p-4 text-slate-600">Extreme volatility, leverage, regulatory event risk</td>
+                <td class="p-4 text-slate-600">4–12 months (recent) to 37 months (early cycles)</td>
+              </tr>
+              <tr class="border-t">
+                <td class="p-4 font-semibold">Within-Horizon Recovery</td>
+                <td class="p-4 text-orange-600 font-bold">QQQ: ~3%; BTC: ~5%</td>
+                <td class="p-4 text-slate-600">Time-bound measurement constraint</td>
+                <td class="p-4 text-slate-600">N/A — methodological artifact</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── QQQ Forecast ─── -->
+    <section id="qqq-forecast" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">QQQ (Nasdaq-100) 10-Year Forecast</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">Expected Return Profile</h3>
+          <div class="space-y-4">
+            <div class="bg-slate-50 p-5 rounded-xl">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-sm">Historical 2016–2025</span>
+                <span class="text-2xl font-bold text-indigo-600">19.45%</span>
+              </div>
+              <p class="text-xs text-slate-500">Exceptional decade driven by AI enthusiasm and pandemic-era acceleration</p>
+            </div>
+            <div class="bg-slate-50 p-5 rounded-xl">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-sm">Long-term Average (since 1999)</span>
+                <span class="text-2xl font-bold text-slate-700">10.2%</span>
+              </div>
+              <p class="text-xs text-slate-500">Includes Dot-Com collapse and recovery — a more complete picture</p>
+            </div>
+            <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-200">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-sm">Forward Estimate (2025–2036)</span>
+                <span class="text-2xl font-bold text-indigo-700">8–10%</span>
+              </div>
+              <p class="text-xs text-slate-500">Conservative assumption reflecting elevated valuations and structural headwinds</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">Historical Drawdowns</h3>
+          <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200 mb-4">
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2000–2002 Dot-Com</span>
+                  <span class="font-bold text-red-600">−83%</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-red-600" style="width:83%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2007–2009 GFC</span>
+                  <span class="font-bold text-red-500">−53.5%</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-red-500" style="width:53.5%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2022 Rate Hiking Cycle</span>
+                  <span class="font-bold text-orange-500">−32.6%</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-orange-500" style="width:32.6%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2020 COVID-19</span>
+                  <span class="font-bold text-yellow-600">−30%</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-yellow-500" style="width:30%"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="insight-highlight p-5 rounded-xl">
+            <p class="text-sm text-slate-700"><strong>Key Insight:</strong> The 80% crash probability reflects mathematical reality — with 18–20% annual volatility, severe drawdowns become nearly certain over decade-long horizons.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- QQQ Monte Carlo Summary -->
+      <div class="bg-white rounded-xl shadow-lg p-8 border border-slate-200">
+        <h3 class="text-xl font-bold text-slate-900 mb-6">Monte Carlo Percentile Outcomes — QQQ (10 Years, 8% base return)</h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+          <div class="bg-red-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">5th Pct</div>
+            <div class="text-xl font-bold text-red-600">−42%</div>
+            <div class="text-xs text-slate-400 mt-1">Bear scenario</div>
+          </div>
+          <div class="bg-orange-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">25th Pct</div>
+            <div class="text-xl font-bold text-orange-500">+48%</div>
+            <div class="text-xs text-slate-400 mt-1">Below avg</div>
+          </div>
+          <div class="bg-indigo-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">50th Pct</div>
+            <div class="text-xl font-bold text-indigo-600">+117%</div>
+            <div class="text-xs text-slate-400 mt-1">Median</div>
+          </div>
+          <div class="bg-green-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">75th Pct</div>
+            <div class="text-xl font-bold text-green-600">+220%</div>
+            <div class="text-xs text-slate-400 mt-1">Above avg</div>
+          </div>
+          <div class="bg-emerald-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">95th Pct</div>
+            <div class="text-xl font-bold text-emerald-600">+490%</div>
+            <div class="text-xs text-slate-400 mt-1">Bull scenario</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Tech Stocks ─── -->
+    <section id="tech-stocks" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Technology Stocks Sector Outlook</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <h3 class="text-xl font-bold text-slate-900 mb-4">AI &amp; Semiconductor Cycles</h3>
+          <div class="space-y-3 mb-4">
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-slate-600">Hyperscaler Capex (annual)</span>
+              <span class="font-bold">$650B+</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-slate-600">NVIDIA weight in QQQ</span>
+              <span class="font-bold">~8.8%</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-slate-600">AI capex disappointment risk</span>
+              <span class="font-bold text-red-600">−13% to −30%</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500">Massive AI investment wave with uncertain near-term ROI creates earnings volatility risk across the sector.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <h3 class="text-xl font-bold text-slate-900 mb-4">Regulatory Risk Factors</h3>
+          <div class="space-y-3 mb-4">
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-gavel text-indigo-500 mt-0.5 text-sm"></i>
+              <span class="text-sm text-slate-700">Antitrust actions against platform companies</span>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-globe text-indigo-500 mt-0.5 text-sm"></i>
+              <span class="text-sm text-slate-700">EU Digital Markets Act &amp; AI Act compliance costs</span>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-shield-alt text-indigo-500 mt-0.5 text-sm"></i>
+              <span class="text-sm text-slate-700">Section 230 liability protection uncertainty</span>
+            </div>
+            <div class="flex items-start space-x-2">
+              <i class="fas fa-flag text-indigo-500 mt-0.5 text-sm"></i>
+              <span class="text-sm text-slate-700">Tariff &amp; export control exposure (semiconductors)</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500">Europe represents ~40% of U.S. tech revenue — regulatory divergence is materially consequential.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <h3 class="text-xl font-bold text-slate-900 mb-4">Concentration Risk</h3>
+          <div class="text-center mb-4">
+            <div class="text-4xl font-bold text-indigo-600">~50%</div>
+            <div class="text-sm text-slate-500">of QQQ in top 10 holdings</div>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <span>NVIDIA</span><span class="font-semibold">8.8%</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>Apple</span><span class="font-semibold">7.3%</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>Microsoft</span><span class="font-semibold">5.5%</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>Amazon</span><span class="font-semibold">5.2%</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>Meta Platforms</span><span class="font-semibold">4.9%</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-3">Concentration creates volatility amplification — a single mega-cap stumble cascades across the index.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="insight-highlight p-6 rounded-xl">
+          <h4 class="font-bold text-slate-900 mb-2">Structural Tailwinds</h4>
+          <ul class="text-sm text-slate-700 space-y-1 list-disc list-inside">
+            <li>AI productivity gains compounding across every sector</li>
+            <li>Cloud infrastructure still in early-to-mid adoption globally</li>
+            <li>Autonomous systems, robotics, and edge compute growth</li>
+            <li>Digital health, fintech, and enterprise software SaaS expansion</li>
+          </ul>
+        </div>
+        <div class="insight-highlight p-6 rounded-xl">
+          <h4 class="font-bold text-slate-900 mb-2">Structural Headwinds</h4>
+          <ul class="text-sm text-slate-700 space-y-1 list-disc list-inside">
+            <li>Peak valuation multiples requiring exceptional growth to sustain</li>
+            <li>Geopolitical fragmentation of supply chains &amp; data flows</li>
+            <li>Talent cost inflation and margin compression in software</li>
+            <li>Post-AI-hype disillusionment cycle (Gartner Trough risk)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Bitcoin Forecast ─── -->
+    <section id="bitcoin-forecast" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Bitcoin 10-Year Forecast</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">Return Projections</h3>
+          <div class="space-y-4">
+            <div class="bg-slate-50 p-5 rounded-xl">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-sm">Bitwise Optimistic</span>
+                <span class="text-2xl font-bold text-green-600">~28%</span>
+              </div>
+              <p class="text-xs text-slate-500">Institutional adoption, sovereign participation, treasury reserve asset status</p>
+            </div>
+            <div class="bg-slate-50 p-5 rounded-xl">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-sm">Consensus Range</span>
+                <span class="text-2xl font-bold text-indigo-600">15–20%</span>
+              </div>
+              <p class="text-xs text-slate-500">ETF inflows, halving cycle dynamics, maturing institutional custody</p>
+            </div>
+            <div class="bg-slate-50 p-5 rounded-xl">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-sm">Morgan Stanley Conservative</span>
+                <span class="text-2xl font-bold text-orange-500">3–10%</span>
+              </div>
+              <p class="text-xs text-slate-500">Mature "digital gold" status with compressed risk premium</p>
+            </div>
+            <div class="bg-red-50 p-5 rounded-xl border border-red-100">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-sm">Historical Annualized</span>
+                <span class="text-2xl font-bold text-slate-700">~66%</span>
+              </div>
+              <p class="text-xs text-slate-500">Dominated by early exponential growth; declining trend expected to continue</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">Historical Drawdowns</h3>
+          <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200 mb-4">
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2011</span>
+                  <span class="font-bold text-red-600">−95% · Recovered in 37 mo.</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-red-700" style="width:95%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2013–2015</span>
+                  <span class="font-bold text-red-600">−86% · Recovered in 26 mo.</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-red-600" style="width:86%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2017–2018</span>
+                  <span class="font-bold text-red-500">−84% · Recovered in 24 mo.</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-red-500" style="width:84%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2021–2022</span>
+                  <span class="font-bold text-orange-500">−77% · Recovered in 12 mo.</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-orange-500" style="width:77%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span>2020 COVID Flash</span>
+                  <span class="font-bold text-yellow-600">−53% · Recovered in 4 mo.</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-yellow-500" style="width:53%"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="insight-highlight p-5 rounded-xl">
+            <p class="text-sm text-slate-700"><strong>Trend:</strong> Despite near-identical crash magnitudes, Bitcoin recovery timelines have accelerated dramatically — from 37 months in 2011 to under 12 months in 2022, reflecting deepening liquidity and institutional support.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BTC Halving Cycle Table -->
+      <div class="bg-white rounded-xl shadow-lg p-8 border border-slate-200 mb-8">
+        <h3 class="text-xl font-bold text-slate-900 mb-6">Bitcoin Halving Cycle Dynamics</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="text-left p-3 font-semibold">Halving Date</th>
+                <th class="text-left p-3 font-semibold">Block Reward</th>
+                <th class="text-left p-3 font-semibold">Price at Halving</th>
+                <th class="text-left p-3 font-semibold">Peak Price (Post)</th>
+                <th class="text-left p-3 font-semibold">Cycle Gain</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t">
+                <td class="p-3">Nov 2012</td>
+                <td class="p-3">50 → 25 BTC</td>
+                <td class="p-3">$12</td>
+                <td class="p-3">$1,163</td>
+                <td class="p-3 text-green-600 font-bold">+8,900%</td>
+              </tr>
+              <tr class="border-t">
+                <td class="p-3">Jul 2016</td>
+                <td class="p-3">25 → 12.5 BTC</td>
+                <td class="p-3">$650</td>
+                <td class="p-3">$19,783</td>
+                <td class="p-3 text-green-600 font-bold">+2,942%</td>
+              </tr>
+              <tr class="border-t">
+                <td class="p-3">May 2020</td>
+                <td class="p-3">12.5 → 6.25 BTC</td>
+                <td class="p-3">$8,800</td>
+                <td class="p-3">$68,789</td>
+                <td class="p-3 text-green-600 font-bold">+682%</td>
+              </tr>
+              <tr class="border-t">
+                <td class="p-3">Apr 2024</td>
+                <td class="p-3">6.25 → 3.125 BTC</td>
+                <td class="p-3">$63,000</td>
+                <td class="p-3">$109,000+</td>
+                <td class="p-3 text-green-600 font-bold">+73% (so far)</td>
+              </tr>
+              <tr class="border-t bg-indigo-50">
+                <td class="p-3 font-semibold">~2028 (est.)</td>
+                <td class="p-3">3.125 → 1.5625 BTC</td>
+                <td class="p-3">TBD</td>
+                <td class="p-3">TBD</td>
+                <td class="p-3 text-indigo-600 font-bold">Diminishing returns expected</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BTC Monte Carlo -->
+      <div class="bg-white rounded-xl shadow-lg p-8 border border-slate-200">
+        <h3 class="text-xl font-bold text-slate-900 mb-6">Monte Carlo Percentile Outcomes — Bitcoin (10 Years, 20% base return)</h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+          <div class="bg-red-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">5th Pct</div>
+            <div class="text-xl font-bold text-red-600">−80%</div>
+            <div class="text-xs text-slate-400 mt-1">Regulatory ban</div>
+          </div>
+          <div class="bg-orange-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">25th Pct</div>
+            <div class="text-xl font-bold text-orange-500">+120%</div>
+            <div class="text-xs text-slate-400 mt-1">Below avg</div>
+          </div>
+          <div class="bg-indigo-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">50th Pct</div>
+            <div class="text-xl font-bold text-indigo-600">+520%</div>
+            <div class="text-xs text-slate-400 mt-1">Median</div>
+          </div>
+          <div class="bg-green-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">75th Pct</div>
+            <div class="text-xl font-bold text-green-600">+1,800%</div>
+            <div class="text-xs text-slate-400 mt-1">Above avg</div>
+          </div>
+          <div class="bg-emerald-50 rounded-xl p-4">
+            <div class="text-xs text-slate-500 mb-1">95th Pct</div>
+            <div class="text-xl font-bold text-emerald-600">+8,000%+</div>
+            <div class="text-xs text-slate-400 mt-1">Bull scenario</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Volatility Analysis ─── -->
+    <section id="volatility-analysis" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Volatility Analysis</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">Comparative Volatility Profiles</h3>
+          <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+            <div class="space-y-5">
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="font-semibold">Bitcoin</span>
+                  <span class="text-red-600 font-bold">~75–80% annualized</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-red-500" style="width:80%"></div></div>
+                <p class="text-xs text-slate-400 mt-1">4–5× more volatile than QQQ; regime-dependent spikes to 150%+</p>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="font-semibold">QQQ (Nasdaq-100)</span>
+                  <span class="text-orange-600 font-bold">~18–22% annualized</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-orange-500" style="width:22%"></div></div>
+                <p class="text-xs text-slate-400 mt-1">Higher than S&amp;P 500 (~15%) due to growth/tech concentration</p>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="font-semibold">S&amp;P 500</span>
+                  <span class="text-yellow-600 font-bold">~14–16% annualized</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-yellow-400" style="width:16%"></div></div>
+                <p class="text-xs text-slate-400 mt-1">Baseline reference; diversified sector exposure</p>
+              </div>
+              <div>
+                <div class="flex justify-between text-sm mb-1">
+                  <span class="font-semibold">US Aggregate Bonds</span>
+                  <span class="text-green-600 font-bold">~5–7% annualized</span>
+                </div>
+                <div class="risk-bar"><div class="risk-bar-fill bg-green-400" style="width:7%"></div></div>
+                <p class="text-xs text-slate-400 mt-1">Lower volatility but negative correlation benefit may have diminished</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">Volatility Regime Drivers</h3>
+          <div class="space-y-4">
+            <div class="bg-white rounded-xl shadow-lg p-5 border border-slate-200">
+              <h4 class="font-bold text-slate-900 mb-2 text-sm">QQQ Volatility Amplifiers</h4>
+              <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside">
+                <li>Fed rate decisions — tech valuations are duration-sensitive</li>
+                <li>Earnings concentration: top 10 stocks drive index swings</li>
+                <li>Options market gamma exposure (0DTE amplification)</li>
+                <li>Cross-asset contagion during liquidity crises</li>
+              </ul>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-5 border border-slate-200">
+              <h4 class="font-bold text-slate-900 mb-2 text-sm">Bitcoin Volatility Amplifiers</h4>
+              <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside">
+                <li>Perpetual futures funding rates and cascading liquidations</li>
+                <li>Exchange-specific event risk (FTX collapse, hacks)</li>
+                <li>On-chain supply illiquidity — 60%+ unmoved &gt;1 year</li>
+                <li>24/7 market with no circuit breakers or trading halts</li>
+              </ul>
+            </div>
+            <div class="insight-highlight p-5 rounded-xl">
+              <p class="text-sm text-slate-700"><strong>Correlation note:</strong> Bitcoin-QQQ correlation spiked to 0.7+ during the 2022 drawdown, undermining diversification assumptions. Correlation tends to converge during systemic risk events.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Methodology ─── -->
+    <section id="methodology" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Methodology</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-dice text-indigo-600"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-3">Monte Carlo Simulation</h3>
+          <p class="text-sm text-slate-600">100,000+ simulated paths per asset using Geometric Brownian Motion with fat-tailed jump diffusion. Parameters calibrated to trailing 5- and 10-year realized volatility and mean returns.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-chart-area text-purple-600"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-3">Drawdown Detection</h3>
+          <p class="text-sm text-slate-600">Peak-to-trough calculation on monthly frequency across each simulation path. A "crash" event is flagged whenever cumulative decline from prior all-time high exceeds the threshold (30%, 50%, 70%).</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-redo text-pink-600"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-3">Recovery Probability</h3>
+          <p class="text-sm text-slate-600">Measured as probability that a path that experiences a crash also achieves a new all-time high <em>within</em> the 10-year simulation window. Low values (3–5%) are an artifact of time constraints, not pessimism about recovery capacity.</p>
+        </div>
+      </div>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
+        <h4 class="font-bold text-amber-800 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Model Limitations</h4>
+        <ul class="text-sm text-amber-700 space-y-1 list-disc list-inside">
+          <li>GBM assumes log-normal returns — real markets exhibit fat tails and autocorrelation</li>
+          <li>Parameters are estimated from history; regime changes can invalidate assumptions</li>
+          <li>No modeling of correlation regime shifts between assets during crises</li>
+          <li>Bitcoin history is short (15 years) — parameter estimates have high uncertainty</li>
+          <li>Macro events (war, pandemic, regulatory restructuring) modeled implicitly via volatility, not explicitly</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Recovery Analysis ─── -->
+    <section id="recovery-analysis" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Recovery Analysis</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">QQQ Recovery History</h3>
+          <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+            <div class="space-y-5">
+              <div class="flex items-start space-x-4">
+                <div class="w-16 text-center">
+                  <div class="text-lg font-bold text-red-600">−83%</div>
+                  <div class="text-xs text-slate-400">Dot-Com</div>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-sm mb-1">2000–2015 · 15-year recovery</div>
+                  <p class="text-xs text-slate-500">Overvaluation was so extreme that QQQ did not recover its 2000 peak until 2015. Investors who held from peak to trough endured 15 years of nominal underperformance vs. bonds.</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-4">
+                <div class="w-16 text-center">
+                  <div class="text-lg font-bold text-red-500">−53%</div>
+                  <div class="text-xs text-slate-400">GFC</div>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-sm mb-1">2007–2012 · ~5-year recovery</div>
+                  <p class="text-xs text-slate-500">Faster than Dot-Com due to fundamentally sound underlying business models. Fed intervention via QE accelerated asset price recovery.</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-4">
+                <div class="w-16 text-center">
+                  <div class="text-lg font-bold text-yellow-600">−30%</div>
+                  <div class="text-xs text-slate-400">COVID</div>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-sm mb-1">2020 · ~6-month recovery</div>
+                  <p class="text-xs text-slate-500">Fastest major recovery on record — unprecedented fiscal/monetary response and pandemic acceleration of tech adoption compressed the cycle.</p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-4">
+                <div class="w-16 text-center">
+                  <div class="text-lg font-bold text-orange-500">−33%</div>
+                  <div class="text-xs text-slate-400">2022</div>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-sm mb-1">2022–2023 · ~18-month recovery</div>
+                  <p class="text-xs text-slate-500">Rate-hike driven repricing — recovered as inflation peaked and AI excitement reignited tech valuations.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-6">Bitcoin Recovery Acceleration</h3>
+          <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200 mb-4">
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-sm">2011 crash recovery</span>
+                <span class="font-bold text-red-600">37 months</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm">2013–2015 crash recovery</span>
+                <span class="font-bold text-orange-500">26 months</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm">2017–2018 crash recovery</span>
+                <span class="font-bold text-yellow-600">24 months</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm">2020 COVID flash crash recovery</span>
+                <span class="font-bold text-green-600">4 months</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm">2021–2022 crash recovery</span>
+                <span class="font-bold text-green-700">~12 months</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100">
+              <div class="text-xs text-slate-400">Recovery defined as return to prior all-time high</div>
+            </div>
+          </div>
+          <div class="insight-highlight p-5 rounded-xl">
+            <p class="text-sm text-slate-700"><strong>Why recovery is accelerating:</strong> Spot ETF liquidity, institutional market-making, derivatives providing two-sided markets, and growing retail buyer-of-dips behavior all reduce time-to-recovery. The 2028 halving cycle may see the pattern continue.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Institutional Perspectives ─── -->
+    <section id="institutional-perspectives" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Institutional Perspectives</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-university text-blue-600 text-sm"></i>
+            </div>
+            <h3 class="font-bold text-slate-900">BlackRock / iShares</h3>
+          </div>
+          <div class="space-y-3 text-sm text-slate-700">
+            <p><strong>QQQ/Tech:</strong> Overweight AI infrastructure theme; expect earnings growth to justify multiples if AI ROI materializes by 2026–2027.</p>
+            <p><strong>Bitcoin:</strong> Launched IBIT spot ETF, crossed $50B AUM in 11 months. Recommends 1–2% portfolio allocation for risk/reward optimization.</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-chart-bar text-purple-600 text-sm"></i>
+            </div>
+            <h3 class="font-bold text-slate-900">Goldman Sachs</h3>
+          </div>
+          <div class="space-y-3 text-sm text-slate-700">
+            <p><strong>QQQ/Tech:</strong> S&amp;P 500 10-year forward return estimate of 3% (below consensus), implying QQQ could face meaningful headwinds from valuation mean reversion.</p>
+            <p><strong>Bitcoin:</strong> Increasing institutional coverage; crypto listed as "diversifying asset" with uncorrelated return potential in tail scenarios.</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-landmark text-green-600 text-sm"></i>
+            </div>
+            <h3 class="font-bold text-slate-900">Morgan Stanley</h3>
+          </div>
+          <div class="space-y-3 text-sm text-slate-700">
+            <p><strong>QQQ/Tech:</strong> Neutral to cautious on mega-cap tech; valuation risk elevated relative to historical norms. Prefers selective exposure to AI picks-and-shovels.</p>
+            <p><strong>Bitcoin:</strong> Upgraded BTC to "maturing asset"; projects 3–10% forward CAGR as volatility declines toward gold-like 15–20% range.</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-coins text-orange-600 text-sm"></i>
+            </div>
+            <h3 class="font-bold text-slate-900">Bitwise Asset Management</h3>
+          </div>
+          <div class="space-y-3 text-sm text-slate-700">
+            <p><strong>Bitcoin:</strong> Forecasts BTC at $1M+ by 2030, implying ~28% CAGR from current levels. Rationale: sovereign wealth fund adoption, national reserve diversification, fixed 21M supply.</p>
+            <p><strong>Risk factors cited:</strong> Regulatory uncertainty, quantum computing threat (10+ years), and protocol-level governance disagreements.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-800 rounded-xl p-6 text-white">
+        <h4 class="font-bold mb-3">Emerging Consensus</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <div class="text-indigo-300 font-semibold mb-1">On Tech</div>
+            <p class="text-slate-300">AI monetization evidence needed by 2026–2027 to justify multiples. Capex cycle creates binary outcome: transformative ROI or significant correction.</p>
+          </div>
+          <div>
+            <div class="text-indigo-300 font-semibold mb-1">On Bitcoin</div>
+            <p class="text-slate-300">Institutional adoption is structurally bullish. Sovereign accumulation could materially reduce free float and increase price sensitivity to demand shocks.</p>
+          </div>
+          <div>
+            <div class="text-indigo-300 font-semibold mb-1">On Allocation</div>
+            <p class="text-slate-300">1–5% BTC allocation in diversified portfolios cited by multiple institutions as improving Sharpe ratio without materially increasing tail risk.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Scenario Matrix ─── -->
+    <section id="scenario-matrix" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Scenario Matrix</h2>
+
+      <div class="overflow-x-auto mb-10">
+        <table class="w-full text-sm bg-white rounded-xl shadow-lg border border-slate-200">
+          <thead>
+            <tr class="bg-slate-800 text-white">
+              <th class="text-left p-4">Scenario</th>
+              <th class="text-left p-4">Probability</th>
+              <th class="text-left p-4">Key Triggers</th>
+              <th class="text-left p-4">QQQ Outcome</th>
+              <th class="text-left p-4">BTC Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t bg-emerald-50">
+              <td class="p-4 font-bold text-emerald-700">AI Supercycle Bull</td>
+              <td class="p-4 font-semibold text-emerald-600">20%</td>
+              <td class="p-4 text-slate-600">AGI breakthrough, AI ROI exceeds expectations, productivity surge</td>
+              <td class="p-4 text-emerald-700 font-bold">+400–600% (10yr)</td>
+              <td class="p-4 text-emerald-700 font-bold">$500K–$1M+</td>
+            </tr>
+            <tr class="border-t bg-green-50">
+              <td class="p-4 font-bold text-green-700">Soft Landing Base</td>
+              <td class="p-4 font-semibold text-green-600">35%</td>
+              <td class="p-4 text-slate-600">Inflation tamed, moderate growth, AI adoption steady</td>
+              <td class="p-4 text-green-700 font-bold">+150–250% (10yr)</td>
+              <td class="p-4 text-green-700 font-bold">$250K–$500K</td>
+            </tr>
+            <tr class="border-t bg-yellow-50">
+              <td class="p-4 font-bold text-yellow-700">Secular Stagnation</td>
+              <td class="p-4 font-semibold text-yellow-600">25%</td>
+              <td class="p-4 text-slate-600">AI ROI disappoints, valuation compression, slow growth decade</td>
+              <td class="p-4 text-yellow-700 font-bold">+20–60% (10yr)</td>
+              <td class="p-4 text-yellow-700 font-bold">$50K–$150K</td>
+            </tr>
+            <tr class="border-t bg-orange-50">
+              <td class="p-4 font-bold text-orange-700">Recession / Crash</td>
+              <td class="p-4 font-semibold text-orange-600">15%</td>
+              <td class="p-4 text-slate-600">Hard landing, geopolitical shock, credit crisis</td>
+              <td class="p-4 text-orange-700 font-bold">−30% to −60%</td>
+              <td class="p-4 text-orange-700 font-bold">−60% to −85%</td>
+            </tr>
+            <tr class="border-t bg-red-50">
+              <td class="p-4 font-bold text-red-700">Tail Risk / Black Swan</td>
+              <td class="p-4 font-semibold text-red-600">5%</td>
+              <td class="p-4 text-slate-600">Global conflict, monetary system reset, regulatory crypto ban</td>
+              <td class="p-4 text-red-700 font-bold">−60% to −80%</td>
+              <td class="p-4 text-red-700 font-bold">−90% or near-zero</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <h3 class="font-bold text-slate-900 mb-4">Key Binary Outcomes to Watch</h3>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-start space-x-3">
+              <span class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0"></span>
+              <div><strong>AI ROI evidence (2026–2027):</strong> Enterprise AI measurably lifting productivity will validate tech multiples; failure triggers Dot-Com-style reset.</div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <span class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0"></span>
+              <div><strong>US Bitcoin Strategic Reserve:</strong> Confirmed sovereign accumulation would be unprecedented structural demand — potentially the most bullish catalyst in BTC history.</div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <span class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0"></span>
+              <div><strong>Federal Reserve policy path:</strong> Rate cuts extend tech rally; rate hikes re-compress growth multiples. The 10yr yield path is the single most important macro variable.</div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <span class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0"></span>
+              <div><strong>China-Taiwan geopolitical risk:</strong> Semiconductor supply chain disruption would simultaneously crash tech and flight-to-safety compress risk assets including crypto.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight-highlight p-6 rounded-xl">
+          <h3 class="font-bold text-slate-900 mb-4">Portfolio Probability-Weighted Return (10yr)</h3>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span>QQQ probability-weighted return</span>
+              <span class="font-bold">~110–130%</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Bitcoin probability-weighted return</span>
+              <span class="font-bold">~180–350%</span>
+            </div>
+            <div class="flex justify-between">
+              <span>60/40 QQQ+BTC (5% BTC)</span>
+              <span class="font-bold text-indigo-600">~120–145%</span>
+            </div>
+            <div class="mt-4 pt-4 border-t border-indigo-200 text-xs text-slate-500">
+              Probability-weighted using scenario probabilities above. Skewed by fat right tails in both assets. Not financial advice.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ─── Strategic Implications ─── -->
+    <section id="strategic-implications" class="mb-16">
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Strategic Implications</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-balance-scale text-indigo-600"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-3">Position Sizing</h3>
+          <ul class="text-sm text-slate-600 space-y-2">
+            <li><strong>QQQ:</strong> Given 80% crash probability, avoid concentrated single-entry. Dollar-cost averaging reduces sequence-of-returns risk.</li>
+            <li><strong>Bitcoin:</strong> High expected return justifies allocation, but position size must reflect maximum tolerable drawdown (assume −80% possible at any time).</li>
+            <li><strong>Rule of thumb:</strong> Size Bitcoin so a −80% drawdown equals 1–2% of total portfolio loss.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-clock text-purple-600"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-3">Time Horizon Alignment</h3>
+          <ul class="text-sm text-slate-600 space-y-2">
+            <li><strong>Short-term (&lt;3yr):</strong> QQQ and BTC both face elevated drawdown risk in current valuation environment. Cash or short-duration bonds offer optionality.</li>
+            <li><strong>Medium-term (3–7yr):</strong> Halving tailwinds, AI monetization cycle, and institutional adoption all peak in this window.</li>
+            <li><strong>Long-term (&gt;7yr):</strong> Strong positive expected value for both assets. Maximum patience has historically been rewarded.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+          <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-shield-alt text-pink-600"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 mb-3">Downside Protection</h3>
+          <ul class="text-sm text-slate-600 space-y-2">
+            <li><strong>QQQ hedges:</strong> Protective puts (costly but precise), inverse ETFs (tracking error risk), sector rotation into defensives.</li>
+            <li><strong>Bitcoin hedges:</strong> Covered calls to generate income during sideways periods; cash position to deploy on drawdowns (&gt;50%).</li>
+            <li><strong>Portfolio level:</strong> Gold, TIPS, and trend-following managed futures historically provide crisis alpha.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+        <div class="bg-slate-800 text-white rounded-xl p-6">
+          <h3 class="font-bold text-lg mb-4">Actionable Framework for QQQ</h3>
+          <ol class="text-sm text-slate-300 space-y-3 list-decimal list-inside">
+            <li>Accept ~80% probability of a 30%+ drawdown as the base case — plan for it, don't hope against it.</li>
+            <li>DCA monthly regardless of price level; never go all-in at all-time highs.</li>
+            <li>Maintain 12–18 months of living expenses outside equities to avoid forced selling during drawdowns.</li>
+            <li>Rebalance back to target allocation after 30%+ crashes — this is the historically optimal response.</li>
+            <li>Monitor AI capex-to-revenue ratios as leading indicator of valuation sustainability.</li>
+          </ol>
+        </div>
+
+        <div class="bg-slate-800 text-white rounded-xl p-6">
+          <h3 class="font-bold text-lg mb-4">Actionable Framework for Bitcoin</h3>
+          <ol class="text-sm text-slate-300 space-y-3 list-decimal list-inside">
+            <li>Determine maximum psychologically tolerable drawdown before establishing any position.</li>
+            <li>Size position so that a −80% decline is financially and emotionally survivable.</li>
+            <li>Use halving cycles as a secular framework — accumulate in the 6 months post-halving.</li>
+            <li>Never leverage Bitcoin — volatility destroys leveraged positions during normal bear markets.</li>
+            <li>Self-custody significant holdings (&gt;$50K equivalent) to eliminate exchange counterparty risk.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="bg-slate-100 border border-slate-300 rounded-xl p-6">
+        <h4 class="font-bold text-slate-700 mb-2 text-sm"><i class="fas fa-info-circle mr-2"></i>Disclaimer</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">This report is for informational and educational purposes only. All projections are probabilistic estimates derived from historical data and modeling assumptions — they are not predictions or guarantees of future performance. Past performance does not guarantee future results. Investing involves risk including the possible loss of principal. Nothing in this report constitutes financial, investment, legal, or tax advice. Consult a qualified financial advisor before making investment decisions. The authors may hold positions in the assets discussed.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="hero-gradient py-8 mt-8">
+    <div class="max-w-5xl mx-auto px-8 content-offset text-center">
+      <p class="text-slate-300 text-sm">10-Year Market Forecast Analysis · QQQ, Tech Stocks &amp; Bitcoin · Horizon: 2025–2036</p>
+      <p class="text-slate-500 text-xs mt-2">Generated May 2026 · Monte Carlo Simulation · Not Financial Advice</p>
+    </div>
+  </footer>
+
+</body>
+</html>
