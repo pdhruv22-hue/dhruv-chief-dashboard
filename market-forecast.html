@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>10-Year Market Forecast: QQQ, Tech Stocks &amp; Bitcoin Outlook</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
+    .font-serif { font-family: 'Playfair Display', Georgia, serif; }
     .font-inter { font-family: 'Inter', sans-serif; }
     .hero-gradient { background: linear-gradient(135deg, #1a1c2e 0%, #2d3258 50%, #3d426e 100%); }
     .accent-gradient { background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); }
     .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-    .toc-fixed { position: fixed; left: 2rem; top: 50%; transform: translateY(-50%); width: 260px; z-index: 40; }
-    .content-offset { margin-left: 300px; }
+    .toc-fixed { position: fixed; left: 2rem; top: 50%; transform: translateY(-50%); width: 240px; z-index: 40; max-height: 85vh; overflow-y: auto; }
+    .content-offset { margin-left: 290px; }
     @media (max-width: 1280px) {
       .toc-fixed { display: none; }
       .content-offset { margin-left: 0; }
@@ -36,6 +38,13 @@
       height: 100%;
       border-radius: 4px;
     }
+    .chart-container { position: relative; height: 320px; }
+    /* TOC active link */
+    .toc-link { display: flex; align-items: center; padding: 4px 0; transition: all 0.2s; }
+    .toc-link::before { content:''; display:inline-block; width:3px; height:0; background:#6366f1; border-radius:2px; margin-right:8px; transition: height 0.2s; flex-shrink:0; }
+    .toc-link.active { color: #6366f1; font-weight: 600; }
+    .toc-link.active::before { height: 14px; }
+    html { scroll-behavior: smooth; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-inter overflow-x-hidden">
@@ -44,16 +53,16 @@
   <nav class="toc-fixed bg-white/90 rounded-xl shadow-lg p-5 border border-slate-200" style="backdrop-filter:blur(8px)">
     <h3 class="text-base font-bold text-slate-900 mb-4">Contents</h3>
     <ul class="space-y-2 text-sm">
-      <li><a href="#executive-summary" class="text-slate-600 hover:text-indigo-600 transition-colors">Executive Summary</a></li>
-      <li><a href="#qqq-forecast" class="text-slate-600 hover:text-indigo-600 transition-colors">QQQ Forecast</a></li>
-      <li><a href="#tech-stocks" class="text-slate-600 hover:text-indigo-600 transition-colors">Tech Stocks Outlook</a></li>
-      <li><a href="#bitcoin-forecast" class="text-slate-600 hover:text-indigo-600 transition-colors">Bitcoin Forecast</a></li>
-      <li><a href="#volatility-analysis" class="text-slate-600 hover:text-indigo-600 transition-colors">Volatility Analysis</a></li>
-      <li><a href="#methodology" class="text-slate-600 hover:text-indigo-600 transition-colors">Methodology</a></li>
-      <li><a href="#recovery-analysis" class="text-slate-600 hover:text-indigo-600 transition-colors">Recovery Analysis</a></li>
-      <li><a href="#institutional-perspectives" class="text-slate-600 hover:text-indigo-600 transition-colors">Institutional Views</a></li>
-      <li><a href="#scenario-matrix" class="text-slate-600 hover:text-indigo-600 transition-colors">Scenario Matrix</a></li>
-      <li><a href="#strategic-implications" class="text-slate-600 hover:text-indigo-600 transition-colors">Strategic Implications</a></li>
+      <li><a href="#executive-summary" class="toc-link text-slate-600 hover:text-indigo-600">Executive Summary</a></li>
+      <li><a href="#qqq-forecast" class="toc-link text-slate-600 hover:text-indigo-600">QQQ Forecast</a></li>
+      <li><a href="#tech-stocks" class="toc-link text-slate-600 hover:text-indigo-600">Tech Stocks Outlook</a></li>
+      <li><a href="#bitcoin-forecast" class="toc-link text-slate-600 hover:text-indigo-600">Bitcoin Forecast</a></li>
+      <li><a href="#volatility-analysis" class="toc-link text-slate-600 hover:text-indigo-600">Volatility Analysis</a></li>
+      <li><a href="#methodology" class="toc-link text-slate-600 hover:text-indigo-600">Methodology</a></li>
+      <li><a href="#recovery-analysis" class="toc-link text-slate-600 hover:text-indigo-600">Recovery Analysis</a></li>
+      <li><a href="#institutional-perspectives" class="toc-link text-slate-600 hover:text-indigo-600">Institutional Views</a></li>
+      <li><a href="#scenario-matrix" class="toc-link text-slate-600 hover:text-indigo-600">Scenario Matrix</a></li>
+      <li><a href="#strategic-implications" class="toc-link text-slate-600 hover:text-indigo-600">Strategic Implications</a></li>
     </ul>
   </nav>
 
@@ -63,7 +72,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
           <div class="text-indigo-300 text-sm font-semibold uppercase tracking-widest mb-4">10-Year Probabilistic Analysis · 2025–2036</div>
-          <h1 class="text-5xl lg:text-6xl font-bold text-white mb-6 text-shadow leading-tight italic">
+          <h1 class="font-serif text-5xl lg:text-6xl font-bold text-white mb-6 text-shadow leading-tight italic">
             The Next Decade:<br/>
             <span class="text-indigo-300">Market Forecasts</span><br/>
             &amp; Digital Evolution
@@ -103,7 +112,7 @@
 
     <!-- ─── Executive Summary ─── -->
     <section id="executive-summary" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Executive Summary</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Executive Summary</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <div class="insight-highlight p-6 rounded-xl">
@@ -161,7 +170,7 @@
 
     <!-- ─── QQQ Forecast ─── -->
     <section id="qqq-forecast" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">QQQ (Nasdaq-100) 10-Year Forecast</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">QQQ (Nasdaq-100) 10-Year Forecast</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
         <div>
@@ -262,13 +271,20 @@
           </div>
         </div>
       </div>
+
+      <!-- QQQ Projected Growth Chart -->
+      <div class="bg-white rounded-xl shadow-lg p-8 border border-slate-200 mt-8">
+        <h3 class="text-xl font-bold text-slate-900 mb-2">QQQ Projected Growth — Scenario Bands (2025–2036)</h3>
+        <p class="text-xs text-slate-400 mb-4">Starting value $100 · Bear (5th pct), Base (50th), Bull (95th)</p>
+        <div class="chart-container"><canvas id="qqqChart"></canvas></div>
+      </div>
     </section>
 
     <div class="section-divider"></div>
 
     <!-- ─── Tech Stocks ─── -->
     <section id="tech-stocks" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Technology Stocks Sector Outlook</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Technology Stocks Sector Outlook</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
@@ -366,7 +382,7 @@
 
     <!-- ─── Bitcoin Forecast ─── -->
     <section id="bitcoin-forecast" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Bitcoin 10-Year Forecast</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Bitcoin 10-Year Forecast</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
         <div>
@@ -536,13 +552,20 @@
           </div>
         </div>
       </div>
+
+      <!-- Bitcoin Halving Price Chart -->
+      <div class="bg-white rounded-xl shadow-lg p-8 border border-slate-200 mt-8">
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Bitcoin: Drawdown Depth &amp; Recovery Duration by Cycle</h3>
+        <p class="text-xs text-slate-400 mb-4">Bar = max drawdown (left axis) · Line = months to recover (right axis)</p>
+        <div class="chart-container"><canvas id="btcDrawdownChart"></canvas></div>
+      </div>
     </section>
 
     <div class="section-divider"></div>
 
     <!-- ─── Volatility Analysis ─── -->
     <section id="volatility-analysis" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Volatility Analysis</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Volatility Analysis</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">
         <div>
@@ -618,7 +641,7 @@
 
     <!-- ─── Methodology ─── -->
     <section id="methodology" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Methodology</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Methodology</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
@@ -662,7 +685,7 @@
 
     <!-- ─── Recovery Analysis ─── -->
     <section id="recovery-analysis" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Recovery Analysis</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Recovery Analysis</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">
         <div>
@@ -753,7 +776,7 @@
 
     <!-- ─── Institutional Perspectives ─── -->
     <section id="institutional-perspectives" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Institutional Perspectives</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Institutional Perspectives</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
         <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
@@ -832,7 +855,7 @@
 
     <!-- ─── Scenario Matrix ─── -->
     <section id="scenario-matrix" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Scenario Matrix</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Scenario Matrix</h2>
 
       <div class="overflow-x-auto mb-10">
         <table class="w-full text-sm bg-white rounded-xl shadow-lg border border-slate-200">
@@ -929,13 +952,20 @@
           </div>
         </div>
       </div>
+
+      <!-- Scenario Probability Chart -->
+      <div class="bg-white rounded-xl shadow-lg p-8 border border-slate-200 mt-8">
+        <h3 class="text-xl font-bold text-slate-900 mb-2">Scenario Probability &amp; 10-Year QQQ/BTC Return Ranges</h3>
+        <p class="text-xs text-slate-400 mb-4">Bubble size = scenario probability · X = QQQ midpoint return · Y = BTC midpoint return</p>
+        <div class="chart-container"><canvas id="scenarioChart"></canvas></div>
+      </div>
     </section>
 
     <div class="section-divider"></div>
 
     <!-- ─── Strategic Implications ─── -->
     <section id="strategic-implications" class="mb-16">
-      <h2 class="text-4xl font-bold text-slate-900 mb-8">Strategic Implications</h2>
+      <h2 class="font-serif text-4xl font-bold text-slate-900 mb-8">Strategic Implications</h2>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
@@ -1016,5 +1046,232 @@
     </div>
   </footer>
 
+
+<script>
+// ── Shared chart defaults ──────────────────────────────────────────────────
+Chart.defaults.font.family = 'Inter, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#64748b';
+
+// ── QQQ Projected Growth Chart ────────────────────────────────────────────
+(function() {
+  const years = [2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036];
+  // Bear: −4.5% CAGR | Base: 8% CAGR | Bull: 20% CAGR from 100
+  function project(cagr) {
+    return years.map((_, i) => +(100 * Math.pow(1 + cagr, i)).toFixed(1));
+  }
+  const bear = project(-0.045);
+  const base = project(0.08);
+  const bull = project(0.20);
+
+  new Chart(document.getElementById('qqqChart'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'Bull (95th pct)',
+          data: bull,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16,185,129,0.08)',
+          fill: '+1',
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 3
+        },
+        {
+          label: 'Base (50th pct)',
+          data: base,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.08)',
+          fill: '+1',
+          tension: 0.4,
+          borderWidth: 2.5,
+          pointRadius: 3
+        },
+        {
+          label: 'Bear (5th pct)',
+          data: bear,
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239,68,68,0.06)',
+          fill: 'origin',
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y}`
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: { display: true, text: 'Portfolio value ($, start = $100)' },
+          grid: { color: 'rgba(0,0,0,0.04)' }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+})();
+
+// ── Bitcoin Drawdown / Recovery Chart ─────────────────────────────────────
+(function() {
+  const cycles = ['2011','2013-15','2017-18','2020 Flash','2021-22'];
+  const drawdowns = [95, 86, 84, 53, 77];
+  const recovery  = [37, 26, 24, 4, 12];
+
+  new Chart(document.getElementById('btcDrawdownChart'), {
+    type: 'bar',
+    data: {
+      labels: cycles,
+      datasets: [
+        {
+          label: 'Max Drawdown (%)',
+          data: drawdowns,
+          backgroundColor: [
+            'rgba(239,68,68,0.75)',
+            'rgba(239,68,68,0.65)',
+            'rgba(249,115,22,0.7)',
+            'rgba(234,179,8,0.7)',
+            'rgba(249,115,22,0.6)'
+          ],
+          borderRadius: 6,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Recovery (months)',
+          data: recovery,
+          type: 'line',
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99,102,241,0.15)',
+          borderWidth: 2.5,
+          pointRadius: 5,
+          pointBackgroundColor: '#6366f1',
+          tension: 0.3,
+          fill: false,
+          yAxisID: 'y2'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.dataset.yAxisID === 'y'
+              ? ` Drawdown: −${ctx.parsed.y}%`
+              : ` Recovery: ${ctx.parsed.y} months`
+          }
+        }
+      },
+      scales: {
+        y: {
+          position: 'left',
+          title: { display: true, text: 'Max Drawdown (%)' },
+          max: 100,
+          grid: { color: 'rgba(0,0,0,0.04)' }
+        },
+        y2: {
+          position: 'right',
+          title: { display: true, text: 'Months to recover' },
+          max: 45,
+          grid: { display: false }
+        },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ── Scenario Bubble Chart ──────────────────────────────────────────────────
+(function() {
+  // x = QQQ midpoint (%), y = BTC midpoint (%), r = bubble radius ∝ probability
+  const scenarios = [
+    { label: 'AI Supercycle Bull', x: 500, y: 850,   prob: 20, color: 'rgba(16,185,129,0.7)' },
+    { label: 'Soft Landing Base',  x: 200, y: 375,   prob: 35, color: 'rgba(99,102,241,0.7)' },
+    { label: 'Secular Stagnation', x: 40,  y: 100,   prob: 25, color: 'rgba(234,179,8,0.7)'  },
+    { label: 'Recession / Crash',  x: -45, y: -72,   prob: 15, color: 'rgba(249,115,22,0.7)' },
+    { label: 'Black Swan',         x: -70, y: -90,   prob:  5, color: 'rgba(239,68,68,0.7)'  }
+  ];
+
+  new Chart(document.getElementById('scenarioChart'), {
+    type: 'bubble',
+    data: {
+      datasets: scenarios.map(s => ({
+        label: s.label,
+        data: [{ x: s.x, y: s.y, r: s.prob * 0.9 }],
+        backgroundColor: s.color,
+        borderColor: s.color.replace('0.7', '1'),
+        borderWidth: 1.5
+      }))
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const s = scenarios[ctx.datasetIndex];
+              return [
+                ` ${s.label}`,
+                ` QQQ: ${s.x > 0 ? '+' : ''}${s.x}%`,
+                ` BTC:  ${s.y > 0 ? '+' : ''}${s.y}%`,
+                ` Probability: ${s.prob}%`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'QQQ 10-yr return (%)' },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        y: {
+          title: { display: true, text: 'BTC 10-yr return (%)' },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        }
+      }
+    }
+  });
+})();
+
+// ── TOC Scroll Spy ────────────────────────────────────────────────────────
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.toc-link');
+
+  function setActive() {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    links.forEach(a => {
+      const href = a.getAttribute('href');
+      a.classList.toggle('active', href === '#' + current);
+    });
+  }
+
+  window.addEventListener('scroll', setActive, { passive: true });
+  setActive();
+})();
+</script>
 </body>
 </html>
