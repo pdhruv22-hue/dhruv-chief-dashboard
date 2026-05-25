@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signal Intelligence Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Data files -->
+  <script src="live-prices-data.js"></script>
+  <script src="market-pulse-data.js"></script>
+  <script src="news-data.js"></script>
+  <script src="stocks-analyst-data.js"></script>
+  <script src="stocks-ai-rec-data.js"></script>
+  <script src="stocks-wsb-data.js"></script>
+  <script src="stocks-x-grok-data.js"></script>
+  <script src="prediction-data.js"></script>
+  <script src="portfolio-data.js"></script>
+
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #030712; padding-top: 36px; color: #f1f5f9; }
+
+    /* Top nav */
+    #topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      height: 36px; background: rgba(15, 23, 42, 0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(99,102,241,0.2);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+
+    /* Ticker chips row */
+    .chips-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+    .chips-row::-webkit-scrollbar { height: 3px; }
+
+    /* Gradient borders */
+    .border-indigo-glow { box-shadow: 0 0 0 1px rgba(99,102,241,0.4), 0 4px 24px rgba(99,102,241,0.1); }
+    .border-emerald-glow { box-shadow: 0 0 0 1px rgba(16,185,129,0.4), 0 4px 24px rgba(16,185,129,0.08); }
+
+    /* Cards */
+    .card { background: #111827; border-radius: 12px; border: 1px solid #1f2937; }
+    .card-dark { background: #0d1117; border-radius: 12px; border: 1px solid #1f2937; }
+
+    /* Price number */
+    .price-xl { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+    .price-lg { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+
+    /* Sentiment badge */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 9999px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em;
+    }
+
+    /* Catalyst timeline */
+    .catalyst-timeline { display: flex; gap: 0; overflow-x: auto; }
+    .catalyst-item {
+      flex: 1; min-width: 140px; text-align: center; padding: 10px 8px;
+      position: relative;
+    }
+    .catalyst-item:not(:last-child)::after {
+      content: '→';
+      position: absolute; right: -6px; top: 50%; transform: translateY(-50%);
+      color: #4b5563; font-size: 0.8rem; z-index: 1;
+    }
+
+    /* Progress bar */
+    .prob-bar { height: 6px; border-radius: 3px; background: #1f2937; overflow: hidden; }
+    .prob-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+    /* Fear & Greed gauge */
+    .fng-number { font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+
+    /* Section header */
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .section-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Back to top */
+    #back-to-top {
+      position: fixed; bottom: 5rem; right: 1.5rem; z-index: 50;
+      display: none; width: 2.5rem; height: 2.5rem;
+      background: #6366f1; color: white;
+      border-radius: 9999px; box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+      align-items: center; justify-content: center;
+      cursor: pointer; border: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    #back-to-top:hover { background: #4f46e5; transform: translateY(-2px); }
+    #back-to-top.visible { display: flex; }
+
+    /* News card hover */
+    .news-card { transition: border-color 0.2s, transform 0.15s; }
+    .news-card:hover { border-color: #4b5563; transform: translateY(-1px); }
+
+    /* Mini stat row */
+    .stat-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .stat-box {
+      flex: 1; min-width: 120px; background: #0f172a;
+      border: 1px solid #1f2937; border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    /* Ticker chip */
+    .ticker-chip {
+      flex-shrink: 0; background: #111827;
+      border: 1px solid #1f2937; border-radius: 10px;
+      padding: 12px 16px; cursor: default;
+      transition: border-color 0.2s;
+      min-width: 180px;
+    }
+    .ticker-chip:hover { border-color: #374151; }
+
+    /* Scrollable horiz */
+    .horiz-scroll { overflow-x: auto; padding-bottom: 4px; }
+    .horiz-scroll::-webkit-scrollbar { height: 3px; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Top Nav Bar -->
+  <div id="topbar" class="flex items-center justify-between px-4 text-xs">
+    <a href="index.html" class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+      <i class="fas fa-arrow-left text-xs"></i>
+      <span>Dashboard</span>
+    </a>
+    <span class="text-slate-200 font-semibold tracking-wide">SIGNAL INTELLIGENCE CENTER</span>
+    <span id="last-updated" class="text-slate-500">Loading...</span>
+  </div>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" aria-label="Back to top">
+    <i class="fas fa-chevron-up text-sm"></i>
+  </button>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- ============================
+         SECTION 1: SIGNAL COMMAND BAR
+         ============================ -->
+    <section id="signal-command-bar">
+      <div class="section-header">
+        <div class="section-dot bg-indigo-500"></div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Signal Command Bar</h2>
+        <div id="market-status-badge" class="badge bg-slate-800 text-slate-400 ml-auto">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-500 mr-1.5"></span>
+          Market Closed
+        </div>
+      </div>
+      <div id="chips-container" class="horiz-scroll">
+        <div class="chips-row" id="ticker-chips">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         SECTION 2: TSLA COMMAND CENTER
+         ============================ -->
+    <section id="tsla-command">
+      <div class="section-header">
+        <div class="section-dot bg-red-500"></div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">TSLA Command Center</h2>
+        <span class="badge bg-red-950 text-red-400 border border-red-900/50 ml-2">CORE POSITION</span>
+      </div>
+
+      <div class="card-dark p-6 border-indigo-glow">
+        <!-- Top Split: Left Info + Right Mini Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+          <!-- Left: Price & Position -->
+          <div class="space-y-4">
+            <div>
+              <div class="flex items-baseline gap-3 flex-wrap">
+                <span id="tsla-price-xl" class="price-xl text-white">–</span>
+                <span id="tsla-change-badge" class="text-lg font-bold">–</span>
+              </div>
+              <div class="text-slate-500 text-xs mt-1">TESLA · NASDAQ</div>
+            </div>
+
+            <div class="bg-indigo-950/40 border border-indigo-900/40 rounded-lg p-4 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-xs">Position Value</span>
+                <span id="tsla-pos-value" class="text-white font-bold text-lg">–</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-xs">Shares</span>
+                <span class="text-slate-200 font-semibold">165 shares</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-xs">Portfolio Weight</span>
+                <span class="badge bg-indigo-600 text-white">
+                  <span id="tsla-portfolio-pct">17.3</span>% of Portfolio
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-xs">Day P&amp;L</span>
+                <span id="tsla-day-pnl" class="font-bold text-lg">–</span>
+              </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-lg p-4">
+              <div class="text-xs text-slate-500 mb-2 uppercase tracking-wider">Avg Analyst Target</div>
+              <div id="tsla-avg-target" class="text-2xl font-bold text-emerald-400">$398</div>
+              <div id="tsla-upside" class="text-xs text-slate-500 mt-1">vs current price</div>
+            </div>
+          </div>
+
+          <!-- Right: 4 Mini Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Analyst -->
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-800">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-chart-line text-indigo-400 text-xs"></i>
+                <span class="text-xs text-slate-500 uppercase tracking-wider">Analyst</span>
+              </div>
+              <div id="tsla-analyst-consensus" class="text-lg font-bold text-white mb-1">BUY</div>
+              <div id="tsla-analyst-summary" class="text-xs text-slate-400 leading-relaxed line-clamp-3">Loading...</div>
+            </div>
+
+            <!-- AI Rec -->
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-800">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-robot text-purple-400 text-xs"></i>
+                <span class="text-xs text-slate-500 uppercase tracking-wider">AI Rec</span>
+              </div>
+              <div id="tsla-ai-verdict" class="text-lg font-bold text-white mb-1">HOLD</div>
+              <div id="tsla-ai-rec" class="text-xs text-slate-400 leading-relaxed line-clamp-3">Loading...</div>
+            </div>
+
+            <!-- WSB -->
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-800">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fab fa-reddit text-orange-400 text-xs"></i>
+                <span class="text-xs text-slate-500 uppercase tracking-wider">WSB Reddit</span>
+              </div>
+              <div id="tsla-wsb-sentiment" class="text-lg font-bold text-white mb-1">–</div>
+              <div id="tsla-wsb-summary" class="text-xs text-slate-400 leading-relaxed line-clamp-3">Loading...</div>
+            </div>
+
+            <!-- X/Grok -->
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-800">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fab fa-x-twitter text-sky-400 text-xs"></i>
+                <span class="text-xs text-slate-500 uppercase tracking-wider">X / Grok</span>
+              </div>
+              <div id="tsla-x-sentiment" class="text-lg font-bold text-white mb-1">–</div>
+              <div id="tsla-x-summary" class="text-xs text-slate-400 leading-relaxed line-clamp-3">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Elon Watch Strip -->
+        <div class="border-t border-gray-800 pt-4">
+          <div class="text-xs text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <i class="fas fa-bolt text-yellow-500"></i> Elon Watch · TSLA Catalyst Timeline
+          </div>
+          <div class="catalyst-timeline horiz-scroll">
+            <div class="catalyst-item">
+              <div class="inline-block px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-900/60 mb-1.5">COMPLETE</div>
+              <div class="text-xs text-white font-semibold">FSD v13 Rollout</div>
+              <div class="text-xs text-slate-500 mt-0.5">Supervised FSD deployed</div>
+            </div>
+            <div class="catalyst-item">
+              <div class="inline-block px-3 py-1.5 rounded-full text-xs font-bold bg-indigo-950 text-indigo-400 border border-indigo-900/60 mb-1.5">IN PROGRESS</div>
+              <div class="text-xs text-white font-semibold">Robotaxi Launch</div>
+              <div class="text-xs text-slate-500 mt-0.5">Austin TX pilot fleet</div>
+            </div>
+            <div class="catalyst-item">
+              <div class="inline-block px-3 py-1.5 rounded-full text-xs font-bold bg-gray-800 text-slate-400 border border-gray-700 mb-1.5">UPCOMING</div>
+              <div class="text-xs text-white font-semibold">Q2 Deliveries</div>
+              <div class="text-xs text-slate-500 mt-0.5">Report ~Jul 2026</div>
+            </div>
+            <div class="catalyst-item">
+              <div class="inline-block px-3 py-1.5 rounded-full text-xs font-bold bg-gray-800 text-slate-400 border border-gray-700 mb-1.5">UPCOMING</div>
+              <div class="text-xs text-white font-semibold">Energy Storage Record</div>
+              <div class="text-xs text-slate-500 mt-0.5">Megapack expansion</div>
+            </div>
+            <div class="catalyst-item">
+              <div class="inline-block px-3 py-1.5 rounded-full text-xs font-bold bg-gray-800 text-slate-400 border border-gray-700 mb-1.5">UPCOMING</div>
+              <div class="text-xs text-white font-semibold">Optimus Production</div>
+              <div class="text-xs text-slate-500 mt-0.5">Mass mfg target 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         SECTION 3: NVDA + QQQ GRID
+         ============================ -->
+    <section id="nvda-qqq-grid">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- NVDA Watch -->
+        <div>
+          <div class="section-header">
+            <div class="section-dot bg-green-500"></div>
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">NVDA Watch</h2>
+          </div>
+          <div class="card p-5 space-y-4 h-full">
+            <div class="flex items-baseline gap-3">
+              <span id="nvda-price-lg" class="price-lg text-white">–</span>
+              <span id="nvda-change-badge" class="text-base font-bold">–</span>
+              <span class="text-slate-600 text-sm ml-auto">NVIDIA</span>
+            </div>
+
+            <div class="stat-row">
+              <div class="stat-box">
+                <div class="text-xs text-slate-500 mb-1">Position</div>
+                <div id="nvda-pos-value" class="font-bold text-white">–</div>
+                <div class="text-xs text-slate-500">44 shares</div>
+              </div>
+              <div class="stat-box">
+                <div class="text-xs text-slate-500 mb-1">Portfolio</div>
+                <div id="nvda-portfolio-pct" class="font-bold text-white">2.3%</div>
+                <div class="text-xs text-slate-500">of portfolio</div>
+              </div>
+              <div class="stat-box">
+                <div class="text-xs text-slate-500 mb-1">Next Earnings</div>
+                <div class="font-bold text-amber-400">~Aug 2026</div>
+                <div class="text-xs text-slate-500">Q2 FY2027</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-gray-950 rounded-lg p-3 border border-gray-800">
+                <div class="text-xs text-slate-500 mb-1">Analyst</div>
+                <div id="nvda-analyst-consensus" class="font-bold text-white">BUY</div>
+                <div id="nvda-analyst-target" class="text-xs text-emerald-400">$222 avg target</div>
+              </div>
+              <div class="bg-gray-950 rounded-lg p-3 border border-gray-800">
+                <div class="text-xs text-slate-500 mb-1">AI Rec</div>
+                <div id="nvda-ai-verdict" class="font-bold text-white">BUY MORE</div>
+                <div id="nvda-ai-detail" class="text-xs text-slate-500 line-clamp-2">Loading...</div>
+              </div>
+            </div>
+
+            <!-- AI Capex Narrative -->
+            <div class="bg-gradient-to-br from-green-950/40 to-emerald-950/20 border border-green-900/30 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-microchip text-green-400 text-xs"></i>
+                <span class="text-xs font-bold text-green-400 uppercase tracking-wide">AI Capex Cycle</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                NVIDIA sits at the center of the $500B+ AI infrastructure wave. Hyperscalers (MSFT, GOOGL, META, AMZN) are each committing $40–80B+ in annual capex, with GPUs as the primary bottleneck. Blackwell architecture adoption is accelerating through 2026, and NVDA's software moat (CUDA) keeps competitors years behind.
+              </p>
+            </div>
+
+            <div class="flex items-start gap-2 bg-red-950/30 border border-red-900/30 rounded-lg p-3">
+              <i class="fas fa-exclamation-triangle text-red-400 text-xs mt-0.5 flex-shrink-0"></i>
+              <div>
+                <span class="text-xs font-bold text-red-400">Key Risk: </span>
+                <span class="text-xs text-slate-400">Blackwell supply constraints &amp; export controls to China. Any tightening of H20/H100 export rules could shave 10–20% from forward revenue estimates.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QQQ / Macro -->
+        <div>
+          <div class="section-header">
+            <div class="section-dot bg-sky-500"></div>
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">QQQ / Macro</h2>
+          </div>
+          <div class="card p-5 space-y-4 h-full">
+            <div class="flex items-baseline gap-3">
+              <span id="qqq-price-lg" class="price-lg text-white">–</span>
+              <span id="qqq-change-badge" class="text-base font-bold">–</span>
+              <span class="text-slate-600 text-sm ml-auto">Invesco QQQ</span>
+            </div>
+
+            <div class="stat-row">
+              <div class="stat-box">
+                <div class="text-xs text-slate-500 mb-1">QQQ</div>
+                <div id="qqq-pos-value" class="font-bold text-white">–</div>
+                <div class="text-xs text-slate-500">70 shares</div>
+              </div>
+              <div class="stat-box">
+                <div class="text-xs text-slate-500 mb-1">QQQI</div>
+                <div id="qqqi-pos-value" class="font-bold text-white">$50,220</div>
+                <div class="text-xs text-slate-500">892 shares</div>
+              </div>
+              <div class="stat-box">
+                <div class="text-xs text-slate-500 mb-1">Combined</div>
+                <div id="qqq-combined-value" class="font-bold text-sky-400">–</div>
+                <div class="text-xs text-slate-500">QQQ+QQQI</div>
+              </div>
+            </div>
+
+            <!-- 200 MA Indicator -->
+            <div id="qqq-200ma-indicator" class="rounded-lg p-3 border">
+              <div class="text-xs text-slate-500 mb-1">200-Day MA (~$460 est.)</div>
+              <div id="qqq-200ma-text" class="font-bold text-base">–</div>
+            </div>
+
+            <!-- Macro Panel -->
+            <div class="space-y-2">
+              <div class="text-xs text-slate-500 uppercase tracking-widest mb-2">Macro Dashboard</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-gray-950 rounded-lg p-3 border border-gray-800">
+                  <div class="text-xs text-slate-500 mb-0.5">Fed Rate</div>
+                  <div class="font-bold text-white">5.25–5.50%</div>
+                  <div class="text-xs text-amber-400">Next: ~Jun 2026</div>
+                </div>
+                <div class="bg-gray-950 rounded-lg p-3 border border-gray-800">
+                  <div class="text-xs text-slate-500 mb-0.5">VIX</div>
+                  <div id="vix-display" class="font-bold text-white">~18</div>
+                  <div class="text-xs text-emerald-400">Calm regime</div>
+                </div>
+                <div class="bg-gray-950 rounded-lg p-3 border border-gray-800">
+                  <div class="text-xs text-slate-500 mb-0.5">SPY</div>
+                  <div id="spy-price-display" class="font-bold text-white">–</div>
+                  <div id="spy-change-display" class="text-xs text-slate-500">Day change</div>
+                </div>
+                <div class="bg-gray-950 rounded-lg p-3 border border-gray-800">
+                  <div class="text-xs text-slate-500 mb-0.5">10Y Yield</div>
+                  <div id="tnx-display" class="font-bold text-white">–</div>
+                  <div class="text-xs text-slate-500">TNX</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         SECTION 4: BITCOIN INTELLIGENCE
+         ============================ -->
+    <section id="bitcoin-intelligence">
+      <div class="section-header">
+        <div class="section-dot bg-orange-500"></div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Bitcoin Intelligence</h2>
+        <span class="badge bg-orange-950 text-orange-400 border border-orange-900/40 ml-2">BTC EXPOSURE</span>
+      </div>
+
+      <div class="card-dark p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <!-- Left: BTC Price -->
+          <div class="space-y-4">
+            <div>
+              <div class="text-xs text-slate-500 mb-1">BITCOIN · BTC-USD</div>
+              <div class="flex items-baseline gap-3 flex-wrap">
+                <span id="btc-price-xl" class="price-xl text-orange-400">–</span>
+                <span id="btc-change-badge" class="text-base font-bold">–</span>
+              </div>
+            </div>
+
+            <!-- Holdings breakdown -->
+            <div class="bg-orange-950/20 border border-orange-900/30 rounded-lg p-4 space-y-2">
+              <div class="text-xs font-bold text-orange-400 uppercase tracking-wide mb-2">Your BTC Exposure</div>
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-400">IBIT (227 sh)</span>
+                <span class="text-white font-semibold">$9,752</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-400">BTCI (140 sh)</span>
+                <span class="text-white font-semibold">$4,906</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-slate-400">MSTR (30 sh)</span>
+                <span class="text-white font-semibold">$4,797</span>
+              </div>
+              <div class="border-t border-orange-900/30 pt-2 flex justify-between text-xs">
+                <span class="text-orange-300 font-bold">Total Exposure</span>
+                <span class="text-orange-300 font-bold">$19,455</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center: Fear & Greed + Halving -->
+          <div class="space-y-4">
+            <!-- Fear & Greed -->
+            <div class="bg-gray-900 rounded-xl p-5 text-center border border-gray-800">
+              <div class="text-xs text-slate-500 uppercase tracking-widest mb-3">Fear &amp; Greed Index</div>
+              <div id="fng-value" class="fng-number text-slate-300">–</div>
+              <div id="fng-label" class="text-sm font-semibold text-slate-400 mt-1">Loading...</div>
+              <div class="mt-3 h-2 rounded-full overflow-hidden" style="background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e);">
+                <div id="fng-marker" class="w-3 h-2 bg-white rounded-full shadow" style="transform: translateX(0px);"></div>
+              </div>
+              <div class="flex justify-between text-xs text-slate-600 mt-1">
+                <span>Fear</span><span>Greed</span>
+              </div>
+            </div>
+
+            <!-- Halving Countdown -->
+            <div class="bg-gradient-to-br from-orange-950/40 to-yellow-950/20 border border-orange-900/30 rounded-xl p-4 text-center">
+              <div class="text-xs text-slate-500 uppercase tracking-widest mb-2">Next Halving</div>
+              <div id="halving-days" class="text-4xl font-black text-orange-400 tracking-tight">~700</div>
+              <div class="text-xs text-slate-500 mt-1">days · ~April 2028</div>
+              <div class="mt-3 text-xs text-orange-300/70">Block reward: 3.125 → 1.5625 BTC</div>
+            </div>
+          </div>
+
+          <!-- Right: Stat cards -->
+          <div class="grid grid-cols-2 gap-3 content-start">
+            <div class="stat-box">
+              <div class="text-xs text-slate-500 mb-1">Total BTC Exp.</div>
+              <div class="font-bold text-orange-400">$19,455</div>
+              <div class="text-xs text-slate-600">IBIT+BTCI+MSTR</div>
+            </div>
+            <div class="stat-box">
+              <div class="text-xs text-slate-500 mb-1">% of Portfolio</div>
+              <div class="font-bold text-white">~4.8%</div>
+              <div class="text-xs text-slate-600">crypto exposure</div>
+            </div>
+            <div class="stat-box">
+              <div class="text-xs text-slate-500 mb-1">IBIT Shares</div>
+              <div class="font-bold text-white">227</div>
+              <div class="text-xs text-slate-600">iShares BTC ETF</div>
+            </div>
+            <div class="stat-box">
+              <div class="text-xs text-slate-500 mb-1">Days to Halving</div>
+              <div id="halving-days-small" class="font-bold text-orange-400">~700</div>
+              <div class="text-xs text-slate-600">Apr 2028 est.</div>
+            </div>
+            <div class="stat-box col-span-2">
+              <div class="text-xs text-slate-500 mb-1">BTC Price</div>
+              <div id="btc-price-stat" class="font-bold text-white text-lg">–</div>
+              <div class="text-xs text-slate-600">BTC-USD spot</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         SECTION 5: QQQI INCOME SIGNAL
+         ============================ -->
+    <section id="qqqi-income">
+      <div class="section-header">
+        <div class="section-dot bg-purple-500"></div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">QQQI Income Signal</h2>
+        <span class="badge bg-purple-950 text-purple-400 border border-purple-900/40 ml-2">MONTHLY INCOME</span>
+      </div>
+
+      <div class="card p-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Left -->
+          <div class="space-y-4">
+            <div>
+              <div class="text-xs text-slate-500 mb-1">NEOS QQQI · NASDAQ-100 Covered Call</div>
+              <div class="flex items-baseline gap-3">
+                <span class="price-lg text-purple-400">$50,220</span>
+                <span class="text-slate-500 text-sm font-medium">position value</span>
+              </div>
+              <div class="text-xs text-slate-500 mt-1">892 shares @ $56.30</div>
+            </div>
+
+            <div class="bg-purple-950/30 border border-purple-900/30 rounded-lg p-4 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-slate-400">Estimated Monthly Dist.</span>
+                <span class="text-purple-300 font-bold text-lg">~$464 / mo</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-slate-400">Est. Annual Yield</span>
+                <span class="text-emerald-400 font-bold">~11%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-slate-400">Distribution / Share</span>
+                <span class="text-slate-200 font-semibold">~$0.52</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-slate-400">Annual Income (est.)</span>
+                <span class="text-purple-300 font-bold">~$5,568 / yr</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right -->
+          <div class="space-y-3">
+            <div class="bg-gray-950 rounded-lg p-4 border border-gray-800">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-calendar-check text-purple-400 text-xs"></i>
+                <span class="text-xs font-bold text-purple-400 uppercase tracking-wide">Distribution Schedule</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                QQQI pays monthly distributions — typically ex-dividend in the first week of each month. Distributions vary based on options premium income from its covered call strategy on the QQQ/Nasdaq-100.
+              </p>
+            </div>
+
+            <div class="bg-gray-950 rounded-lg p-4 border border-gray-800">
+              <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-info-circle text-sky-400 text-xs"></i>
+                <span class="text-xs font-bold text-sky-400 uppercase tracking-wide">Strategy Note</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                QQQI uses a buffer/defined outcome strategy — monthly income comes with capped upside vs QQQ. Best in sideways-to-slightly-bullish markets. Acts as a yield booster alongside your core QQQ position.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+              <div class="stat-box text-center">
+                <div class="text-xs text-slate-500 mb-1">Shares</div>
+                <div class="font-bold text-white">892</div>
+              </div>
+              <div class="stat-box text-center">
+                <div class="text-xs text-slate-500 mb-1">Price</div>
+                <div class="font-bold text-white">$56.30</div>
+              </div>
+              <div class="stat-box text-center">
+                <div class="text-xs text-slate-500 mb-1">Next Ex-Div</div>
+                <div class="font-bold text-purple-400 text-xs">~1st wk</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         SECTION 6: NEWS FEED
+         ============================ -->
+    <section id="news-feed">
+      <div class="section-header">
+        <div class="section-dot bg-cyan-500"></div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">News Feed</h2>
+        <span id="news-count" class="badge bg-gray-800 text-slate-400 ml-2">0 items</span>
+      </div>
+      <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- ============================
+         SECTION 7: PREDICTION MARKETS
+         ============================ -->
+    <section id="prediction-markets">
+      <div class="section-header">
+        <div class="section-dot bg-yellow-500"></div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Prediction Markets</h2>
+      </div>
+      <div id="predictions-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+  </div><!-- /main content -->
+
+  <!-- Footer spacer -->
+  <div class="h-16"></div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
+
+    // =====================
+    // HELPERS
+    // =====================
+    function fmt(val, prefix='$', decimals=2) {
+      if (val == null || isNaN(val)) return '–';
+      return prefix + Number(val).toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});
+    }
+    function fmtPct(val, decimals=2) {
+      if (val == null || isNaN(val)) return '–';
+      const n = Number(val);
+      const sign = n >= 0 ? '+' : '';
+      return sign + n.toFixed(decimals) + '%';
+    }
+    function changeBadge(val) {
+      if (val == null || isNaN(val)) return { text: '–', cls: 'text-slate-500' };
+      const n = Number(val);
+      return {
+        text: (n >= 0 ? '+' : '') + n.toFixed(2) + '%',
+        cls: n >= 0 ? 'text-emerald-400' : 'text-red-400'
+      };
+    }
+    function setEl(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+    }
+    function setTxt(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+    function sentimentColor(s) {
+      if (!s) return 'text-slate-400';
+      if (/buy|bullish|strong/i.test(s)) return 'text-emerald-400';
+      if (/sell|bearish|avoid/i.test(s)) return 'text-red-400';
+      if (/hold|neutral|mixed/i.test(s)) return 'text-amber-400';
+      return 'text-slate-400';
+    }
+    function verdictColor(s) {
+      if (!s) return 'text-slate-400';
+      if (/strong buy|buy more/i.test(s)) return 'text-emerald-400';
+      if (/buy/i.test(s)) return 'text-green-400';
+      if (/sell|harvest|avoid/i.test(s)) return 'text-red-400';
+      if (/hold/i.test(s)) return 'text-amber-400';
+      return 'text-slate-300';
+    }
+    function truncate(str, n) {
+      if (!str) return '';
+      // Strip markdown
+      str = str.replace(/\*\*|__|\*|_|#{1,6}\s/g, '').replace(/\[.*?\]/g, '');
+      return str.length > n ? str.slice(0, n).trim() + '...' : str;
+    }
+    function formatDate(iso) {
+      if (!iso) return '–';
+      try {
+        const d = new Date(iso);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+          ' ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      } catch(e) { return iso; }
+    }
+
+    // =====================
+    // LAST UPDATED
+    // =====================
+    try {
+      const genAt = window.LIVE_PRICES_DATA?.generated_at || window.MARKET_PULSE_DATA?.generated_at;
+      if (genAt) {
+        setTxt('last-updated', 'Last updated: ' + formatDate(genAt));
+      }
+    } catch(e) {}
+
+    // =====================
+    // MARKET STATUS
+    // =====================
+    try {
+      const isOpen = window.MARKET_PULSE_DATA?.market_open;
+      const badge = document.getElementById('market-status-badge');
+      if (badge && isOpen) {
+        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Market Open';
+        badge.className = 'badge bg-emerald-950 text-emerald-400 border border-emerald-900/40 ml-auto';
+      }
+    } catch(e) {}
+
+    // =====================
+    // COMPOSITE SENTIMENT
+    // =====================
+    function sentimentScore(sym) {
+      try {
+        const analyst = window.STOCKS_ANALYST_DATA?.tickers?.[sym]?.consensus || '';
+        const ai = window.STOCKS_AI_REC_DATA?.tickers?.[sym]?.verdict || '';
+        const wsb = window.STOCKS_WSB_DATA?.tickers?.[sym]?.sentiment || '';
+        const x = window.STOCKS_X_GROK_DATA?.tickers?.[sym]?.sentiment || '';
+        const bullish = [analyst, ai, wsb, x].filter(s => /buy|bullish|strong/i.test(s)).length;
+        const bearish = [analyst, ai, wsb, x].filter(s => /sell|bearish|avoid/i.test(s)).length;
+        if (bullish >= 3) return { label: 'STRONG BUY', color: 'emerald' };
+        if (bullish >= 2) return { label: 'BULLISH', color: 'green' };
+        if (bearish >= 2) return { label: 'BEARISH', color: 'red' };
+        if (bearish >= 1) return { label: 'CAUTION', color: 'orange' };
+        return { label: 'NEUTRAL', color: 'slate' };
+      } catch(e) {
+        return { label: 'NEUTRAL', color: 'slate' };
+      }
+    }
+
+    const sentColorMap = {
+      emerald: 'bg-emerald-950 text-emerald-400 border-emerald-900/50',
+      green:   'bg-green-950 text-green-400 border-green-900/50',
+      red:     'bg-red-950 text-red-400 border-red-900/50',
+      orange:  'bg-orange-950 text-orange-400 border-orange-900/50',
+      slate:   'bg-slate-800 text-slate-400 border-slate-700',
+    };
+
+    // =====================
+    // SECTION 1: SIGNAL COMMAND BAR
+    // =====================
+    const TICKERS = ['TSLA', 'NVDA', 'QQQ', 'BTC', 'QQQI'];
+
+    function getPrice(sym) {
+      try {
+        // BTC special handling
+        if (sym === 'BTC') {
+          const btcUsd = window.MARKET_PULSE_DATA?.tickers?.['BTC-USD']?.price;
+          const btc = window.MARKET_PULSE_DATA?.tickers?.['BTC']?.price;
+          return btcUsd || btc || 109000;
+        }
+        const pulse = window.MARKET_PULSE_DATA?.tickers?.[sym]?.price;
+        const live = window.LIVE_PRICES_DATA?.prices?.[sym];
+        return pulse || live || null;
+      } catch(e) { return null; }
+    }
+
+    function getChangePct(sym) {
+      try {
+        if (sym === 'BTC') {
+          return window.MARKET_PULSE_DATA?.tickers?.['BTC-USD']?.change_pct ||
+                 window.MARKET_PULSE_DATA?.tickers?.['BTC']?.change_pct || null;
+        }
+        return window.MARKET_PULSE_DATA?.tickers?.[sym]?.change_pct || null;
+      } catch(e) { return null; }
+    }
+
+    function getPortfolioPos(sym) {
+      try {
+        const tops = window.PORTFOLIO_DATA?.top_positions || [];
+        return tops.find(p => p.symbol === sym) || null;
+      } catch(e) { return null; }
+    }
+
+    const chipsEl = document.getElementById('ticker-chips');
+    if (chipsEl) {
+      TICKERS.forEach(sym => {
+        const price = getPrice(sym);
+        const changePct = getChangePct(sym);
+        const cBadge = changeBadge(changePct);
+        const sent = (sym === 'BTC' || sym === 'QQQI') ? { label: 'NEUTRAL', color: 'slate' } : sentimentScore(sym);
+        if (sym === 'QQQI') {
+          // QQQI income play — show as purple
+          sent.label = 'INCOME'; sent.color = 'purple';
+          sentColorMap['purple'] = 'bg-purple-950 text-purple-400 border-purple-900/50';
+        }
+        const pos = getPortfolioPos(sym);
+        const portStr = pos ? `$${Number(pos.value).toLocaleString('en-US', {maximumFractionDigits: 0})} · ${pos.pct_of_portfolio}%` : '–';
+        const priceStr = price ? '$' + Number(price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '–';
+
+        const chip = document.createElement('div');
+        chip.className = 'ticker-chip';
+        chip.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-black text-white tracking-wide">${sym}</span>
+            <span class="badge border ${sentColorMap[sent.color] || sentColorMap.slate}">${sent.label}</span>
+          </div>
+          <div class="text-xl font-bold text-white mb-0.5">${priceStr}</div>
+          <div class="flex items-center justify-between mt-1">
+            <span class="text-xs font-semibold ${cBadge.cls}">${cBadge.text}</span>
+            <span class="text-xs text-slate-500">${portStr}</span>
+          </div>
+        `;
+        chipsEl.appendChild(chip);
+      });
+    }
+
+    // =====================
+    // SECTION 2: TSLA COMMAND CENTER
+    // =====================
+    try {
+      const tslaData = window.MARKET_PULSE_DATA?.tickers?.['TSLA'];
+      const tslaLive = window.LIVE_PRICES_DATA?.prices?.['TSLA'];
+      const tslaPrice = tslaData?.price || tslaLive || null;
+      const tslaChangePct = tslaData?.change_pct || null;
+      const tslaChangeDollar = tslaData?.change_dollar || null;
+      const tslaPos = getPortfolioPos('TSLA');
+
+      if (tslaPrice) {
+        setTxt('tsla-price-xl', '$' + Number(tslaPrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+      }
+
+      const tslaCB = changeBadge(tslaChangePct);
+      const tslaBadgeEl = document.getElementById('tsla-change-badge');
+      if (tslaBadgeEl) { tslaBadgeEl.textContent = tslaCB.text; tslaBadgeEl.className = 'text-lg font-bold ' + tslaCB.cls; }
+
+      const shares = tslaPos?.shares || 165;
+      const posVal = tslaPos?.value || (tslaPrice ? tslaPrice * shares : null);
+      if (posVal) setTxt('tsla-pos-value', '$' + Number(posVal).toLocaleString('en-US', {maximumFractionDigits: 0}));
+
+      const pct = tslaPos?.pct_of_portfolio;
+      if (pct) setTxt('tsla-portfolio-pct', pct.toFixed(1));
+
+      if (tslaChangeDollar != null) {
+        const pnl = tslaChangeDollar * shares;
+        const pnlEl = document.getElementById('tsla-day-pnl');
+        if (pnlEl) {
+          pnlEl.textContent = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+          pnlEl.className = 'font-bold text-lg ' + (pnl >= 0 ? 'text-emerald-400' : 'text-red-400');
+        }
+      }
+
+      // Analyst avg target
+      const tslaAnalyst = window.STOCKS_ANALYST_DATA?.tickers?.['TSLA'];
+      if (tslaAnalyst) {
+        setTxt('tsla-avg-target', tslaAnalyst.avg_target || '$398');
+        const targetNum = parseFloat((tslaAnalyst.avg_target || '398').replace(/[^0-9.]/g,''));
+        if (tslaPrice && targetNum) {
+          const upside = ((targetNum - tslaPrice) / tslaPrice * 100).toFixed(1);
+          const upsideColor = upside >= 0 ? 'text-emerald-400' : 'text-red-400';
+          setEl('tsla-upside', `<span class="${upsideColor}">${upside >= 0 ? '+' : ''}${upside}% upside</span> vs current price`);
+        }
+      }
+
+      // Analyst mini card
+      const tslaAnalystEl = document.getElementById('tsla-analyst-consensus');
+      if (tslaAnalystEl && tslaAnalyst) {
+        tslaAnalystEl.textContent = tslaAnalyst.consensus || 'BUY';
+        tslaAnalystEl.className = 'text-lg font-bold ' + verdictColor(tslaAnalyst.consensus);
+        setTxt('tsla-analyst-summary', truncate(tslaAnalyst.summary, 140));
+      }
+
+      // AI Rec
+      const tslaAI = window.STOCKS_AI_REC_DATA?.tickers?.['TSLA'];
+      if (tslaAI) {
+        const aiEl = document.getElementById('tsla-ai-verdict');
+        if (aiEl) { aiEl.textContent = tslaAI.verdict || 'HOLD'; aiEl.className = 'text-lg font-bold ' + verdictColor(tslaAI.verdict); }
+        setTxt('tsla-ai-rec', truncate(tslaAI.recommendation, 120));
+      }
+
+      // WSB
+      const tslaWSB = window.STOCKS_WSB_DATA?.tickers?.['TSLA'];
+      if (tslaWSB) {
+        const wsbEl = document.getElementById('tsla-wsb-sentiment');
+        if (wsbEl) { wsbEl.textContent = tslaWSB.sentiment || '–'; wsbEl.className = 'text-lg font-bold ' + sentimentColor(tslaWSB.sentiment); }
+        setTxt('tsla-wsb-summary', truncate(tslaWSB.summary, 120));
+      }
+
+      // X/Grok
+      const tslaX = window.STOCKS_X_GROK_DATA?.tickers?.['TSLA'];
+      if (tslaX) {
+        const xEl = document.getElementById('tsla-x-sentiment');
+        if (xEl) { xEl.textContent = tslaX.sentiment || '–'; xEl.className = 'text-lg font-bold ' + sentimentColor(tslaX.sentiment); }
+        setTxt('tsla-x-summary', truncate(tslaX.short_summary || tslaX.summary, 120));
+      }
+    } catch(e) { console.warn('TSLA section error:', e); }
+
+    // =====================
+    // SECTION 3: NVDA
+    // =====================
+    try {
+      const nvdaData = window.MARKET_PULSE_DATA?.tickers?.['NVDA'];
+      const nvdaLive = window.LIVE_PRICES_DATA?.prices?.['NVDA'];
+      const nvdaPrice = nvdaData?.price || nvdaLive || null;
+      const nvdaChangePct = nvdaData?.change_pct || null;
+      const nvdaPos = getPortfolioPos('NVDA');
+
+      if (nvdaPrice) {
+        setTxt('nvda-price-lg', '$' + Number(nvdaPrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+      }
+      const nvdaCB = changeBadge(nvdaChangePct);
+      const nvdaBadgeEl = document.getElementById('nvda-change-badge');
+      if (nvdaBadgeEl) { nvdaBadgeEl.textContent = nvdaCB.text; nvdaBadgeEl.className = 'text-base font-bold ' + nvdaCB.cls; }
+
+      if (nvdaPos) {
+        setTxt('nvda-pos-value', '$' + Number(nvdaPos.value).toLocaleString('en-US', {maximumFractionDigits: 0}));
+        setTxt('nvda-portfolio-pct', nvdaPos.pct_of_portfolio?.toFixed(1) + '%');
+      }
+
+      const nvdaAnalyst = window.STOCKS_ANALYST_DATA?.tickers?.['NVDA'];
+      if (nvdaAnalyst) {
+        const el = document.getElementById('nvda-analyst-consensus');
+        if (el) { el.textContent = nvdaAnalyst.consensus || 'BUY'; el.className = 'font-bold ' + verdictColor(nvdaAnalyst.consensus); }
+        setEl('nvda-analyst-target', `<span class="text-xs text-emerald-400">${nvdaAnalyst.avg_target || '$222'} avg target</span>`);
+      }
+
+      const nvdaAI = window.STOCKS_AI_REC_DATA?.tickers?.['NVDA'];
+      if (nvdaAI) {
+        const el = document.getElementById('nvda-ai-verdict');
+        if (el) { el.textContent = nvdaAI.verdict || 'BUY MORE'; el.className = 'font-bold ' + verdictColor(nvdaAI.verdict); }
+        setTxt('nvda-ai-detail', truncate(nvdaAI.recommendation, 80));
+      }
+    } catch(e) { console.warn('NVDA section error:', e); }
+
+    // =====================
+    // SECTION 3: QQQ
+    // =====================
+    try {
+      const qqqData = window.MARKET_PULSE_DATA?.tickers?.['QQQ'];
+      const qqqPrice = qqqData?.price || null;
+      const qqqChangePct = qqqData?.change_pct || null;
+      const qqqPos = getPortfolioPos('QQQ');
+      const qqqiPos = getPortfolioPos('QQQI');
+
+      if (qqqPrice) {
+        setTxt('qqq-price-lg', '$' + Number(qqqPrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+      }
+      const qqqCB = changeBadge(qqqChangePct);
+      const qqqBadgeEl = document.getElementById('qqq-change-badge');
+      if (qqqBadgeEl) { qqqBadgeEl.textContent = qqqCB.text; qqqBadgeEl.className = 'text-base font-bold ' + qqqCB.cls; }
+
+      if (qqqPos) {
+        setTxt('qqq-pos-value', '$' + Number(qqqPos.value).toLocaleString('en-US', {maximumFractionDigits: 0}));
+      }
+      if (qqqiPos) {
+        setTxt('qqqi-pos-value', '$' + Number(qqqiPos.value).toLocaleString('en-US', {maximumFractionDigits: 0}));
+      }
+      // Combined
+      const combined = (qqqPos?.value || 0) + (qqqiPos?.value || 50220);
+      if (combined) setTxt('qqq-combined-value', '$' + Number(combined).toLocaleString('en-US', {maximumFractionDigits: 0}));
+
+      // 200MA indicator
+      const MA200 = 460;
+      const ma200El = document.getElementById('qqq-200ma-indicator');
+      const ma200Txt = document.getElementById('qqq-200ma-text');
+      if (qqqPrice && ma200El && ma200Txt) {
+        if (qqqPrice > MA200) {
+          ma200El.className = 'rounded-lg p-3 border bg-emerald-950/30 border-emerald-900/40';
+          ma200Txt.innerHTML = '<span class="text-emerald-400">ABOVE 200MA ↑ BULLISH</span><span class="text-slate-500 text-xs ml-2">($' + qqqPrice.toFixed(0) + ' vs ~$' + MA200 + ')</span>';
+        } else {
+          ma200El.className = 'rounded-lg p-3 border bg-orange-950/30 border-orange-900/40';
+          ma200Txt.innerHTML = '<span class="text-orange-400">BELOW 200MA ↓ CAUTION</span><span class="text-slate-500 text-xs ml-2">($' + qqqPrice.toFixed(0) + ' vs ~$' + MA200 + ')</span>';
+        }
+      }
+
+      // VIX
+      const vixData = window.MARKET_PULSE_DATA?.tickers?.['VIX'];
+      if (vixData?.price) {
+        const vixEl = document.getElementById('vix-display');
+        if (vixEl) {
+          vixEl.textContent = vixData.price.toFixed(1);
+          const vixParent = vixEl.nextElementSibling;
+          if (vixParent) {
+            if (vixData.price < 20) { vixEl.className = 'font-bold text-emerald-400'; vixParent.textContent = 'Calm regime'; vixParent.className = 'text-xs text-emerald-400'; }
+            else if (vixData.price < 30) { vixEl.className = 'font-bold text-amber-400'; vixParent.textContent = 'Elevated'; vixParent.className = 'text-xs text-amber-400'; }
+            else { vixEl.className = 'font-bold text-red-400'; vixParent.textContent = 'Fear spike'; vixParent.className = 'text-xs text-red-400'; }
+          }
+        }
+      }
+
+      // SPY
+      const spyData = window.MARKET_PULSE_DATA?.tickers?.['SPY'];
+      if (spyData) {
+        setTxt('spy-price-display', spyData.price ? '$' + spyData.price.toFixed(2) : '–');
+        const sChange = changeBadge(spyData.change_pct);
+        const spyChangeEl = document.getElementById('spy-change-display');
+        if (spyChangeEl) { spyChangeEl.textContent = sChange.text; spyChangeEl.className = 'text-xs ' + sChange.cls; }
+      }
+
+      // TNX 10Y yield
+      const tnxData = window.MARKET_PULSE_DATA?.tickers?.['TNX'];
+      if (tnxData?.price) {
+        setTxt('tnx-display', tnxData.price.toFixed(2) + '%');
+      }
+    } catch(e) { console.warn('QQQ section error:', e); }
+
+    // =====================
+    // SECTION 4: BITCOIN
+    // =====================
+    try {
+      const btcDataUsd = window.MARKET_PULSE_DATA?.tickers?.['BTC-USD'];
+      const btcData = window.MARKET_PULSE_DATA?.tickers?.['BTC'];
+      const btcPrice = btcDataUsd?.price || btcData?.price || 109000;
+      const btcChangePct = btcDataUsd?.change_pct || btcData?.change_pct || null;
+
+      const btcPriceStr = '$' + Number(btcPrice).toLocaleString('en-US', {maximumFractionDigits: 0});
+      setTxt('btc-price-xl', btcPriceStr);
+      setTxt('btc-price-stat', btcPriceStr);
+
+      const btcCB = changeBadge(btcChangePct);
+      const btcBadgeEl = document.getElementById('btc-change-badge');
+      if (btcBadgeEl) {
+        btcBadgeEl.textContent = btcCB.text || '–';
+        btcBadgeEl.className = 'text-base font-bold ' + btcCB.cls;
+      }
+
+      // Halving countdown (next halving ~April 19, 2028)
+      const halvingDate = new Date('2028-04-19T00:00:00Z');
+      const today = new Date('2026-05-25T00:00:00Z');
+      const daysLeft = Math.ceil((halvingDate - today) / (1000 * 60 * 60 * 24));
+      setTxt('halving-days', daysLeft.toLocaleString());
+      setTxt('halving-days-small', '~' + daysLeft.toLocaleString());
+    } catch(e) { console.warn('BTC section error:', e); }
+
+    // Fear & Greed API call
+    fetch('https://api.alternative.me/fng/?limit=1')
+      .then(r => r.json())
+      .then(d => {
+        const fng = d?.data?.[0];
+        if (fng) {
+          const val = parseInt(fng.value);
+          const label = fng.value_classification || '';
+          const fngEl = document.getElementById('fng-value');
+          const fngLbl = document.getElementById('fng-label');
+          if (fngEl) {
+            fngEl.textContent = val;
+            if (val >= 75) fngEl.className = 'fng-number text-emerald-400';
+            else if (val >= 55) fngEl.className = 'fng-number text-green-400';
+            else if (val >= 45) fngEl.className = 'fng-number text-amber-400';
+            else if (val >= 25) fngEl.className = 'fng-number text-orange-400';
+            else fngEl.className = 'fng-number text-red-400';
+          }
+          if (fngLbl) fngLbl.textContent = label;
+        }
+      })
+      .catch(() => {
+        const fngEl = document.getElementById('fng-value');
+        const fngLbl = document.getElementById('fng-label');
+        if (fngEl) fngEl.textContent = '–';
+        if (fngLbl) fngLbl.textContent = 'Unavailable';
+      });
+
+    // =====================
+    // SECTION 6: NEWS FEED
+    // =====================
+    try {
+      const RELEVANT_TAGS = new Set(['TSLA','NVDA','QQQ','BTC','Bitcoin','Tesla','NVIDIA','Nasdaq','QQQI']);
+      const allHeadlines = window.NEWS_DATA?.headlines || [];
+
+      let filtered = allHeadlines.filter(h => {
+        const tags = h.tags || [];
+        if (tags.length === 0) return true;
+        return tags.some(t => RELEVANT_TAGS.has(t));
+      });
+
+      if (filtered.length === 0) filtered = allHeadlines.slice(0, 12);
+      const shown = filtered.slice(0, 12);
+
+      setTxt('news-count', shown.length + ' items');
+
+      const newsContainer = document.getElementById('news-container');
+      if (newsContainer) {
+        if (shown.length === 0) {
+          newsContainer.innerHTML = `
+            <div class="card p-6 col-span-3 text-center">
+              <i class="fas fa-rss text-slate-600 text-3xl mb-3"></i>
+              <div class="text-slate-400 font-semibold">News feed updates automatically via pipeline.</div>
+              <div class="text-slate-600 text-xs mt-1">No matching news for your positions right now.</div>
+            </div>`;
+        } else {
+          shown.forEach(h => {
+            const tags = h.tags || [];
+            const tagHtml = tags.slice(0, 4).map(t =>
+              `<span class="badge bg-gray-800 text-slate-400 text-xs">${t}</span>`
+            ).join('');
+            const pubDate = h.published ? new Date(h.published).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : '';
+            const div = document.createElement('div');
+            div.className = 'card news-card p-4 flex flex-col gap-2 cursor-pointer';
+            div.onclick = () => { if (h.link) window.open(h.link, '_blank', 'noopener'); };
+            div.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="badge bg-indigo-950 text-indigo-400 border border-indigo-900/40">${h.source || 'News'}</span>
+                <span class="text-xs text-slate-600">${pubDate}</span>
+              </div>
+              <div class="text-sm font-semibold text-white leading-snug">${h.title || ''}</div>
+              <div class="text-xs text-slate-400 leading-relaxed">${truncate(h.summary, 160)}</div>
+              <div class="flex flex-wrap gap-1 mt-auto pt-1">${tagHtml}</div>
+            `;
+            newsContainer.appendChild(div);
+          });
+        }
+      }
+    } catch(e) { console.warn('News section error:', e); }
+
+    // =====================
+    // SECTION 7: PREDICTION MARKETS
+    // =====================
+    try {
+      const plays = window.PREDICTION_DATA?.plays || [];
+      const shown = plays.slice(0, 6);
+      const predContainer = document.getElementById('predictions-container');
+      if (predContainer) {
+        if (shown.length === 0) {
+          predContainer.innerHTML = `<div class="card p-6 col-span-3 text-center text-slate-500">No prediction market data available.</div>`;
+        } else {
+          shown.forEach(p => {
+            const prob = p.implied_probability || 0;
+            const ret = p.potential_return_pct || 0;
+            let barColor = 'bg-emerald-500';
+            if (prob < 40) barColor = 'bg-red-500';
+            else if (prob < 60) barColor = 'bg-amber-500';
+            const div = document.createElement('div');
+            div.className = 'card p-4 space-y-3';
+            div.innerHTML = `
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex-1">
+                  <div class="text-sm font-semibold text-white leading-snug">${p.title || '–'}</div>
+                  <div class="text-xs text-slate-500 mt-0.5">${p.platform || ''}</div>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <div class="text-lg font-black ${prob >= 60 ? 'text-emerald-400' : prob >= 40 ? 'text-amber-400' : 'text-red-400'}">${prob}%</div>
+                  <div class="text-xs text-slate-500">implied</div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                  <span>Probability</span><span>${prob}%</span>
+                </div>
+                <div class="prob-bar">
+                  <div class="prob-fill ${barColor}" style="width:${Math.min(prob,100)}%"></div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-slate-500">Potential return</span>
+                <span class="font-bold ${ret > 50 ? 'text-emerald-400' : ret > 0 ? 'text-amber-400' : 'text-red-400'}">+${ret}%</span>
+              </div>
+            `;
+            predContainer.appendChild(div);
+          });
+        }
+      }
+    } catch(e) { console.warn('Predictions section error:', e); }
+
+    // =====================
+    // BACK TO TOP
+    // =====================
+    const backBtn = document.getElementById('back-to-top');
+    if (backBtn) {
+      window.addEventListener('scroll', () => {
+        backBtn.classList.toggle('visible', window.scrollY > 400);
+      });
+      backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+
+  }); // end DOMContentLoaded
+  </script>
+</body>
+</html>
