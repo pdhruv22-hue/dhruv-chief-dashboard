@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Income Engine Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="portfolio-data.js"></script>
+  <script src="live-prices-data.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #030712;
+      color: #f9fafb;
+      min-height: 100vh;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #111827; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+
+    /* ── Nav ── */
+    #top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 36px;
+      background: rgba(3,7,18,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(99,102,241,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 100;
+    }
+    #top-nav a { color: #818cf8; font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    #top-nav a:hover { color: #a5b4fc; }
+    #top-nav .nav-title { font-size: 12px; font-weight: 600; color: #e5e7eb; letter-spacing: 0.03em; }
+    #top-nav .nav-date { font-size: 11px; color: #6b7280; }
+
+    /* ── Layout ── */
+    .main-content { padding: 56px 20px 40px; max-width: 1400px; margin: 0 auto; }
+    @media (min-width: 768px) { .main-content { padding: 52px 28px 40px; } }
+
+    /* ── Section titles ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(99,102,241,0.3), transparent);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: #111827;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card-sm { padding: 14px 18px; }
+
+    /* ── Hero strip ── */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 900px) {
+      .hero-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .hero-card {
+      border-radius: 12px;
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-card .hc-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.65; margin-bottom: 8px; }
+    .hero-card .hc-value { font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+    .hero-card .hc-sub { font-size: 11px; margin-top: 6px; opacity: 0.6; }
+    .hero-card.highlight .hc-value { font-size: 38px; }
+    .hero-card.highlight { box-shadow: 0 0 40px rgba(99,102,241,0.15); }
+
+    /* ── Position cards ── */
+    .pos-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 900px) { .pos-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .pos-card { position: relative; overflow: hidden; }
+    .pos-card .accent-bar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      border-radius: 12px 0 0 12px;
+    }
+    .pos-card .inner { padding-left: 12px; }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Progress bar ── */
+    .prog-track {
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.8s ease;
+    }
+
+    /* ── Distribution calendar ── */
+    .dist-months { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 10px; }
+    .dist-month {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 3px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .dist-month.active { opacity: 1; }
+    .dist-month.inactive { background: rgba(255,255,255,0.05); color: #6b7280; }
+
+    /* ── Income calendar grid ── */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 640px) { .cal-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 900px) { .cal-grid { grid-template-columns: repeat(6, 1fr); } }
+    @media (min-width: 1100px) { .cal-grid { grid-template-columns: repeat(12, 1fr); } }
+
+    .cal-month-card {
+      background: #1f2937;
+      border-radius: 8px;
+      padding: 10px 8px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .cal-month-name { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .cal-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin: 2px; }
+    .cal-amount { font-size: 11px; font-weight: 700; margin-top: 6px; color: #10b981; }
+    .cal-cc-bar { height: 4px; border-radius: 2px; background: linear-gradient(90deg, #7c3aed, #a855f7); margin-top: 6px; }
+
+    /* ── Table ── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table thead th { padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7280; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .data-table tbody td { padding: 12px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    /* ── Toggle switch ── */
+    .toggle-wrap { display: flex; align-items: center; gap: 8px; }
+    .toggle-btn {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.25s;
+      border: none;
+      outline: none;
+    }
+    .toggle-btn.on { background: #7c3aed; }
+    .toggle-btn.off { background: #374151; }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: left 0.25s;
+    }
+    .toggle-btn.on .toggle-thumb { left: calc(100% - 21px); }
+    .toggle-btn.off .toggle-thumb { left: 3px; }
+
+    /* ── Slider ── */
+    .reinvest-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(to right, #6366f1 0%, #6366f1 var(--pct, 100%), #374151 var(--pct, 100%), #374151 100%);
+      outline: none;
+      cursor: pointer;
+    }
+    .reinvest-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #818cf8;
+      border: 2px solid #111827;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .reinvest-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    /* ── Chart container ── */
+    .chart-wrap { position: relative; height: 260px; }
+
+    /* ── Glow effects ── */
+    .glow-indigo { box-shadow: 0 0 24px rgba(99,102,241,0.12); }
+    .glow-purple { box-shadow: 0 0 24px rgba(139,92,246,0.12); }
+    .glow-green { box-shadow: 0 0 24px rgba(16,185,129,0.10); }
+
+    /* ── Info notice ── */
+    .notice-card {
+      background: rgba(99,102,241,0.06);
+      border: 1px solid rgba(99,102,241,0.15);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.6;
+    }
+    .notice-card strong { color: #c7d2fe; }
+    .notice-card code {
+      background: rgba(99,102,241,0.15);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 11px;
+      color: #a5b4fc;
+    }
+
+    /* ── Yield badge colors ── */
+    .yield-high { color: #10b981; }
+    .yield-mid  { color: #f59e0b; }
+    .yield-low  { color: #6b7280; }
+
+    /* ── Responsive chart ── */
+    canvas { max-width: 100%; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     TOP NAV
+══════════════════════════════════════════ -->
+<nav id="top-nav">
+  <a href="index.html"><i class="fa fa-arrow-left" style="margin-right:5px;font-size:10px;"></i>Dashboard</a>
+  <span class="nav-title"><i class="fa fa-bolt" style="margin-right:5px;color:#818cf8;"></i>Income Engine Dashboard</span>
+  <span class="nav-date" id="nav-date">Loading...</span>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════ -->
+<div class="main-content">
+
+  <!-- ── HERO SUMMARY ── -->
+  <div class="section-label" style="margin-top:8px;">
+    <i class="fa fa-dollar-sign" style="color:#818cf8;"></i>
+    Monthly Income Summary
+  </div>
+
+  <div class="hero-grid" id="hero-grid" style="margin-bottom:32px;">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- ── INCOME POSITION CARDS ── -->
+  <div class="section-label">
+    <i class="fa fa-layer-group" style="color:#818cf8;"></i>
+    Income Positions
+  </div>
+
+  <div class="pos-grid" id="pos-grid" style="margin-bottom:32px;">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- ── INCOME GROWTH CHART ── -->
+  <div class="section-label">
+    <i class="fa fa-chart-line" style="color:#818cf8;"></i>
+    Projected Income Growth — 24 Months
+  </div>
+
+  <div class="card glow-indigo" style="margin-bottom:32px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#e5e7eb;">Distribution Growth Projection</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">5%/yr ETF growth · covered calls held constant · no new buys</div>
+      </div>
+      <div style="display:flex;gap:16px;">
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#818cf8;">
+          <span style="width:20px;height:2px;background:#818cf8;border-radius:1px;display:inline-block;"></span>Passive Only
+        </span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#10b981;">
+          <span style="width:20px;height:2px;background:#10b981;border-radius:1px;display:inline-block;"></span>Total + Covered Calls
+        </span>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+  </div>
+
+  <!-- ── INCOME CALENDAR ── -->
+  <div class="section-label">
+    <i class="fa fa-calendar-alt" style="color:#818cf8;"></i>
+    Income Calendar — 2026
+  </div>
+
+  <div class="card" style="margin-bottom:32px;">
+    <!-- Legend -->
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;">
+      <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b7280;">
+        <span class="cal-dot" style="background:#6366f1;"></span>Monthly (QQQI · BTCI)
+      </span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b7280;">
+        <span class="cal-dot" style="background:#14b8a6;"></span>Quarterly (SCHD · VIG)
+      </span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:#6b7280;">
+        <span style="width:18px;height:4px;border-radius:2px;background:linear-gradient(90deg,#7c3aed,#a855f7);display:inline-block;"></span>Covered Calls
+      </span>
+    </div>
+    <div class="cal-grid" id="income-calendar">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- ── YIELD ON COST TABLE ── -->
+  <div class="section-label">
+    <i class="fa fa-table" style="color:#818cf8;"></i>
+    Yield Analysis
+  </div>
+
+  <div class="card" style="margin-bottom:32px;overflow-x:auto;">
+    <table class="data-table" id="yield-table">
+      <thead>
+        <tr>
+          <th>Position</th>
+          <th>Shares</th>
+          <th>Est. Cost Basis</th>
+          <th>Current Value</th>
+          <th>Yield on Cost</th>
+          <th>Yield on Market</th>
+          <th>Est. Annual Income</th>
+        </tr>
+      </thead>
+      <tbody id="yield-tbody">
+        <!-- filled by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── REINVESTMENT PROJECTOR ── -->
+  <div class="section-label">
+    <i class="fa fa-seedling" style="color:#818cf8;"></i>
+    Reinvestment Projector
+  </div>
+
+  <div class="card glow-green" style="margin-bottom:32px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#e5e7eb;">Compound Income Projector</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Assumes 5%/yr income growth · 10%/yr portfolio CAGR</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px;color:#6b7280;">Reinvest</div>
+        <div style="font-size:22px;font-weight:800;color:#10b981;" id="reinvest-pct-display">100%</div>
+      </div>
+    </div>
+
+    <input type="range" class="reinvest-slider" id="reinvest-slider" min="0" max="100" value="100" style="--pct:100%;" />
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#6b7280;margin-top:4px;margin-bottom:20px;">
+      <span>0% (spend all)</span><span>50%</span><span>100% (reinvest all)</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="reinvest-projections">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- ── QUICK UPDATE NOTICE ── -->
+  <div class="section-label">
+    <i class="fa fa-info-circle" style="color:#818cf8;"></i>
+    Keeping This Page Current
+  </div>
+
+  <div class="notice-card" style="margin-bottom:40px;">
+    <strong>Auto-sync:</strong> Income positions auto-reflect from <code>portfolio-data.js</code> — shares, prices, and values update whenever you upload a new brokerage export. Distribution rates are estimates; update <code>INCOME_POSITIONS</code> constants at the top of this file if rates change significantly. The covered-call income range (<code>COVERED_CALL</code> object) should be revised when strike prices or volatility shift materially.
+  </div>
+
+</div><!-- /main-content -->
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+/* ============================================
+   CONSTANTS — edit these when rates change
+   ============================================ */
+const INCOME_POSITIONS = [
+  {
+    symbol: 'QQQI',
+    name: 'NEOS Nasdaq-100 High Income ETF',
+    shares: 892,
+    price: 56.30,
+    value: 50219.60,
+    type: 'Monthly ETF',
+    frequency: 'monthly',
+    est_annual_yield_pct: 11.2,
+    est_monthly_per_share: 0.526,
+    account: 'CMA-88Z',
+    notes: 'Covered call + put spread overlay on QQQ. Primary income engine.',
+    color: 'indigo',
+    est_cost_basis: 55.85
+  },
+  {
+    symbol: 'BTCI',
+    name: 'Bitcoin High Income ETF',
+    shares: 140,
+    price: 35.04,
+    value: 4905.60,
+    type: 'Monthly ETF',
+    frequency: 'monthly',
+    est_annual_yield_pct: 14.8,
+    est_monthly_per_share: 0.432,
+    account: 'CMA-88Z',
+    notes: 'Covered call strategy on BTC exposure. Pairs with MSTR/IBIT.',
+    color: 'orange',
+    est_cost_basis: 36.60
+  },
+  {
+    symbol: 'SCHD',
+    name: 'Schwab US Dividend Equity ETF',
+    shares: 200,
+    price: 32.83,
+    value: 6566.00,
+    type: 'Quarterly ETF',
+    frequency: 'quarterly',
+    est_annual_yield_pct: 3.6,
+    est_monthly_per_share: 0.098,
+    account: 'IRA',
+    notes: 'Core dividend growth. Stable income with annual distribution increases.',
+    color: 'blue',
+    est_cost_basis: 30.44
+  },
+  {
+    symbol: 'VIG',
+    name: 'Vanguard Dividend Appreciation ETF',
+    shares: 6,
+    price: 233.10,
+    value: 1398.60,
+    type: 'Quarterly ETF',
+    frequency: 'quarterly',
+    est_annual_yield_pct: 1.8,
+    est_monthly_per_share: 0.350,
+    account: 'IRA',
+    notes: 'Dividend growth focus. Small position.',
+    color: 'teal',
+    est_cost_basis: 230.40
+  }
+];
+
+const COVERED_CALL = {
+  symbol: 'TSLA',
+  shares: 165,
+  strategy: 'Weekly/Monthly OTM Calls',
+  est_monthly_low: 1360,
+  est_monthly_high: 2378,
+  est_monthly_mid: 1869,
+  strike_range: '$445–$460',
+  notes: 'Sell calls on 165 TSLA shares. Caps upside above strike. Discuss timing around earnings.',
+  active: true
+};
+
+/* ============================================
+   DATA MERGE — override defaults from live files
+   ============================================ */
+function mergeWithLiveData() {
+  const pd = window.PORTFOLIO_DATA || {};
+  const lp = window.LIVE_PRICES_DATA || {};
+  const topPos = pd.top_positions || [];
+
+  INCOME_POSITIONS.forEach(pos => {
+    const live = topPos.find(p => p.symbol === pos.symbol);
+    if (live) {
+      pos.shares = live.shares ?? pos.shares;
+      pos.value  = live.value  ?? pos.value;
+      pos.price  = live.price  ?? pos.price;
+    }
+    // Also check live prices
+    const livePrice = lp.prices?.[pos.symbol];
+    if (livePrice) pos.price = livePrice;
+    // Recompute value if we have shares + price
+    if (pos.shares && pos.price) pos.value = pos.shares * pos.price;
+  });
+}
+
+/* ============================================
+   INCOME CALCULATIONS
+   ============================================ */
+function calcIncome(reinvestPct = 1) {
+  let monthlyPassive = 0;
+  INCOME_POSITIONS.forEach(p => {
+    const monthly = p.frequency === 'monthly'
+      ? p.est_monthly_per_share * p.shares
+      : (p.est_monthly_per_share * p.shares * 3) / 3;
+    monthlyPassive += monthly;
+  });
+  const annualPassive   = monthlyPassive * 12;
+  const coveredCallMid  = COVERED_CALL.est_monthly_mid;
+  const totalMonthly    = monthlyPassive + coveredCallMid;
+  const totalAnnual     = totalMonthly * 12;
+  const portfolioValue  = window.PORTFOLIO_DATA?.merrill_portfolio || 406202;
+  const yieldPct        = (totalAnnual / portfolioValue) * 100;
+  return { monthlyPassive, annualPassive, coveredCallMid, totalMonthly, totalAnnual, portfolioValue, yieldPct };
+}
+
+/* ============================================
+   COLOR HELPERS
+   ============================================ */
+const COLOR_MAP = {
+  indigo: { bg: 'rgba(99,102,241,0.12)', border: '#6366f1', text: '#818cf8', badge: 'background:rgba(99,102,241,0.15);color:#818cf8;', bar: '#6366f1', prog: '#6366f1' },
+  orange: { bg: 'rgba(249,115,22,0.10)', border: '#f97316', text: '#fb923c', badge: 'background:rgba(249,115,22,0.12);color:#fb923c;', bar: '#f97316', prog: '#f97316' },
+  blue:   { bg: 'rgba(59,130,246,0.10)', border: '#3b82f6', text: '#60a5fa', badge: 'background:rgba(59,130,246,0.12);color:#60a5fa;', bar: '#3b82f6', prog: '#3b82f6' },
+  teal:   { bg: 'rgba(20,184,166,0.10)', border: '#14b8a6', text: '#2dd4bf', badge: 'background:rgba(20,184,166,0.12);color:#2dd4bf;', bar: '#14b8a6', prog: '#14b8a6' },
+};
+
+/* ============================================
+   RENDER NAV DATE
+   ============================================ */
+function renderNavDate() {
+  const d = window.PORTFOLIO_DATA?.snapshot_date || '—';
+  document.getElementById('nav-date').textContent = 'Last updated: ' + d;
+}
+
+/* ============================================
+   RENDER HERO CARDS
+   ============================================ */
+function renderHero() {
+  const { monthlyPassive, coveredCallMid, totalMonthly, totalAnnual, portfolioValue, yieldPct } = calcIncome();
+  const fmt = n => '$' + Math.round(n).toLocaleString();
+
+  const cards = [
+    {
+      label: 'Monthly Passive',
+      value: fmt(monthlyPassive) + '/mo',
+      sub: 'ETF distributions only',
+      bg: 'background:linear-gradient(135deg,rgba(99,102,241,0.14),rgba(99,102,241,0.05))',
+      border: 'border:1px solid rgba(99,102,241,0.25)',
+      textColor: '#818cf8',
+      icon: 'fa-coins'
+    },
+    {
+      label: 'Covered Call Income',
+      value: fmt(coveredCallMid) + '/mo',
+      sub: `Range: $${COVERED_CALL.est_monthly_low.toLocaleString()}–$${COVERED_CALL.est_monthly_high.toLocaleString()}`,
+      bg: 'background:linear-gradient(135deg,rgba(139,92,246,0.14),rgba(139,92,246,0.05))',
+      border: 'border:1px solid rgba(139,92,246,0.25)',
+      textColor: '#a78bfa',
+      icon: 'fa-file-contract'
+    },
+    {
+      label: 'Total Monthly Income',
+      value: fmt(totalMonthly) + '/mo',
+      sub: `Equiv. to ${yieldPct.toFixed(1)}% yield on $${Math.round(portfolioValue / 1000)}K portfolio`,
+      bg: 'background:linear-gradient(135deg,rgba(16,185,129,0.16),rgba(16,185,129,0.06))',
+      border: 'border:1px solid rgba(16,185,129,0.3)',
+      textColor: '#10b981',
+      icon: 'fa-chart-bar',
+      highlight: true
+    },
+    {
+      label: 'Annual Run Rate',
+      value: fmt(totalAnnual) + '/yr',
+      sub: `Passive: ${fmt(monthlyPassive * 12)}/yr`,
+      bg: 'background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04))',
+      border: 'border:1px solid rgba(245,158,11,0.22)',
+      textColor: '#f59e0b',
+      icon: 'fa-calendar-check'
+    }
+  ];
+
+  const container = document.getElementById('hero-grid');
+  container.innerHTML = cards.map(c => `
+    <div class="hero-card ${c.highlight ? 'highlight' : ''}" style="${c.bg};${c.border}">
+      <div class="hc-label" style="color:${c.textColor};">
+        <i class="fa ${c.icon}" style="margin-right:5px;"></i>${c.label}
+      </div>
+      <div class="hc-value" style="color:${c.textColor};">${c.value}</div>
+      <div class="hc-sub">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================
+   RENDER POSITION CARDS
+   ============================================ */
+function renderPositionCards() {
+  const totalPassive = INCOME_POSITIONS.reduce((s, p) => {
+    return s + (p.frequency === 'monthly' ? p.est_monthly_per_share * p.shares : p.est_monthly_per_share * p.shares);
+  }, 0);
+
+  const container = document.getElementById('pos-grid');
+  const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const QUARTERLY_MONTHS = [2, 5, 8, 11]; // 0-indexed: Mar, Jun, Sep, Dec
+
+  let cardsHTML = INCOME_POSITIONS.map(pos => {
+    const c = COLOR_MAP[pos.color] || COLOR_MAP.indigo;
+    const monthlyIncome = pos.est_monthly_per_share * pos.shares;
+    const isMonthly = pos.frequency === 'monthly';
+    const displayIncome = isMonthly
+      ? `$${monthlyIncome.toFixed(0)}/mo`
+      : `$${(monthlyIncome * 3).toFixed(0)}/quarter`;
+    const annualIncome = monthlyIncome * 12;
+    const contrib = (monthlyIncome / totalPassive) * 100;
+
+    const monthDots = MONTHS_SHORT.map((m, i) => {
+      const isActive = isMonthly ? true : QUARTERLY_MONTHS.includes(i);
+      return `<span class="dist-month ${isActive ? 'active' : 'inactive'}" style="${isActive ? `background:${c.bg.replace('rgba', 'rgba').replace(',0.12', ',0.25')};color:${c.text};` : ''}">${m}</span>`;
+    }).join('');
+
+    return `
+      <div class="card pos-card" style="background:${c.bg};border:1px solid rgba(255,255,255,0.06);">
+        <div class="accent-bar" style="background:${c.bar};"></div>
+        <div class="inner">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                <span style="font-size:18px;font-weight:800;color:${c.text};letter-spacing:-0.01em;">${pos.symbol}</span>
+                <span class="badge" style="${c.badge}">${pos.type}</span>
+                <span class="badge" style="background:rgba(255,255,255,0.07);color:#9ca3af;">${pos.account}</span>
+              </div>
+              <div style="font-size:11px;color:#9ca3af;">${pos.name}</div>
+            </div>
+            <div style="text-align:right;white-space:nowrap;">
+              <div style="font-size:13px;font-weight:700;color:${c.text};">${displayIncome}</div>
+              <div style="font-size:10px;color:#6b7280;margin-top:2px;">est. distributions</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;">
+            <div>
+              <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Shares</div>
+              <div style="font-size:14px;font-weight:700;color:#e5e7eb;">${pos.shares.toLocaleString()}</div>
+            </div>
+            <div>
+              <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Price</div>
+              <div style="font-size:14px;font-weight:700;color:#e5e7eb;">$${pos.price.toFixed(2)}</div>
+            </div>
+            <div>
+              <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Value</div>
+              <div style="font-size:14px;font-weight:700;color:#e5e7eb;">$${Math.round(pos.value).toLocaleString()}</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:5px;">
+              <span style="color:#6b7280;">Share of passive income</span>
+              <span style="color:${c.text};font-weight:600;">${contrib.toFixed(1)}%</span>
+            </div>
+            <div class="prog-track">
+              <div class="prog-fill" style="width:${Math.min(contrib, 100)}%;background:${c.prog};"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Annual yield: <span style="color:${c.text};font-weight:700;">${pos.est_annual_yield_pct}%</span> · Annual est: <span style="color:#e5e7eb;font-weight:600;">$${Math.round(annualIncome).toLocaleString()}/yr</span></div>
+            <div class="dist-months">${monthDots}</div>
+          </div>
+
+          <div style="font-size:11px;color:#6b7280;line-height:1.5;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);">
+            <i class="fa fa-info-circle" style="color:${c.text};margin-right:5px;opacity:0.7;"></i>${pos.notes}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  // Covered Call card
+  const ccActiveInit = COVERED_CALL.active;
+  const ccCardHTML = `
+    <div class="card pos-card" id="cc-card" style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);">
+      <div class="accent-bar" style="background:linear-gradient(to bottom,#7c3aed,#a855f7);"></div>
+      <div class="inner">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+              <span style="font-size:18px;font-weight:800;color:#a78bfa;letter-spacing:-0.01em;">TSLA</span>
+              <span class="badge" style="background:rgba(139,92,246,0.2);color:#c4b5fd;">Covered Calls</span>
+              <span class="badge" style="background:rgba(255,255,255,0.07);color:#9ca3af;">IRA</span>
+            </div>
+            <div style="font-size:11px;color:#9ca3af;">Tesla Inc — Active Options Writing</div>
+          </div>
+          <!-- Toggle -->
+          <div class="toggle-wrap">
+            <button class="toggle-btn ${ccActiveInit ? 'on' : 'off'}" id="cc-toggle" onclick="toggleCC()" title="Toggle covered call status">
+              <div class="toggle-thumb"></div>
+            </button>
+            <span id="cc-toggle-label" style="font-size:11px;font-weight:600;color:${ccActiveInit ? '#a78bfa' : '#6b7280'};">${ccActiveInit ? 'Active' : 'Paused'}</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;">
+          <div>
+            <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Shares</div>
+            <div style="font-size:14px;font-weight:700;color:#e5e7eb;">${COVERED_CALL.shares}</div>
+          </div>
+          <div>
+            <div style="font-size:9px;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Strategy</div>
+            <div style="font-size:13px;font-weight:600;color:#e5e7eb;">${COVERED_CALL.strategy}</div>
+          </div>
+        </div>
+
+        <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:12px 14px;margin-bottom:14px;">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;">
+            <div>
+              <div style="font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Low</div>
+              <div style="font-size:16px;font-weight:700;color:#c4b5fd;">$${COVERED_CALL.est_monthly_low.toLocaleString()}</div>
+            </div>
+            <div>
+              <div style="font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Mid Estimate</div>
+              <div style="font-size:20px;font-weight:800;color:#a78bfa;">$${COVERED_CALL.est_monthly_mid.toLocaleString()}</div>
+            </div>
+            <div>
+              <div style="font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">High</div>
+              <div style="font-size:16px;font-weight:700;color:#c4b5fd;">$${COVERED_CALL.est_monthly_high.toLocaleString()}</div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:10px;color:#7c3aed;margin-top:8px;">per month</div>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <span style="font-size:10px;color:#6b7280;">Strike range:&nbsp;</span>
+          <span style="font-size:12px;font-weight:700;color:#a78bfa;">${COVERED_CALL.strike_range}</span>
+        </div>
+
+        <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);border-radius:6px;padding:9px 12px;margin-bottom:12px;font-size:11px;color:#f87171;">
+          <i class="fa fa-triangle-exclamation" style="margin-right:6px;"></i>
+          Caps TSLA upside above strike — time carefully around earnings
+        </div>
+
+        <div style="font-size:11px;color:#6b7280;line-height:1.5;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);">
+          <i class="fa fa-info-circle" style="color:#a78bfa;margin-right:5px;opacity:0.7;"></i>${COVERED_CALL.notes}
+        </div>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = cardsHTML.join('') + ccCardHTML;
+}
+
+/* ============================================
+   COVERED CALL TOGGLE
+   ============================================ */
+let ccActive = COVERED_CALL.active;
+function toggleCC() {
+  ccActive = !ccActive;
+  const btn   = document.getElementById('cc-toggle');
+  const label = document.getElementById('cc-toggle-label');
+  btn.className = 'toggle-btn ' + (ccActive ? 'on' : 'off');
+  label.textContent = ccActive ? 'Active' : 'Paused';
+  label.style.color  = ccActive ? '#a78bfa' : '#6b7280';
+}
+
+/* ============================================
+   INCOME GROWTH CHART
+   ============================================ */
+function renderGrowthChart() {
+  const { monthlyPassive, coveredCallMid } = calcIncome();
+  const growthRate = 1 + 0.05 / 12; // 5% annual monthly compounded
+
+  const labels = [];
+  const passiveData = [];
+  const totalData   = [];
+
+  const startDate = new Date(2026, 4, 1); // May 2026
+
+  for (let i = 0; i < 25; i++) {
+    const d = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+    labels.push(d.toLocaleString('default', { month: 'short', year: '2-digit' }));
+    const passive = monthlyPassive * Math.pow(growthRate, i);
+    passiveData.push(+passive.toFixed(2));
+    totalData.push(+(passive + coveredCallMid).toFixed(2));
+  }
+
+  const ctx = document.getElementById('growthChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Passive Only',
+          data: passiveData,
+          borderColor: '#818cf8',
+          backgroundColor: 'rgba(129,140,248,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#818cf8',
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Total + Covered Calls',
+          data: totalData,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16,185,129,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#10b981',
+          fill: true,
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1f2937',
+          borderColor: 'rgba(255,255,255,0.08)',
+          borderWidth: 1,
+          titleColor: '#e5e7eb',
+          bodyColor: '#9ca3af',
+          padding: 12,
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: $${Math.round(ctx.raw).toLocaleString()}/mo`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#6b7280', font: { size: 10 }, maxTicksLimit: 13 }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: {
+            color: '#6b7280',
+            font: { size: 10 },
+            callback: v => '$' + Math.round(v).toLocaleString()
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ============================================
+   INCOME CALENDAR
+   ============================================ */
+function renderCalendar() {
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const QUARTERLY_IDX = [2, 5, 8, 11];
+  const container = document.getElementById('income-calendar');
+
+  // Monthly income per position
+  const qqqi = INCOME_POSITIONS.find(p => p.symbol === 'QQQI');
+  const btci = INCOME_POSITIONS.find(p => p.symbol === 'BTCI');
+  const schd = INCOME_POSITIONS.find(p => p.symbol === 'SCHD');
+  const vig  = INCOME_POSITIONS.find(p => p.symbol === 'VIG');
+
+  const qqqiMo = qqqi ? qqqi.est_monthly_per_share * qqqi.shares : 0;
+  const btciMo = btci ? btci.est_monthly_per_share * btci.shares : 0;
+  const schdQ  = schd ? schd.est_monthly_per_share * schd.shares * 3 : 0;
+  const vigQ   = vig  ? vig.est_monthly_per_share  * vig.shares  * 3 : 0;
+
+  let html = '';
+  for (let i = 0; i < 12; i++) {
+    const isQ = QUARTERLY_IDX.includes(i);
+    let monthTotal = qqqiMo + btciMo + COVERED_CALL.est_monthly_mid;
+    if (isQ) monthTotal += schdQ + vigQ;
+
+    html += `
+      <div class="cal-month-card">
+        <div class="cal-month-name">${MONTHS[i]}</div>
+        <div>
+          <!-- Monthly ETFs -->
+          <span class="cal-dot" style="background:#6366f1;" title="QQQI"></span>
+          <span class="cal-dot" style="background:#f97316;" title="BTCI"></span>
+          ${isQ ? `<span class="cal-dot" style="background:#14b8a6;" title="SCHD+VIG"></span>` : ''}
+        </div>
+        <div class="cal-cc-bar"></div>
+        <div class="cal-amount">$${Math.round(monthTotal).toLocaleString()}</div>
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+}
+
+/* ============================================
+   YIELD TABLE
+   ============================================ */
+function renderYieldTable() {
+  const tbody = document.getElementById('yield-tbody');
+  const c = COLOR_MAP;
+
+  tbody.innerHTML = INCOME_POSITIONS.map(pos => {
+    const cc = c[pos.color] || c.indigo;
+    const costBasis  = pos.est_cost_basis * pos.shares;
+    const curValue   = pos.value;
+    const annualInc  = pos.est_annual_yield_pct / 100 * pos.value;
+    const yocPct     = (annualInc / costBasis) * 100;
+    const yomPct     = pos.est_annual_yield_pct;
+
+    const yomClass = yomPct >= 10 ? 'yield-high' : yomPct >= 4 ? 'yield-mid' : 'yield-low';
+    const yocClass = yocPct >= 10 ? 'yield-high' : yocPct >= 4 ? 'yield-mid' : 'yield-low';
+
+    return `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-weight:700;color:${cc.text};">${pos.symbol}</span>
+            <span style="font-size:10px;color:#6b7280;">${pos.name}</span>
+          </div>
+        </td>
+        <td style="color:#e5e7eb;">${pos.shares.toLocaleString()}</td>
+        <td style="color:#9ca3af;">$${costBasis.toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:0})}</td>
+        <td style="color:#e5e7eb;font-weight:600;">$${Math.round(curValue).toLocaleString()}</td>
+        <td class="${yocClass}" style="font-weight:700;">${yocPct.toFixed(1)}%</td>
+        <td class="${yomClass}" style="font-weight:700;">${yomPct.toFixed(1)}%</td>
+        <td style="color:#10b981;font-weight:600;">$${Math.round(annualInc).toLocaleString()}/yr</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* ============================================
+   REINVESTMENT PROJECTOR
+   ============================================ */
+function calcReinvestProjection(reinvestFraction) {
+  const { totalMonthly, portfolioValue } = calcIncome();
+  const incomeGrowthAnnual = 0.05;
+  const portfolioGrowthAnnual = 0.10;
+
+  function project(years) {
+    let portfolio = portfolioValue;
+    let monthlyInc = totalMonthly;
+    for (let yr = 0; yr < years; yr++) {
+      const annualIncome = monthlyInc * 12;
+      portfolio = portfolio * (1 + portfolioGrowthAnnual) + annualIncome * reinvestFraction;
+      monthlyInc *= (1 + incomeGrowthAnnual);
+    }
+    return { portfolioVal: portfolio, monthlyInc };
+  }
+
+  return {
+    yr1: project(1),
+    yr3: project(3),
+    yr5: project(5)
+  };
+}
+
+function renderReinvestProjections(pct = 100) {
+  const fraction = pct / 100;
+  const proj = calcReinvestProjection(fraction);
+  const fmt  = n => '$' + Math.round(n).toLocaleString();
+
+  const scenarios = [
+    { label: '1 Year', key: 'yr1', icon: 'fa-calendar', color: '#60a5fa', border: 'rgba(59,130,246,0.2)' },
+    { label: '3 Years', key: 'yr3', icon: 'fa-calendar-plus', color: '#10b981', border: 'rgba(16,185,129,0.2)' },
+    { label: '5 Years', key: 'yr5', icon: 'fa-calendar-days', color: '#a78bfa', border: 'rgba(139,92,246,0.2)' }
+  ];
+
+  document.getElementById('reinvest-projections').innerHTML = scenarios.map(s => `
+    <div style="background:#1f2937;border:1px solid ${s.border};border-radius:10px;padding:16px;text-align:center;">
+      <div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">
+        <i class="fa ${s.icon}" style="margin-right:4px;color:${s.color};"></i>${s.label}
+      </div>
+      <div style="font-size:22px;font-weight:800;color:${s.color};margin-bottom:4px;">${fmt(proj[s.key].portfolioVal)}</div>
+      <div style="font-size:11px;color:#6b7280;">portfolio value</div>
+      <div style="font-size:13px;font-weight:600;color:${s.color};margin-top:8px;">${fmt(proj[s.key].monthlyInc)}/mo</div>
+      <div style="font-size:10px;color:#6b7280;">projected income</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================
+   SLIDER WIRING
+   ============================================ */
+function initSlider() {
+  const slider  = document.getElementById('reinvest-slider');
+  const display = document.getElementById('reinvest-pct-display');
+
+  function update() {
+    const v = parseInt(slider.value);
+    display.textContent = v + '%';
+    slider.style.setProperty('--pct', v + '%');
+    renderReinvestProjections(v);
+  }
+
+  slider.addEventListener('input', update);
+  update(); // initial render
+}
+
+/* ============================================
+   BOOTSTRAP
+   ============================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  mergeWithLiveData();
+  renderNavDate();
+  renderHero();
+  renderPositionCards();
+  renderGrowthChart();
+  renderCalendar();
+  renderYieldTable();
+  initSlider();
+});
+</script>
+</body>
+</html>
