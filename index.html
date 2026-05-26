@@ -23,6 +23,7 @@
 <script src="health-tips-data.js?v=4" onerror="window.HEALTH_DATA=null"></script>
 <script src="crypto-analysis.js?v=1" onerror="window.CRYPTO_ANALYSIS=null"></script>
 <script src="position-deepdive.js?v=1" onerror="window.POSITION_DEEPDIVE=null"></script>
+<script src="news-data.js?v=1" onerror="window.NEWS_DATA=null"></script>
 
 <style>
 /* ── Reset & Base ─────────────────────────────────────────── */
@@ -876,42 +877,56 @@ input{font-family:inherit;outline:none}
         </div>
       </div>
 
-      <!-- Elon Activity -->
-      <div class="card-label" style="margin-bottom:8px">⚡ Elon Activity (TSLA/SpaceX/xAI)</div>
-      <div class="card" style="margin-bottom:16px">
-        <div id="elon-feed">
-          <div class="empty-state">
-            <div class="empty-icon">⚡</div>
-            <div class="empty-title">No Elon activity flagged</div>
-            <div class="empty-hint">Will surface X posts touching TSLA, SpaceX, or xAI</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Portfolio News -->
-      <div class="card-label" style="margin-bottom:8px">📰 Portfolio-Relevant Headlines</div>
-      <div class="card" style="margin-bottom:16px">
-        <div id="news-feed">
-          <div class="empty-state">
-            <div class="empty-icon">📰</div>
-            <div class="empty-title">Headlines load from Stocks data</div>
-            <div class="empty-hint">NVDA · QQQ · BTC · TSLA · OKLO</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI News -->
-      <div class="card-label" style="margin-bottom:8px">🤖 AI Landscape</div>
-      <div class="card">
-        <div id="ai-news-feed">
-          <div class="empty-state">
-            <div class="empty-icon">🤖</div>
-            <div class="empty-title">AI company moves</div>
-            <div class="empty-hint">Anthropic · OpenAI · xAI · Google DeepMind</div>
-          </div>
+      <!-- Dynamic news sections -->
+      <div id="news-sections-container">
+        <div class="empty-state">
+          <div class="empty-icon">📡</div>
+          <div class="empty-title">Loading intelligence...</div>
+          <div class="empty-hint">Run news_generator.py to populate</div>
         </div>
       </div>
     </div>
+
+    <script>
+    (function() {
+      function renderNews() {
+        const container = document.getElementById('news-sections-container');
+        if (!container) return;
+        const data = window.NEWS_DATA;
+        if (!data || !data.sections) return;
+
+        const levelColors = {
+          highlight: 'var(--accent)',
+          warning: '#f59e0b',
+          alert: '#ef4444',
+          info: 'var(--text-dim)'
+        };
+
+        let html = `<div style="font-size:11px;color:var(--text-dim);margin-bottom:12px">Updated: ${data.generatedAt}</div>`;
+
+        data.sections.forEach(sec => {
+          const color = levelColors[sec.level] || 'var(--text-dim)';
+          const border = sec.level === 'highlight' ? `border-left:3px solid ${color};padding-left:12px;` : '';
+          html += `
+            <div class="card" style="margin-bottom:14px;${border}">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span style="font-size:16px">${sec.icon}</span>
+                <span style="font-weight:700;font-size:13px;color:${color}">${sec.title}</span>
+              </div>
+              <div style="font-size:12px;line-height:1.6;color:var(--text-muted);white-space:pre-wrap">${sec.content}</div>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderNews);
+      } else {
+        renderNews();
+      }
+    })();
+    </script>
 
     <!-- ── WEALTH TAB ─────────────────────────────────────── -->
     <div class="tab-content" id="tab-wealth">
