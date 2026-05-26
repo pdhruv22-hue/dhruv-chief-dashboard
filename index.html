@@ -1187,14 +1187,15 @@ function renderWealth() {
   document.getElementById('nw-pct').textContent = pct + '%';
   document.getElementById('nw-gap').textContent = 'Gap: ' + fmt.usd(target - nw);
 
-  // Accounts
+  // Accounts — pull from bucket_values or individual fields
+  const bv = wd.bucket_values || {};
   const accounts = [
-    {label:'Merrill IRA', val: wd.bucket_values?.ira || wd.merrill_portfolio},
-    {label:'Merrill CMA-28Z', val: wd.bucket_values?.cma28z},
-    {label:'Merrill CMA-88Z', val: wd.bucket_values?.cma88z},
-    {label:'Wealthfront HYSA', val: wd.hysa_axos || wd.hysa_tbills},
-    {label:'Crypto', val: wd.crypto},
-    {label:'Bluestone', val: wd.bluestone},
+    {label:'Merrill IRA', val: bv.ira || wd.merrill_portfolio || wd.total_stocks},
+    {label:'Merrill CMA-28Z', val: bv.cma28z || bv.cma},
+    {label:'Merrill CMA-88Z', val: bv.cma88z},
+    {label:'Wealthfront HYSA', val: bv.hysa || wd.hysa_axos || wd.hysa_tbills || wd.hysa_sofi},
+    {label:'Crypto', val: bv.crypto || wd.crypto},
+    {label:'Bluestone (locked)', val: wd.bluestone || 94000},
   ].filter(a => a.val != null && a.val > 0);
 
   const mid = Math.ceil(accounts.length/2);
@@ -1202,17 +1203,25 @@ function renderWealth() {
   document.getElementById('accounts-left').innerHTML = accounts.slice(0, mid).map(makeRow).join('');
   document.getElementById('accounts-right').innerHTML = accounts.slice(mid).map(makeRow).join('');
 
-  // Positions table
-  const pos = (wd.top_positions || wd.positions || []).sort((a,b) => (b.value||0)-(a.value||0));
+  // Positions table — compute pct from total
+  const allPos = (wd.top_positions || wd.positions || []).sort((a,b) => (b.value||0)-(a.value||0));
+  const totalVal = allPos.reduce((s,p) => s + (p.value||0), 0) || nw || 1;
   const tbody = document.getElementById('positions-tbody');
-  tbody.innerHTML = pos.slice(0, 20).map(p => `
-    <tr>
-      <td class="mono fw-700">${p.symbol || p.ticker} ${SACRED.includes(p.symbol||p.ticker)?'<span class="badge-hold badge" style="font-size:9px">HOLD</span>':''}</td>
-      <td class="text-sm text-muted">${p.account || '—'}</td>
-      <td class="num mono">${p.shares?.toFixed(0) || '—'}</td>
+  tbody.innerHTML = allPos.slice(0, 20).map(p => {
+    const sym = p.symbol || p.ticker;
+    const pct = p.pct_of_portfolio || (p.value ? (p.value / totalVal * 100) : 0);
+    // account from stocks data if missing
+    const sd = window.STOCKS_DATA;
+    const sdTicker = sd ? (sd.tickers||[]).find(t => t.symbol === sym) : null;
+    const acct = p.account || sdTicker?.account || '—';
+    return `<tr>
+      <td class="mono fw-700">${sym} ${SACRED.includes(sym)?'<span class="badge-hold badge" style="font-size:9px">HOLD</span>':''}</td>
+      <td class="text-sm text-muted">${acct}</td>
+      <td class="num mono">${p.shares != null ? Number(p.shares).toFixed(0) : '—'}</td>
       <td class="num mono">${fmt.usd(p.value)}</td>
-      <td class="num mono">${p.pct_of_portfolio?.toFixed(1) || '—'}%</td>
-    </tr>`).join('');
+      <td class="num mono">${pct > 0 ? pct.toFixed(1) + '%' : '—'}</td>
+    </tr>`;
+  }).join('');
 }
 
 // ── HEALTH rendering ───────────────────────────────────────────
