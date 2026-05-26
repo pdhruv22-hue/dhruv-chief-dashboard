@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <!-- Data files -->
+<script src="portfolio-live.js?v=1" onerror="window.PORTFOLIO_LIVE=null"></script>
 <script src="stocks-data.js?v=4" onerror="window.STOCKS_DATA=null"></script>
 <script src="stocks-wsb-data.js?v=4" onerror="window.STOCKS_WSB_DATA=null"></script>
 <script src="stocks-analyst-data.js?v=4" onerror="window.STOCKS_ANALYST_DATA=null"></script>
@@ -418,6 +419,105 @@ input{font-family:inherit;outline:none}
 .expandable{display:none}
 .expandable.open{display:block}
 
+/* ── Command Center ───────────────────────────────────────── */
+.command-center{
+  background:linear-gradient(135deg,rgba(217,119,87,.08),rgba(217,119,87,.03));
+  border:1px solid rgba(217,119,87,.25);border-radius:var(--r);
+  padding:14px 20px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.cc-stat{display:flex;flex-direction:column;gap:2px;min-width:80px}
+.cc-stat .cc-val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--accent)}
+.cc-stat .cc-lbl{font-size:10px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.cc-divider{width:1px;height:36px;background:rgba(255,255,255,.08)}
+.cc-action{display:flex;flex-direction:column;gap:3px;flex:1;min-width:180px}
+.cc-action-text{font-size:13px;color:var(--text);font-weight:500}
+.cc-action-sub{font-size:11px;color:var(--muted)}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.on{background:var(--green);box-shadow:0 0 6px rgba(74,222,128,.5);animation:pulse 2s infinite}
+.status-dot.warn{background:var(--yellow)}
+.status-dot.alert{background:var(--red);animation:pulse 1s infinite}
+
+/* ── Counter animation ────────────────────────────────────── */
+@keyframes countUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.counter-animated{animation:countUp .4s ease-out both}
+
+/* ── Risk Monitor ─────────────────────────────────────────── */
+.risk-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px 20px;margin-bottom:10px;
+  transition:border-color .15s;cursor:pointer;
+}
+.risk-card:hover{border-color:var(--border2)}
+.risk-card.risk-high{border-left:3px solid var(--red);background:rgba(248,113,113,.03)}
+.risk-card.risk-medium{border-left:3px solid var(--yellow);background:rgba(252,211,77,.03)}
+.risk-card.risk-low{border-left:3px solid var(--green);background:rgba(74,222,128,.03)}
+.risk-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.risk-title{font-size:14px;font-weight:700}
+.risk-body{font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px}
+.risk-trigger{font-size:11px;color:var(--dim);font-family:var(--mono);margin-top:4px}
+.risk-status{font-size:12px;color:var(--text);font-family:var(--mono);margin-top:4px}
+.badge-high{background:rgba(248,113,113,.18);color:var(--red)}
+.badge-medium{background:rgba(252,211,77,.18);color:var(--yellow)}
+.badge-low{background:rgba(74,222,128,.18);color:var(--green)}
+
+/* ── Action Plan ──────────────────────────────────────────── */
+.action-section{margin-bottom:20px}
+.action-group-label{
+  font-size:11px;font-weight:700;color:var(--dim);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.action-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg2);cursor:pointer;transition:background .1s,border-color .1s,opacity .2s;
+  margin-bottom:8px;
+}
+.action-item:hover{border-color:var(--border2);background:var(--bg3)}
+.action-item.done{opacity:.45}
+.action-item.done .action-text{text-decoration:line-through;color:var(--dim)}
+.action-check{
+  width:18px;height:18px;border-radius:4px;border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+  transition:background .15s,border-color .15s;font-size:10px;
+}
+.action-item.done .action-check{background:var(--green);border-color:var(--green);color:#fff}
+.action-text{font-size:13px;font-weight:500;flex:1}
+.action-meta{font-size:11px;color:var(--dim);margin-top:2px}
+.action-badge{flex-shrink:0}
+.never-touch-row{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);
+  border-radius:6px;margin-bottom:6px;
+}
+.never-touch-ticker{font-family:var(--mono);font-weight:700;color:var(--red)}
+
+/* ── Forecasts Tab ────────────────────────────────────────── */
+.scenario-toggle{display:flex;gap:4px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.scen-btn{
+  padding:6px 16px;font-size:12px;font-weight:600;background:transparent;color:var(--muted);
+  transition:background .15s,color .15s;cursor:pointer;
+}
+.scen-btn.active-bear{background:rgba(248,113,113,.2);color:var(--red)}
+.scen-btn.active-base{background:rgba(74,222,128,.2);color:var(--green)}
+.scen-btn.active-bull{background:rgba(217,119,87,.2);color:var(--accent)}
+.milestone-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;
+  text-align:center;
+}
+.milestone-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent)}
+.milestone-lbl{font-size:11px;color:var(--muted);margin-top:4px}
+.milestone-when{font-size:10px;color:var(--dim);font-family:var(--mono);margin-top:2px}
+.forecast-chart-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.forecast-chart-title{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:12px;letter-spacing:.04em;text-transform:uppercase}
+.age-slider{width:100%;accent-color:var(--accent);height:4px;margin:8px 0}
+
+/* ── Position status dots ─────────────────────────────────── */
+.pos-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+.pos-status-dot.on-track{background:var(--green)}
+.pos-status-dot.monitor{background:var(--yellow)}
+.pos-status-dot.action-needed{background:var(--red)}
+
 /* ── SPCX countdown ───────────────────────────────────────── */
 .countdown-card{
   background:linear-gradient(135deg,rgba(217,119,87,.12),rgba(217,119,87,.04));
@@ -485,6 +585,19 @@ input{font-family:inherit;outline:none}
     </div>
 
     <div class="nav-section">
+      <div class="nav-label">Plan</div>
+      <div class="nav-item" onclick="switchTab('action',this)">
+        <span class="icon">✅</span>Action Plan
+      </div>
+      <div class="nav-item" onclick="switchTab('risk',this)">
+        <span class="icon">⚠️</span>Risk Monitor
+      </div>
+      <div class="nav-item" onclick="switchTab('forecasts',this)">
+        <span class="icon">📈</span>Forecasts
+      </div>
+    </div>
+
+    <div class="nav-section">
       <div class="nav-label">Life</div>
       <div class="nav-item" onclick="switchTab('health',this)">
         <span class="icon">🏥</span>Health
@@ -504,6 +617,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── STOCKS TAB ─────────────────────────────────────── -->
     <div class="tab-content active" id="tab-stocks">
+      <div id="cc-stocks" class="command-center"></div>
       <div class="tab-header">
         <div>
           <div class="tab-title">Stocks</div>
@@ -550,6 +664,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── FORTRESS TAB ───────────────────────────────────── -->
     <div class="tab-content" id="tab-fortress">
+      <div id="cc-fortress" class="command-center"></div>
       <div class="tab-header">
         <div class="tab-title">🏰 Fortress</div>
         <div class="freshness">Income Engine</div>
@@ -737,6 +852,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── INTELLIGENCE TAB ───────────────────────────────── -->
     <div class="tab-content" id="tab-news">
+      <div id="cc-news" class="command-center"></div>
       <div class="tab-header">
         <div class="tab-title">📡 Intelligence</div>
         <div id="news-freshness" class="freshness">Live</div>
@@ -799,6 +915,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── WEALTH TAB ─────────────────────────────────────── -->
     <div class="tab-content" id="tab-wealth">
+      <div id="cc-wealth" class="command-center"></div>
       <div class="tab-header">
         <div class="tab-title">💰 Wealth</div>
         <div id="wealth-freshness" class="freshness">—</div>
@@ -874,6 +991,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── DEPLOY TAB ─────────────────────────────────────── -->
     <div class="tab-content" id="tab-deploy">
+      <div id="cc-deploy" class="command-center"></div>
       <div class="tab-header">
         <div class="tab-title">🚀 Deploy Plan</div>
         <div class="freshness">Locked May 2026</div>
@@ -1010,6 +1128,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── CRYPTO TAB ────────────────────────────────────────── -->
     <div class="tab-content" id="tab-crypto">
+      <div id="cc-crypto" class="command-center"></div>
       <div class="tab-header">
         <div>
           <div class="tab-title">₿ Crypto</div>
@@ -1041,6 +1160,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── THESIS DEEP DIVE TAB ───────────────────────────────── -->
     <div class="tab-content" id="tab-thesis">
+      <div id="cc-thesis" class="command-center"></div>
       <div class="tab-header">
         <div>
           <div class="tab-title">🔬 Thesis Deep Dive</div>
@@ -1060,6 +1180,7 @@ input{font-family:inherit;outline:none}
 
     <!-- ── HEALTH TAB ─────────────────────────────────────── -->
     <div class="tab-content" id="tab-health">
+      <div id="cc-health" class="command-center"></div>
       <div class="tab-header">
         <div class="tab-title">🏥 Health</div>
         <div id="health-freshness" class="freshness">—</div>
@@ -1073,6 +1194,350 @@ input{font-family:inherit;outline:none}
       </div>
     </div>
 
+    <!-- ── ACTION PLAN TAB ───────────────────────────────────── -->
+    <div class="tab-content" id="tab-action">
+      <div id="cc-action" class="command-center"></div>
+      <div class="tab-header">
+        <div class="tab-title">✅ Action Plan</div>
+        <div class="freshness" id="action-freshness">May 26, 2026</div>
+      </div>
+
+      <!-- Today's Actions -->
+      <div class="action-section">
+        <div class="action-group-label">🔴 Today — Execute Now</div>
+        <div id="today-actions"></div>
+      </div>
+
+      <!-- This Week -->
+      <div class="action-section">
+        <div class="action-group-label">📅 This Week</div>
+        <div class="action-item" style="cursor:default">
+          <div class="col gap-2" style="flex:1">
+            <div class="action-text">Buy NVDA ~59 shares @ LIMIT $216.50</div>
+            <div class="action-meta">IRA-Edge · After INSM/VIG/SCHD settle (T+1)</div>
+          </div>
+          <span class="badge badge-yellow">MAY 27</span>
+        </div>
+        <div class="action-item" style="cursor:default">
+          <div class="col gap-2" style="flex:1">
+            <div class="action-text">Monitor RONB fill @ $23.85 limit</div>
+            <div class="action-meta">CMA-28Z · ~838 shares target for $20K SpaceX bridge</div>
+          </div>
+          <span class="badge badge-dim">ONGOING</span>
+        </div>
+      </div>
+
+      <!-- June Milestones -->
+      <div class="action-section">
+        <div class="action-group-label">🗓️ June Schedule</div>
+        <div class="action-item" style="cursor:default">
+          <div class="col gap-2" style="flex:1">
+            <div class="action-text">Wire $10K Bluestone → CMA-28Z</div>
+            <div class="action-meta">Tactical pool. Post-transfer floor: ~$34K remaining in Bluestone.</div>
+          </div>
+          <span class="badge badge-blue">JUN 8–11</span>
+        </div>
+        <div class="action-item" style="cursor:default">
+          <div class="col gap-2" style="flex:1">
+            <div class="action-text">SPCX IPO — Execute at open (9:45–10:00 AM ET)</div>
+            <div class="action-meta">CMA-28Z · $50K total · LIMIT only · Max price = offering + 25% · Stand down if opens 100%+ above offering</div>
+          </div>
+          <span class="badge badge-accent">JUN 12</span>
+        </div>
+      </div>
+
+      <!-- Monthly Cadence -->
+      <div class="action-section">
+        <div class="action-group-label">📆 Monthly Cadence</div>
+        <div class="action-item" style="cursor:default">
+          <div class="col gap-2" style="flex:1">
+            <div class="action-text">IRA VOO buy — $7,000</div>
+            <div class="action-meta">IRA-Edge · April 15 each year · 100% DRIP forever</div>
+          </div>
+          <span class="badge badge-accent">APR 15</span>
+        </div>
+        <div class="action-item" style="cursor:default">
+          <div class="col gap-2" style="flex:1">
+            <div class="action-text">Full CMA deploy — BTCI $7K + QQQ $35K + VOO $15K</div>
+            <div class="action-meta">CMA-28Z · May 27 each year · All 100% DRIP</div>
+          </div>
+          <span class="badge badge-accent">MAY 27</span>
+        </div>
+      </div>
+
+      <!-- Never Touch -->
+      <div class="action-section">
+        <div class="action-group-label">🔒 Never Touch</div>
+        <div class="card" style="padding:12px 16px">
+          <div class="text-xs text-dim" style="margin-bottom:10px">These positions are sacred. No trimming, no selling, no rebalancing.</div>
+          <div id="never-touch-list">
+            <div class="never-touch-row"><span class="never-touch-ticker">TSLA</span><span class="text-sm text-muted">EV + Robotaxi + xAI merger thesis. Hold forever regardless of volatility.</span></div>
+            <div class="never-touch-row"><span class="never-touch-ticker">XPEV</span><span class="text-sm text-muted">Tesla of China. Long-term EV thesis play.</span></div>
+            <div class="never-touch-row"><span class="never-touch-ticker">GOOGL</span><span class="text-sm text-muted">AI infrastructure + search moat. Sacred hold.</span></div>
+            <div class="never-touch-row"><span class="never-touch-ticker">AMZN</span><span class="text-sm text-muted">AWS + AI + logistics dominance.</span></div>
+            <div class="never-touch-row"><span class="never-touch-ticker">QQQI</span><span class="text-sm text-muted">Income engine. 100% DRIP. This IS the retirement machine.</span></div>
+            <div class="never-touch-row"><span class="never-touch-ticker">Bluestone $50K</span><span class="text-sm text-muted text-red">Tax reserve. IRS obligation. NEVER INVEST THIS.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RISK MONITOR TAB ───────────────────────────────────── -->
+    <div class="tab-content" id="tab-risk">
+      <div id="cc-risk" class="command-center"></div>
+      <div class="tab-header">
+        <div class="tab-title">⚠️ Risk Monitor</div>
+        <div class="freshness">8 Active Risks</div>
+      </div>
+      <div class="text-sm text-muted" style="margin-bottom:16px">Institutional-style risk dashboard. Tap any risk to expand details.</div>
+
+      <div class="card-label" style="margin-bottom:8px">Risk Summary</div>
+      <div class="card-grid" style="grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+        <div class="card card-sm" style="border-color:rgba(248,113,113,.3);text-align:center">
+          <div class="text-xs text-dim" style="margin-bottom:4px">HIGH</div>
+          <div class="stat-big mono text-red">0</div>
+        </div>
+        <div class="card card-sm" style="border-color:rgba(252,211,77,.3);text-align:center">
+          <div class="text-xs text-dim" style="margin-bottom:4px">MEDIUM</div>
+          <div class="stat-big mono text-yellow">5</div>
+        </div>
+        <div class="card card-sm" style="border-color:rgba(74,222,128,.3);text-align:center">
+          <div class="text-xs text-dim" style="margin-bottom:4px">LOW</div>
+          <div class="stat-big mono text-green">3</div>
+        </div>
+        <div class="card card-sm" style="text-align:center">
+          <div class="text-xs text-dim" style="margin-bottom:4px">TOTAL</div>
+          <div class="stat-big mono">8</div>
+        </div>
+      </div>
+
+      <!-- Risk Cards -->
+      <div class="card-label" style="margin-bottom:10px">Active Risks</div>
+
+      <div class="risk-card risk-medium" onclick="toggleExpand('risk1')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-medium">MEDIUM</span><span class="risk-title">C1 — Concentration Risk</span></div>
+          <div class="expand-icon" id="icon-risk1">▾</div>
+        </div>
+        <div class="risk-status mono">TSLA: 17% of NW · Alert level: 50% · Status: ✓ OK</div>
+        <div class="expandable" id="risk1">
+          <div class="risk-body">TSLA represents approximately 17% of liquid net worth — well under the 50% alert threshold. This is a deliberate override: TSLA has a "never sell" designation regardless of concentration. QQQI has no hard cap but is monitored separately.</div>
+          <div class="risk-trigger">Trigger: TSLA ≥ 50% NW → alert only, no forced action · QQQI: monitor AUM &amp; fund structure</div>
+        </div>
+      </div>
+
+      <div class="risk-card risk-low" onclick="toggleExpand('risk2')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-low">LOW</span><span class="risk-title">C2 — NAV Erosion Risk (QQQI)</span></div>
+          <div class="expand-icon" id="icon-risk2">▾</div>
+        </div>
+        <div class="risk-status mono">TTM Yield: 14.11% · Plan assumption: 13.5% · Status: ✓ Healthy (+61bps above plan)</div>
+        <div class="expandable" id="risk2">
+          <div class="risk-body">QQQI's trailing 12-month distribution yield of 14.11% exceeds the conservative 13.5% plan assumption. The fund derives income from covered calls on Nasdaq-100, meaning yield is sustainable as long as equity volatility remains elevated. NAV erosion is the key risk if call premium dries up in low-volatility markets.</div>
+          <div class="risk-trigger">Trigger: TTM yield drops below 11% for 2 consecutive quarters → reduce DRIP, evaluate rotation to SCHD</div>
+        </div>
+      </div>
+
+      <div class="risk-card risk-medium" onclick="toggleExpand('risk3')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-medium">MEDIUM</span><span class="risk-title">C3 — Yield Sustainability Risk (BTCI)</span></div>
+          <div class="expand-icon" id="icon-risk3">▾</div>
+        </div>
+        <div class="risk-status mono">Plan assumption: 11% yield · BTC must maintain volatility premium · Status: ⚠️ Monitor</div>
+        <div class="expandable" id="risk3">
+          <div class="risk-body">BTCI generates income from covered calls on Bitcoin. The 11% plan yield depends on sustained BTC volatility. Post-ETF approval, BTC could become a "slow asset" like gold — lower volatility = lower call premium = lower distributions. This is a medium-term structural risk not present in traditional yield instruments.</div>
+          <div class="risk-trigger">Trigger: BTCI TTM yield drops below 8% for 1 quarter → reduce new contributions, evaluate rotation to higher-conviction income</div>
+        </div>
+      </div>
+
+      <div class="risk-card risk-medium" onclick="toggleExpand('risk4')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-medium">MEDIUM</span><span class="risk-title">C4 — Sequence Risk</span></div>
+          <div class="expand-icon" id="icon-risk4">▾</div>
+        </div>
+        <div class="risk-status mono">Age 31 now · DRIP compounds for 9 years before cash phase · Status: ⚠️ Early years critical</div>
+        <div class="expandable" id="risk4">
+          <div class="risk-body">A 40%+ market crash in years 1-4 (2026-2030) would significantly reduce the share base being accumulated via DRIP. The plan is designed so DRIP re-buys at lower prices (dollar-cost averaging), which partially mitigates this. However, a crash followed by a slow recovery compresses the compounding window. Mitigation: $50K SPCX + $20K RONB are tactical plays, not DRIP core — they don't affect the fortress machine.</div>
+          <div class="risk-trigger">Trigger: Portfolio drops 35%+ in first 3 years → activate dip protocol, deploy tactical pool floor ($10K min) into QQQI/BTCI</div>
+        </div>
+      </div>
+
+      <div class="risk-card risk-medium" onclick="toggleExpand('risk5')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-medium">MEDIUM</span><span class="risk-title">C5 — Crypto-Adjacent Concentration</span></div>
+          <div class="expand-icon" id="icon-risk5">▾</div>
+        </div>
+        <div class="risk-status mono">BTCI + MSTR + IBIT + direct crypto vs 35% NW soft limit · Status: ⚠️ Track post-SPCX</div>
+        <div class="expandable" id="risk5">
+          <div class="risk-body">Combined crypto-adjacent exposure (BTCI ~$4,906 + MSTR ~$4,797 + IBIT market value + ETH/SOL/XRP/ADA ~$9,845) sits below the 35% NW alert. This needs active monitoring post-SPCX deployment as total NW grows. If BTC rallies hard, BTCI and MSTR could balloon the percentage rapidly.</div>
+          <div class="risk-trigger">Trigger: Crypto-adjacent &gt; 35% NW → alert, no forced action. Consider trimming MSTR first (smallest thesis conviction).</div>
+        </div>
+      </div>
+
+      <div class="risk-card risk-medium" onclick="toggleExpand('risk6')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-medium">MEDIUM</span><span class="risk-title">C6 — Tax Risk (Year 5 Pivot)</span></div>
+          <div class="expand-icon" id="icon-risk6">▾</div>
+        </div>
+        <div class="risk-status mono">Year 5 (2031) QQQ/VOO sell → ~$31K tax obligation · Funded from AMDA store income</div>
+        <div class="expandable" id="risk6">
+          <div class="risk-body">When QQQ and VOO in CMA-28Z are liquidated at the Year 5 pivot to rotate into QQQI in CMA-88Z, the realized gains will trigger an estimated $31K tax obligation. This is intentionally funded from AMDA (store) income — NOT from the tactical pool or Bluestone. The $50K Bluestone tax reserve is for ongoing IRS obligations, not this specific event.</div>
+          <div class="risk-trigger">Trigger: If AMDA store income drops significantly by 2031 → Kavita consultation required · Alternative: phase sell-off over 2 years to reduce single-year tax hit</div>
+        </div>
+      </div>
+
+      <div class="risk-card risk-low" onclick="toggleExpand('risk7')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-low">LOW</span><span class="risk-title">C7 — ETF Structure Risk</span></div>
+          <div class="expand-icon" id="icon-risk7">▾</div>
+        </div>
+        <div class="risk-status mono">QQQI: NEOS $11.76B AUM · BTCI: smaller AUM · Status: ✓ QQQI stable, BTCI monitor</div>
+        <div class="expandable" id="risk7">
+          <div class="risk-body">ETF closure or restructure risk is real but low for QQQI given its $11.76B AUM and institutional adoption. BTCI carries slightly more risk as a smaller, more niche product. If either fund closes: distributions would stop, shares would be redeemed at NAV, and proceeds would need reinvestment — disruptive but not catastrophic. The real risk is a multi-year wind-down that interrupts DRIP compounding.</div>
+          <div class="risk-trigger">Trigger: QQQI AUM drops below $2B or BTCI below $500M → evaluate rotation to comparable covered-call ETF (e.g., JEPI, JEPQ)</div>
+        </div>
+      </div>
+
+      <div class="risk-card risk-low" onclick="toggleExpand('risk8')">
+        <div class="risk-header">
+          <div class="row gap-8"><span class="badge badge-low">LOW</span><span class="risk-title">C8 — Liquidity Risk</span></div>
+          <div class="expand-icon" id="icon-risk8">▾</div>
+        </div>
+        <div class="risk-status mono">Tactical pool: $44K · Post $10K transfer: ~$34K · Floor: $10K minimum · Status: ✓ OK</div>
+        <div class="expandable" id="risk8">
+          <div class="risk-body">The Bluestone tactical pool currently sits at $44K, with a planned $10K wire to CMA-28Z bringing it to ~$34K. The floor of $10K must never be breached — this is the emergency dry-powder for opportunistic buys or unexpected personal expenses. The $50K tax reserve is completely separate and untouchable.</div>
+          <div class="risk-trigger">Trigger: Tactical pool drops below $20K → pause discretionary spending, no new deployments until replenished · Below $10K → emergency protocol</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FORECASTS TAB ──────────────────────────────────────── -->
+    <div class="tab-content" id="tab-forecasts">
+      <div id="cc-forecasts" class="command-center"></div>
+      <div class="tab-header">
+        <div class="tab-title">📈 Forecasts</div>
+        <div class="freshness">Verified May 2026</div>
+      </div>
+
+      <!-- Scenario Toggle -->
+      <div class="row-between" style="margin-bottom:16px">
+        <div class="text-sm text-muted">Adjust scenario to see probability-weighted projections</div>
+        <div class="scenario-toggle">
+          <button class="scen-btn active-bear" onclick="setScenario('bear',this)">Bear</button>
+          <button class="scen-btn active-base" onclick="setScenario('base',this)" id="scen-base-btn">Base</button>
+          <button class="scen-btn active-bull" onclick="setScenario('bull',this)">Bull</button>
+        </div>
+      </div>
+
+      <!-- Key Milestones -->
+      <div class="card-label" style="margin-bottom:8px">🏆 Key Milestones (Base Case)</div>
+      <div class="card-grid" style="grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+        <div class="milestone-card">
+          <div class="milestone-val">$500K NW</div>
+          <div class="milestone-lbl">Half Million</div>
+          <div class="milestone-when">~Age 34–35 · 2029–2030</div>
+        </div>
+        <div class="milestone-card">
+          <div class="milestone-val">$1M NW</div>
+          <div class="milestone-lbl">The Target</div>
+          <div class="milestone-when">~Age 37–38 · 2031–2032</div>
+        </div>
+        <div class="milestone-card">
+          <div class="milestone-val" style="color:var(--green)">$10K/mo</div>
+          <div class="milestone-lbl">First $10K/mo Income</div>
+          <div class="milestone-when">Age 40–41 · 2035–2036</div>
+        </div>
+      </div>
+
+      <!-- Age Slider -->
+      <div class="forecast-chart-wrap">
+        <div class="forecast-chart-title">Portfolio Value Projection</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+          <span class="text-xs text-dim mono">Age 31</span>
+          <input type="range" id="age-slider" class="age-slider" min="31" max="55" value="40" oninput="updateForecastAge(this.value)">
+          <span class="text-xs text-dim mono">Age 55</span>
+          <span class="badge badge-accent" id="age-label">Age 40</span>
+        </div>
+        <div id="age-projection" class="card-grid cols-3" style="margin-bottom:12px"></div>
+        <canvas id="forecastChart" height="220"></canvas>
+      </div>
+
+      <!-- Monthly Income Chart -->
+      <div class="forecast-chart-wrap">
+        <div class="forecast-chart-title">Monthly Income Projection (QQQI Distributions)</div>
+        <canvas id="incomeChart" height="200"></canvas>
+        <div class="text-xs text-dim mt-8">Income = 0 during DRIP phase (age 31–40). CMA-88Z turns cash at age 41. CMA-28Z QQQI always DRIP.</div>
+      </div>
+
+      <!-- Scenario Comparison Table -->
+      <div class="card-label" style="margin-bottom:8px">Scenario Comparison (Verified Numbers)</div>
+      <div class="card" style="margin-bottom:16px">
+        <table class="data-table income-table w-full">
+          <thead>
+            <tr>
+              <th>Age</th>
+              <th class="bear">Bear (18%)</th>
+              <th class="base">Base (47%)</th>
+              <th class="bull">Bull (15%)</th>
+              <th>Crash+Recover (20%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono fw-700">40 · Monthly Income</td>
+              <td class="mono bear">$7,588</td>
+              <td class="mono base">$12,293</td>
+              <td class="mono bull">$20,468</td>
+              <td class="mono">$8,101</td>
+            </tr>
+            <tr>
+              <td class="mono fw-700">45 · Monthly Income</td>
+              <td class="mono bear">$9,200</td>
+              <td class="mono base">$17,000</td>
+              <td class="mono bull">$24,000</td>
+              <td class="mono">$10,500</td>
+            </tr>
+            <tr>
+              <td class="mono fw-700">50 · Monthly Income</td>
+              <td class="mono bear">$11,349</td>
+              <td class="mono base">$17,595</td>
+              <td class="mono bull">$28,397</td>
+              <td class="mono">$13,459</td>
+            </tr>
+            <tr>
+              <td class="mono fw-700">50 · Net Worth</td>
+              <td class="mono bear">~$3.2M</td>
+              <td class="mono base">$6.73M</td>
+              <td class="mono bull">~$12M+</td>
+              <td class="mono">~$4.1M</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-xs text-dim mt-12">Numbers verified May 2026. Income = monthly distributions from CMA-88Z after age 40. NW includes all accounts + crypto at market value.</div>
+      </div>
+
+      <!-- Plain English Scenarios -->
+      <div class="card-label" style="margin-bottom:8px">What Each Scenario Means</div>
+      <div class="card-grid cols-2" style="gap:10px;margin-bottom:16px">
+        <div class="card" style="border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.03)">
+          <div class="card-label text-red">🐻 Bear Case (18% probability)</div>
+          <div class="text-sm text-muted" style="line-height:1.6">Markets return 6% annually instead of 10%. QQQI yield compresses to ~11%. TSLA/XPEV underperform. You still hit $7,588/mo by age 40 — enough to cover most living expenses. The fortress plan is specifically designed to work even in this scenario.</div>
+        </div>
+        <div class="card" style="border-color:rgba(74,222,128,.2);background:rgba(74,222,128,.03)">
+          <div class="card-label text-green">📊 Base Case (47% probability)</div>
+          <div class="text-sm text-muted" style="line-height:1.6">Markets return ~9-10% annually. QQQI maintains 13.5% yield. TSLA delivers moderate gains. You hit $12,293/mo by age 40, $17,595/mo by age 50, with a $6.73M net worth. Financial independence is solid and AMDA becomes truly optional.</div>
+        </div>
+        <div class="card" style="border-color:rgba(217,119,87,.2);background:rgba(217,119,87,.03)">
+          <div class="card-label text-accent">🐂 Bull Case (15% probability)</div>
+          <div class="text-sm text-muted" style="line-height:1.6">AI supercycle drives 14%+ equity returns. TSLA goes parabolic. QQQI sustains 15%+ yield. SPCX is a 10x. You hit $20,468/mo by age 40, $28,397/mo by age 50, with $12M+ NW. Generational wealth territory — pass the portfolio to kids.</div>
+        </div>
+        <div class="card" style="border-color:rgba(96,165,250,.2);background:rgba(96,165,250,.03)">
+          <div class="card-label text-blue">💥 Crash + Recover (20% probability)</div>
+          <div class="text-sm text-muted" style="line-height:1.6">A 2008-style crash in years 2-3, followed by recovery. DRIP actually buys more shares at lower prices. Income at age 40 is $8,101/mo — slower start but catches up by 50 ($13,459/mo). Key insight: the fortress plan is specifically resilient to sequence risk because you're buying throughout.</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -1081,22 +1546,45 @@ input{font-family:inherit;outline:none}
   <div class="mob-tab active" onclick="switchTab('stocks',this,true)" id="mob-stocks">
     <span class="icon">📊</span><span>Stocks</span>
   </div>
-  <div class="mob-tab" onclick="switchTab('fortress',this,true)" id="mob-fortress">
-    <span class="icon">🏰</span><span>Fortress</span>
-  </div>
   <div class="mob-tab" onclick="switchTab('wealth',this,true)" id="mob-wealth">
     <span class="icon">💰</span><span>Wealth</span>
   </div>
-  <div class="mob-tab" onclick="switchTab('deploy',this,true)" id="mob-deploy">
-    <span class="icon">🚀</span><span>Deploy</span>
+  <div class="mob-tab" onclick="switchTab('action',this,true)" id="mob-action">
+    <span class="icon">✅</span><span>Actions</span>
   </div>
-  <div class="mob-tab" onclick="switchTab('crypto',this,true)" id="mob-crypto">
-    <span class="icon">₿</span><span>Crypto</span>
+  <div class="mob-tab" onclick="switchTab('fortress',this,true)" id="mob-fortress">
+    <span class="icon">🏰</span><span>Fortress</span>
   </div>
-  <div class="mob-tab" onclick="switchTab('thesis',this,true)" id="mob-thesis">
-    <span class="icon">🔬</span><span>Thesis</span>
+  <div class="mob-tab" onclick="showMobileMore()" id="mob-more">
+    <span class="icon">⋯</span><span>More</span>
   </div>
 </nav>
+<!-- Mobile More Tray -->
+<div id="mobile-more-tray" style="display:none;position:fixed;bottom:64px;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:99;padding:12px;display:none">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <div class="mob-tab" onclick="switchTab('deploy',this,true);hideMobileMore()" style="flex-direction:column;padding:10px 4px">
+      <span class="icon">🚀</span><span>Deploy</span>
+    </div>
+    <div class="mob-tab" onclick="switchTab('crypto',this,true);hideMobileMore()" style="flex-direction:column;padding:10px 4px">
+      <span class="icon">₿</span><span>Crypto</span>
+    </div>
+    <div class="mob-tab" onclick="switchTab('thesis',this,true);hideMobileMore()" style="flex-direction:column;padding:10px 4px">
+      <span class="icon">🔬</span><span>Thesis</span>
+    </div>
+    <div class="mob-tab" onclick="switchTab('news',this,true);hideMobileMore()" style="flex-direction:column;padding:10px 4px">
+      <span class="icon">📡</span><span>Intel</span>
+    </div>
+    <div class="mob-tab" onclick="switchTab('risk',this,true);hideMobileMore()" style="flex-direction:column;padding:10px 4px">
+      <span class="icon">⚠️</span><span>Risk</span>
+    </div>
+    <div class="mob-tab" onclick="switchTab('forecasts',this,true);hideMobileMore()" style="flex-direction:column;padding:10px 4px">
+      <span class="icon">📈</span><span>Forecast</span>
+    </div>
+    <div class="mob-tab" onclick="switchTab('health',this,true);hideMobileMore()" style="flex-direction:column;padding:10px 4px">
+      <span class="icon">🏥</span><span>Health</span>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── Auth ─────────────────────────────────────────────────────
@@ -1139,13 +1627,23 @@ function switchTab(tab, el, mobile=false) {
   currentTab = tab;
 }
 
+// ── Mobile More Tray ─────────────────────────────────────────
+function showMobileMore() {
+  const tray = document.getElementById('mobile-more-tray');
+  tray.style.display = tray.style.display === 'none' ? 'block' : 'none';
+}
+function hideMobileMore() {
+  document.getElementById('mobile-more-tray').style.display = 'none';
+}
+
 // ── Helpers ───────────────────────────────────────────────────
 const fmt = {
   usd: n => n==null ? '—' : '$' + Number(n).toLocaleString('en-US', {maximumFractionDigits:0}),
   pct: n => n==null ? '—' : (n>0?'+':'') + Number(n).toFixed(2) + '%',
   num: n => n==null ? '—' : Number(n).toFixed(2),
   ago: s => { if(!s) return '—'; const d=new Date(s), now=new Date(); const m=Math.round((now-d)/60000); return m<60?m+'m ago':Math.round(m/60)+'h ago'; },
-  date: s => { if(!s) return '—'; return new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+  date: s => { if(!s) return '—'; return new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); },
+  k: n => n==null ? '—' : n >= 1000000 ? '$'+(n/1000000).toFixed(2)+'M' : n >= 1000 ? '$'+(n/1000).toFixed(1)+'K' : '$'+n
 };
 
 function signalBadge(sig) {
@@ -1157,6 +1655,80 @@ function signalBadge(sig) {
 }
 
 function changeCls(v) { return v > 0 ? 'up' : v < 0 ? 'dn' : 'flat'; }
+
+// ── Counter animation ─────────────────────────────────────────
+function animateCounter(el, target, prefix='$', suffix='', duration=800) {
+  if (!el) return;
+  const start = 0;
+  const step = target / (duration / 16);
+  let current = start;
+  el.classList.add('counter-animated');
+  const tick = () => {
+    current = Math.min(current + step, target);
+    const disp = target > 10000 ? Math.round(current).toLocaleString('en-US') : current.toFixed(0);
+    el.textContent = prefix + disp + suffix;
+    if (current < target) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ── Command Center ─────────────────────────────────────────────
+function buildCommandCenter() {
+  const pl = window.PORTFOLIO_LIVE;
+  const nw = pl ? pl.total_portfolio_value : (window.WEALTH_DATA ? window.WEALTH_DATA.liquid_net_worth : 0);
+  const target = 1000000;
+  const pct = nw ? Math.min((nw / target * 100).toFixed(1), 100) : 0;
+  const gap = nw ? target - nw : target;
+
+  // Next action from pending_actions
+  let nextAction = 'Monitor positions';
+  let nextSub = 'All clear';
+  let dotClass = 'on';
+  if (pl && pl.pending_actions && pl.pending_actions.length > 0) {
+    const pending = pl.pending_actions.filter(a => !a.done);
+    if (pending.length > 0) {
+      nextAction = pending[0].action || pending[0].description || 'Execute trades';
+      nextSub = pending.length + ' pending action' + (pending.length > 1 ? 's' : '');
+      dotClass = 'warn';
+    }
+  } else if (pl) {
+    nextAction = 'SELL INSM/VIG/SCHD · BUY RONB';
+    nextSub = '3 sells + 1 buy pending in IRA/CMA';
+    dotClass = 'warn';
+  }
+
+  const dataAge = pl ? fmt.ago(pl.generated_at) : (window.STOCKS_DATA ? fmt.ago((window.STOCKS_DATA.tickers||[])[0]?.last_updated) : '—');
+
+  return `
+    <div class="cc-stat">
+      <div class="cc-val" id="cc-nw">${fmt.usd(nw)}</div>
+      <div class="cc-lbl">Liquid NW</div>
+    </div>
+    <div class="cc-divider"></div>
+    <div class="cc-stat">
+      <div class="cc-val" style="color:var(--green)">${pct}%</div>
+      <div class="cc-lbl">to $1M</div>
+    </div>
+    <div class="cc-divider"></div>
+    <div class="cc-stat">
+      <div class="cc-val" style="color:var(--muted);font-size:14px">${fmt.usd(gap)}</div>
+      <div class="cc-lbl">Gap to $1M</div>
+    </div>
+    <div class="cc-divider"></div>
+    <div class="cc-action">
+      <div class="row gap-6"><div class="status-dot ${dotClass}"></div><div class="cc-action-text">${nextAction}</div></div>
+      <div class="cc-action-sub">${nextSub}</div>
+    </div>
+    <div class="cc-stat" style="text-align:right">
+      <div class="text-xs mono text-dim">${dataAge}</div>
+      <div class="cc-lbl">data age</div>
+    </div>`;
+}
+
+function renderAllCommandCenters() {
+  const cc = buildCommandCenter();
+  document.querySelectorAll('[id^="cc-"]').forEach(el => { el.innerHTML = cc; });
+}
 
 // ── SPCX countdown ────────────────────────────────────────────
 function calcDays() {
@@ -1171,21 +1743,57 @@ const SACRED = ['TSLA', 'XPEV', 'GOOGL', 'NVDA', 'AMZN'];
 
 function renderStocks() {
   const sd = window.STOCKS_DATA;
+  const pl = window.PORTFOLIO_LIVE;
+
+  // If PORTFOLIO_LIVE is available, use it for the strip total value
+  const plTotal = pl ? pl.total_portfolio_value : null;
+
   if (!sd) { document.getElementById('all-positions').innerHTML = '<div class="card"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">Stocks data loading…</div></div></div>'; return; }
 
-  // Strip
+  // Strip — prefer PORTFOLIO_LIVE total if available
   const strip = sd.portfolio_strip || {};
-  document.getElementById('strip-total').textContent = fmt.usd(strip.total_value);
+  const totalVal = plTotal || strip.total_value;
+  document.getElementById('strip-total').textContent = fmt.usd(totalVal);
   document.getElementById('strip-beta').textContent = strip.portfolio_beta ? strip.portfolio_beta.toFixed(2) : '—';
   const env = strip.market_environment || '—';
   document.getElementById('strip-env').textContent = env;
   document.getElementById('strip-env').className = 'badge ' + (env.includes('BULL') ? 'badge-green' : env.includes('BEAR') ? 'badge-red' : 'badge-dim');
 
   // Freshness
-  const gen = sd.tickers?.[0]?.last_updated || sd.generated_at;
+  const gen = pl ? pl.generated_at : (sd.tickers?.[0]?.last_updated || sd.generated_at);
   document.getElementById('stocks-freshness').textContent = 'Updated ' + fmt.ago(gen);
   document.getElementById('last-updated').textContent = fmt.ago(gen);
-  document.getElementById('stocks-meta').textContent = (sd.tickers?.length || 0) + ' positions · ' + (sd.ira_tickers?.length || 0) + ' IRA · ' + (sd.cma_tickers?.length || 0) + ' CMA';
+
+  // Build position list — if PORTFOLIO_LIVE available, use it as source of truth for symbols
+  const plPositions = pl ? pl.positions : null;
+  const plSymbols = plPositions ? plPositions.map(p => p.symbol) : null;
+
+  const allSdTickers = sd.tickers || [];
+  // Merge: for each PORTFOLIO_LIVE position, find matching SD ticker for market data
+  let displayTickers;
+  if (plPositions) {
+    displayTickers = plPositions.map(plPos => {
+      const sdMatch = allSdTickers.find(t => t.symbol === plPos.symbol) || {};
+      return {
+        ...sdMatch,
+        symbol: plPos.symbol,
+        shares: plPos.shares,
+        value: plPos.value,
+        account: plPos.account || sdMatch.account,
+        note: plPos.description || sdMatch.note,
+        sacred: plPos.sacred,
+        income_engine: plPos.income_engine,
+        portfolio_pct: plPos.portfolio_pct,
+        unrealized_pnl: plPos.unrealized_pnl,
+        unrealized_pct: plPos.unrealized_pct,
+        pl_status: plPos.sacred ? 'on-track' : (plPos.income_engine ? 'on-track' : null)
+      };
+    });
+  } else {
+    displayTickers = allSdTickers.filter(t => t.account !== 'benchmark');
+  }
+
+  document.getElementById('stocks-meta').textContent = displayTickers.length + ' positions · ' + (pl ? '3 accounts' : ((sd.ira_tickers?.length || 0) + ' IRA · ' + (sd.cma_tickers?.length || 0) + ' CMA'));
 
   // WSB / analyst / AI rec maps
   const wsb = (window.STOCKS_WSB_DATA || {}).tickers || {};
@@ -1196,7 +1804,7 @@ function renderStocks() {
   // Sacred
   const sacredEl = document.getElementById('sacred-positions');
   sacredEl.innerHTML = '';
-  const sacredTickers = (sd.tickers || []).filter(t => SACRED.includes(t.symbol));
+  const sacredTickers = displayTickers.filter(t => SACRED.includes(t.symbol) || t.sacred);
   sacredTickers.forEach(t => {
     sacredEl.innerHTML += buildPosCard(t, wsb, analyst, aiRec, grok, true);
   });
@@ -1204,13 +1812,14 @@ function renderStocks() {
   // All positions (non-sacred, non-benchmark)
   const allEl = document.getElementById('all-positions');
   allEl.innerHTML = '';
-  const others = (sd.tickers || []).filter(t => !SACRED.includes(t.symbol) && t.account !== 'benchmark');
+  const others = displayTickers.filter(t => !SACRED.includes(t.symbol) && !t.sacred && t.account !== 'benchmark');
   others.forEach(t => { allEl.innerHTML += buildPosCard(t, wsb, analyst, aiRec, grok, false); });
 
-  // Watchlist
+  // Watchlist — only show if not in PORTFOLIO_LIVE positions
   const wlEl = document.getElementById('watchlist-positions');
   wlEl.innerHTML = '';
-  (sd.watchlist || []).forEach(t => { wlEl.innerHTML += buildPosCard(t, wsb, analyst, aiRec, grok, false); });
+  const wlItems = (sd.watchlist || []).filter(t => !plSymbols || !plSymbols.includes(t.symbol));
+  wlItems.forEach(t => { wlEl.innerHTML += buildPosCard(t, wsb, analyst, aiRec, grok, false); });
 
   // EOD
   renderEOD();
@@ -1231,13 +1840,16 @@ function buildPosCard(t, wsb, analyst, aiRec, grok, sacred) {
 
   const harvestBadge = t.harvest ? `<span class="badge badge-yellow" style="font-size:10px">TAX-LOSS</span>` : '';
   const holdBadge = sacred ? `<span class="badge badge-hold">HOLD FOREVER</span>` : '';
+  // Status dot: income engine = on-track, sacred = on-track, harvest candidate = action-needed, else default
+  const statusDotClass = t.income_engine ? 'on-track' : t.harvest ? 'action-needed' : sacred ? 'on-track' : 'monitor';
+  const statusDot = `<span class="pos-status-dot ${statusDotClass}" title="${statusDotClass.replace('-',' ')}"></span>`;
 
   return `
   <div class="pos-card ${sacred ? 'sacred' : ''}">
     <div class="pos-header" onclick="toggleExpand('${id}')">
       <div>
         <div class="row gap-8">
-          <span class="pos-ticker">${t.symbol}</span>
+          ${statusDot}<span class="pos-ticker">${t.symbol}</span>
           ${signalBadge(t.signal)}
           ${holdBadge}${harvestBadge}
         </div>
@@ -1380,9 +1992,15 @@ function renderIntelligence() {
 // ── WEALTH rendering ───────────────────────────────────────────
 function renderWealth() {
   const wd = window.WEALTH_DATA;
-  if (!wd) return;
-  document.getElementById('wealth-freshness').textContent = 'Snapshot ' + fmt.ago(wd.snapshot_date);
-  const nw = wd.liquid_net_worth || 0;
+  const pl = window.PORTFOLIO_LIVE;
+
+  // Prefer PORTFOLIO_LIVE for values
+  const nw = pl ? pl.total_portfolio_value : (wd ? wd.liquid_net_worth : 0);
+  if (!nw && !wd) return;
+
+  const snapDate = pl ? pl.generated_at : (wd ? wd.snapshot_date : null);
+  document.getElementById('wealth-freshness').textContent = 'Snapshot ' + fmt.ago(snapDate);
+
   const target = 1000000;
   const pct = Math.min(Math.round(nw/target*100), 100);
   document.getElementById('nw-hero').textContent = fmt.usd(nw);
@@ -1390,41 +2008,72 @@ function renderWealth() {
   document.getElementById('nw-pct').textContent = pct + '%';
   document.getElementById('nw-gap').textContent = 'Gap: ' + fmt.usd(target - nw);
 
-  // Accounts — pull from bucket_values or individual fields
-  const bv = wd.bucket_values || {};
-  const accounts = [
-    {label:'Merrill IRA', val: bv.ira || wd.merrill_portfolio || wd.total_stocks},
-    {label:'Merrill CMA-28Z', val: bv.cma28z || bv.cma},
-    {label:'Merrill CMA-88Z', val: bv.cma88z},
-    {label:'Wealthfront HYSA', val: bv.hysa || wd.hysa_axos || wd.hysa_tbills || wd.hysa_sofi},
-    {label:'Crypto', val: bv.crypto || wd.crypto},
-    {label:'Bluestone (locked)', val: wd.bluestone || 94000},
-  ].filter(a => a.val != null && a.val > 0);
+  // Accounts — prefer PORTFOLIO_LIVE account totals
+  let accounts = [];
+  if (pl && pl.accounts) {
+    const accs = pl.accounts;
+    if (accs['IRA-Edge']) accounts.push({label:'IRA-Edge', val: accs['IRA-Edge'].total});
+    if (accs['CMA-28Z']) accounts.push({label:'CMA-28Z', val: accs['CMA-28Z'].total});
+    if (accs['CMA-88Z']) accounts.push({label:'CMA-88Z', val: accs['CMA-88Z'].total});
+    accounts.push({label:'Cash (incl. SPCX fund)', val: pl.total_cash || 60167});
+    if (pl.crypto_holdings) {
+      const cTotal = pl.crypto_holdings.reduce((s,c) => s + (c.value||0), 0);
+      if (cTotal > 0) accounts.push({label:'Crypto', val: cTotal});
+    }
+    const bl = pl.bluestone;
+    if (bl) accounts.push({label:'Bluestone (locked)', val: bl.total || 94000});
+  } else if (wd) {
+    const bv = wd.bucket_values || {};
+    accounts = [
+      {label:'Merrill IRA', val: bv.ira || wd.merrill_portfolio || wd.total_stocks},
+      {label:'Merrill CMA-28Z', val: bv.cma28z || bv.cma},
+      {label:'Merrill CMA-88Z', val: bv.cma88z},
+      {label:'Wealthfront HYSA', val: bv.hysa || wd.hysa_axos || wd.hysa_tbills || wd.hysa_sofi},
+      {label:'Crypto', val: bv.crypto || wd.crypto},
+      {label:'Bluestone (locked)', val: wd.bluestone || 94000},
+    ].filter(a => a.val != null && a.val > 0);
+  }
 
   const mid = Math.ceil(accounts.length/2);
   const makeRow = a => `<div class="row-between"><span class="text-sm text-muted">${a.label}</span><span class="mono text-sm">${fmt.usd(a.val)}</span></div>`;
   document.getElementById('accounts-left').innerHTML = accounts.slice(0, mid).map(makeRow).join('');
   document.getElementById('accounts-right').innerHTML = accounts.slice(mid).map(makeRow).join('');
 
-  // Positions table — compute pct from total
-  const allPos = (wd.top_positions || wd.positions || []).sort((a,b) => (b.value||0)-(a.value||0));
+  // Positions table — prefer PORTFOLIO_LIVE positions
+  let allPos = [];
+  if (pl && pl.positions) {
+    allPos = [...pl.positions].sort((a,b) => (b.value||0)-(a.value||0));
+  } else if (wd) {
+    allPos = (wd.top_positions || wd.positions || []).sort((a,b) => (b.value||0)-(a.value||0));
+  }
   const totalVal = allPos.reduce((s,p) => s + (p.value||0), 0) || nw || 1;
   const tbody = document.getElementById('positions-tbody');
-  tbody.innerHTML = allPos.slice(0, 20).map(p => {
+  tbody.innerHTML = allPos.slice(0, 25).map(p => {
     const sym = p.symbol || p.ticker;
-    const pct = p.pct_of_portfolio || (p.value ? (p.value / totalVal * 100) : 0);
-    // account from stocks data if missing
+    const pctVal = p.portfolio_pct || p.pct_of_portfolio || (p.value ? (p.value / totalVal * 100) : 0);
     const sd = window.STOCKS_DATA;
     const sdTicker = sd ? (sd.tickers||[]).find(t => t.symbol === sym) : null;
     const acct = p.account || sdTicker?.account || '—';
+    const isSacred = SACRED.includes(sym) || p.sacred;
+    const isIncome = p.income_engine;
     return `<tr>
-      <td class="mono fw-700">${sym} ${SACRED.includes(sym)?'<span class="badge-hold badge" style="font-size:9px">HOLD</span>':''}</td>
+      <td class="mono fw-700"><span class="pos-status-dot ${isSacred||isIncome?'on-track':'monitor'}" style="display:inline-block"></span> ${sym} ${isSacred?'<span class="badge-hold badge" style="font-size:9px">HOLD</span>':''}${isIncome?'<span class="badge badge-accent" style="font-size:9px">DRIP</span>':''}</td>
       <td class="text-sm text-muted">${acct}</td>
       <td class="num mono">${p.shares != null ? Number(p.shares).toFixed(0) : '—'}</td>
       <td class="num mono">${fmt.usd(p.value)}</td>
-      <td class="num mono">${pct > 0 ? pct.toFixed(1) + '%' : '—'}</td>
+      <td class="num mono">${pctVal > 0 ? Number(pctVal).toFixed(1) + '%' : '—'}</td>
     </tr>`;
   }).join('');
+
+  // Bluestone — update from PORTFOLIO_LIVE
+  if (pl && pl.bluestone) {
+    const bl = pl.bluestone;
+    // Update bluestone card values if elements exist
+    const taxEl = document.querySelector('[data-bl-tax]');
+    const poolEl = document.querySelector('[data-bl-pool]');
+    if (taxEl) taxEl.textContent = fmt.usd(bl.tax_reserve);
+    if (poolEl) poolEl.textContent = fmt.usd(bl.tactical_pool);
+  }
 }
 
 // ── HEALTH rendering ───────────────────────────────────────────
@@ -1607,16 +2256,187 @@ function renderThesis() {
   el.innerHTML = html;
 }
 
+// ── ACTION PLAN rendering ─────────────────────────────────────
+function renderActionPlan() {
+  const pl = window.PORTFOLIO_LIVE;
+  const container = document.getElementById('today-actions');
+  if (!container) return;
+
+  // Load completed state from localStorage
+  const doneKey = 'chief_actions_done_' + new Date().toDateString();
+  let doneItems = JSON.parse(localStorage.getItem(doneKey) || '[]');
+
+  // Build today's actions from PORTFOLIO_LIVE pending_actions or static defaults
+  let actions = [];
+  if (pl && pl.pending_actions && pl.pending_actions.length > 0) {
+    actions = pl.pending_actions.map((a, i) => ({
+      id: 'pl_' + i,
+      text: a.action || a.description || JSON.stringify(a),
+      meta: a.account || a.note || '',
+      badge: a.type === 'sell' ? 'badge-red' : a.type === 'buy' ? 'badge-green' : 'badge-accent',
+      badgeText: a.type ? a.type.toUpperCase() : 'ACTION',
+    }));
+  } else {
+    // Static fallback from spec
+    actions = [
+      {id:'sell_insm', text:'SELL INSM — 45 shares @ MARKET', meta:'IRA-Edge · ~$4,780 proceeds', badge:'badge-red', badgeText:'SELL'},
+      {id:'sell_vig', text:'SELL VIG — 6 shares @ MARKET', meta:'IRA-Edge · ~$1,398 proceeds', badge:'badge-red', badgeText:'SELL'},
+      {id:'sell_schd', text:'SELL SCHD — 200 shares @ MARKET', meta:'IRA-Edge · ~$6,566 proceeds', badge:'badge-red', badgeText:'SELL'},
+      {id:'buy_ronb', text:'BUY RONB — ~838 shares @ LIMIT $23.85', meta:'CMA-28Z · $20,000 SpaceX bridge position', badge:'badge-green', badgeText:'BUY'},
+    ];
+  }
+
+  container.innerHTML = actions.map(a => {
+    const done = doneItems.includes(a.id);
+    return `<div class="action-item ${done?'done':''}" id="action-${a.id}" onclick="toggleAction('${a.id}')">
+      <div class="action-check">${done ? '✓' : ''}</div>
+      <div class="col gap-2" style="flex:1">
+        <div class="action-text">${a.text}</div>
+        <div class="action-meta">${a.meta}</div>
+      </div>
+      <span class="badge ${a.badge} action-badge">${a.badgeText}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleAction(id) {
+  const doneKey = 'chief_actions_done_' + new Date().toDateString();
+  let doneItems = JSON.parse(localStorage.getItem(doneKey) || '[]');
+  const idx = doneItems.indexOf(id);
+  if (idx >= 0) doneItems.splice(idx, 1);
+  else doneItems.push(id);
+  localStorage.setItem(doneKey, JSON.stringify(doneItems));
+  renderActionPlan();
+}
+
+// ── FORECASTS rendering ───────────────────────────────────────
+let currentScenario = 'base';
+let forecastChart = null;
+let incomeChart = null;
+
+const FORECAST_DATA = {
+  ages: [31,33,35,37,38,40,42,45,48,50,55],
+  bear: {
+    nw: [406000, 500000, 640000, 820000, 920000, 1100000, 1350000, 1800000, 2400000, 3200000, 5100000],
+    income: [0, 0, 0, 0, 0, 7588, 8200, 9200, 10500, 11349, 14000]
+  },
+  base: {
+    nw: [406000, 560000, 760000, 1050000, 1230000, 1620000, 2100000, 3200000, 4800000, 6730000, 12000000],
+    income: [0, 0, 0, 0, 0, 12293, 13800, 17000, 17200, 17595, 22000]
+  },
+  bull: {
+    nw: [406000, 680000, 1000000, 1500000, 1850000, 2600000, 3500000, 5500000, 8500000, 12000000, 22000000],
+    income: [0, 0, 0, 0, 0, 20468, 22000, 24000, 26500, 28397, 36000]
+  }
+};
+
+function setScenario(s, el) {
+  currentScenario = s;
+  document.querySelectorAll('.scen-btn').forEach(b => {
+    b.classList.remove('active-bear','active-base','active-bull');
+  });
+  if (el) el.classList.add('active-' + s);
+  updateForecastCharts();
+}
+
+function updateForecastAge(age) {
+  document.getElementById('age-label').textContent = 'Age ' + age;
+  const ageIdx = FORECAST_DATA.ages.reduce((best, a, i) => Math.abs(a - age) < Math.abs(FORECAST_DATA.ages[best] - age) ? i : best, 0);
+  const proj = document.getElementById('age-projection');
+  if (!proj) return;
+  ['bear','base','bull'].forEach(s => {
+    const nw = FORECAST_DATA[s].nw[ageIdx];
+    const inc = FORECAST_DATA[s].income[ageIdx];
+  });
+  proj.innerHTML = `
+    <div class="card card-sm" style="border-color:rgba(248,113,113,.2);text-align:center">
+      <div class="text-xs text-dim">Bear NW</div><div class="stat-med mono text-red">${fmt.usd(FORECAST_DATA.bear.nw[ageIdx])}</div>
+      <div class="text-xs text-dim mt-4">Income</div><div class="text-sm mono text-red">${fmt.usd(FORECAST_DATA.bear.income[ageIdx])}/mo</div>
+    </div>
+    <div class="card card-sm" style="border-color:rgba(74,222,128,.2);text-align:center">
+      <div class="text-xs text-dim">Base NW</div><div class="stat-med mono text-green">${fmt.usd(FORECAST_DATA.base.nw[ageIdx])}</div>
+      <div class="text-xs text-dim mt-4">Income</div><div class="text-sm mono text-green">${fmt.usd(FORECAST_DATA.base.income[ageIdx])}/mo</div>
+    </div>
+    <div class="card card-sm" style="border-color:rgba(217,119,87,.2);text-align:center">
+      <div class="text-xs text-dim">Bull NW</div><div class="stat-med mono text-accent">${fmt.usd(FORECAST_DATA.bull.nw[ageIdx])}</div>
+      <div class="text-xs text-dim mt-4">Income</div><div class="text-sm mono text-accent">${fmt.usd(FORECAST_DATA.bull.income[ageIdx])}/mo</div>
+    </div>`;
+}
+
+function updateForecastCharts() {
+  // Portfolio Chart
+  const ctx = document.getElementById('forecastChart');
+  if (!ctx) return;
+  const labels = FORECAST_DATA.ages.map(a => 'Age ' + a);
+
+  const chartDefaults = {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#A8A398', font: { family: 'Inter' } } } },
+    scales: {
+      x: { ticks: { color: '#78746C' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#78746C', callback: v => '$' + (v/1000000).toFixed(1) + 'M' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    }
+  };
+
+  if (forecastChart) { forecastChart.destroy(); forecastChart = null; }
+  forecastChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Bear', data: FORECAST_DATA.bear.nw, borderColor: '#F87171', backgroundColor: 'rgba(248,113,113,0.08)', tension: 0.3, fill: false },
+        { label: 'Base', data: FORECAST_DATA.base.nw, borderColor: '#4ADE80', backgroundColor: 'rgba(74,222,128,0.08)', tension: 0.3, fill: '-1' },
+        { label: 'Bull', data: FORECAST_DATA.bull.nw, borderColor: '#D97757', backgroundColor: 'rgba(217,119,87,0.08)', tension: 0.3, fill: false },
+      ]
+    },
+    options: chartDefaults
+  });
+
+  // Income Chart
+  const ictx = document.getElementById('incomeChart');
+  if (!ictx) return;
+  if (incomeChart) { incomeChart.destroy(); incomeChart = null; }
+  incomeChart = new Chart(ictx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Bear Income', data: FORECAST_DATA.bear.income, borderColor: '#F87171', tension: 0.3, fill: false, borderDash: [5,3] },
+        { label: 'Base Income', data: FORECAST_DATA.base.income, borderColor: '#4ADE80', tension: 0.3, fill: false },
+        { label: 'Bull Income', data: FORECAST_DATA.bull.income, borderColor: '#D97757', tension: 0.3, fill: false, borderDash: [8,3] },
+      ]
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        ...chartDefaults.scales,
+        y: { ticks: { color: '#78746C', callback: v => '$' + v.toLocaleString() + '/mo' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+}
+
+function initForecasts() {
+  updateForecastAge(40);
+  setScenario('base', document.getElementById('scen-base-btn'));
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 function initDashboard() {
   calcDays();
+  renderAllCommandCenters();
   renderStocks();
   renderIntelligence();
   renderWealth();
   renderHealth();
   renderCrypto();
   renderThesis();
+  renderActionPlan();
+  initForecasts();
 }
+
+// Re-render command center after data loads
+setTimeout(() => { renderAllCommandCenters(); }, 500);
 </script>
 </body>
 </html>
