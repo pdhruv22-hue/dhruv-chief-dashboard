@@ -1,5 +1,5 @@
 window.DRIP_PROJECTIONS = {
-  "generated_at": "May 26 06:34 PM ET",
+  "generated_at": "May 26 06:37 PM ET",
   "projections": {
     "QQQI": {
       "ticker": "QQQI",
@@ -24,33 +24,33 @@ window.DRIP_PROJECTIONS = {
           "year": 5,
           "age": 36,
           "label": "Year 5 (Pivot)",
-          "shares": 1680.13,
+          "shares": 2492.66,
           "est_price": 62.77,
-          "est_value": 105457.0
+          "est_value": 156457.0
         },
         {
           "year": 9,
           "age": 40,
           "label": "Year 9 (Pre-income)",
-          "shares": 2788.22,
+          "shares": 7927.12,
           "est_price": 67.94,
-          "est_value": 189435.0
+          "est_value": 538577.0
         },
         {
           "year": 10,
           "age": 41,
           "label": "Year 10 (DRIP OFF)",
-          "shares": 2788.22,
+          "shares": 8663.05,
           "est_price": 69.3,
-          "est_value": 193223.0
+          "est_value": 600348.0
         },
         {
           "year": 19,
           "age": 50,
           "label": "Year 19 (Retire)",
-          "shares": 2788.22,
+          "shares": 14669.91,
           "est_price": 82.82,
-          "est_value": 230920.0
+          "est_value": 1214958.0
         }
       ]
     },
@@ -62,7 +62,7 @@ window.DRIP_PROJECTIONS = {
       "current_price": 34.92,
       "current_value": 4889.0,
       "annual_yield_pct": 11.0,
-      "annual_add": 7000,
+      "annual_add": 0,
       "drip_off_year": 10,
       "milestones": [
         {
@@ -109,13 +109,13 @@ window.DRIP_PROJECTIONS = {
     },
     "QQQ": {
       "ticker": "QQQ",
-      "label": "QQQ (Phase 1 \u2192 converts Y5)",
+      "label": "QQQ (Phase 1 \u2192 converts Y5 to QQQI)",
       "account": "CMA-Edge 28Z",
       "current_shares": 70.0,
       "current_price": 730.28,
       "current_value": 51120.0,
       "annual_yield_pct": 1.2,
-      "annual_add": 35000,
+      "annual_add": 0,
       "drip_off_year": 5,
       "milestones": [
         {
@@ -130,45 +130,45 @@ window.DRIP_PROJECTIONS = {
           "year": 5,
           "age": 36,
           "label": "Year 5 (Pivot)",
-          "shares": 283.4,
+          "shares": 248.17,
           "est_price": 1073.02,
-          "est_value": 304092.0
+          "est_value": 266292.0
         },
         {
           "year": 9,
           "age": 40,
           "label": "Year 9 (Pre-income)",
-          "shares": 400.08,
+          "shares": 248.17,
           "est_price": 1459.83,
-          "est_value": 584045.0
+          "est_value": 362288.0
         },
         {
           "year": 10,
           "age": 41,
           "label": "Year 10 (DRIP OFF)",
-          "shares": 424.05,
+          "shares": 248.17,
           "est_price": 1576.62,
-          "est_value": 668569.0
+          "est_value": 391271.0
         },
         {
           "year": 19,
           "age": 50,
           "label": "Year 19 (Retire)",
-          "shares": 573.82,
+          "shares": 248.17,
           "est_price": 3151.67,
-          "est_value": 1808502.0
+          "est_value": 782152.0
         }
       ]
     },
     "VOO": {
       "ticker": "VOO",
-      "label": "VOO (Phase 1 \u2192 converts Y5)",
+      "label": "VOO (Phase 1 \u2192 converts Y5 to QQQI)",
       "account": "CMA-Edge 28Z",
       "current_shares": 30.0,
       "current_price": 690.01,
       "current_value": 20700.0,
       "annual_yield_pct": 1.5,
-      "annual_add": 15000,
+      "annual_add": 0,
       "drip_off_year": 5,
       "milestones": [
         {
@@ -183,33 +183,33 @@ window.DRIP_PROJECTIONS = {
           "year": 5,
           "age": 36,
           "label": "Year 5 (Pivot)",
-          "shares": 127.46,
+          "shares": 111.48,
           "est_price": 1013.85,
-          "est_value": 129228.0
+          "est_value": 113028.0
         },
         {
           "year": 9,
           "age": 40,
           "label": "Year 9 (Pre-income)",
-          "shares": 180.39,
+          "shares": 111.48,
           "est_price": 1379.33,
-          "est_value": 248812.0
+          "est_value": 153773.0
         },
         {
           "year": 10,
           "age": 41,
           "label": "Year 10 (DRIP OFF)",
-          "shares": 191.26,
+          "shares": 111.48,
           "est_price": 1489.68,
-          "est_value": 284917.0
+          "est_value": 166075.0
         },
         {
           "year": 19,
           "age": 50,
           "label": "Year 19 (Retire)",
-          "shares": 259.19,
+          "shares": 111.48,
           "est_price": 2977.88,
-          "est_value": 771849.0
+          "est_value": 331985.0
         }
       ]
     }
