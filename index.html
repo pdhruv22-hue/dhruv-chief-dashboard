@@ -560,12 +560,12 @@ input{font-family:inherit;outline:none}
               <div class="stat-med mono text-accent">11%</div>
             </div>
             <div class="col gap-4">
-              <div class="text-xs text-dim">Split</div>
-              <div class="stat-med mono">$4.5K/$2.5K</div>
+              <div class="text-xs text-dim">Annual Split</div>
+              <div class="stat-med mono">$4.9K/$2.1K</div>
             </div>
           </div>
           <div class="divider"></div>
-          <div class="text-xs text-dim">$4,500/yr → CMA-88Z · $2,500/yr → CMA-28Z · 100% DRIP forever</div>
+          <div class="text-xs text-dim">$4,900/yr → CMA-28Z · $2,100/yr → CMA-88Z · 100% DRIP forever · Max 20% NW combined</div>
         </div>
       </div>
 
@@ -632,6 +632,43 @@ input{font-family:inherit;outline:none}
           </tbody>
         </table>
         <div class="text-xs text-dim mt-12">Income = yield% × position value × harvest%. Base case verified May 2026. All figures monthly/net.</div>
+      </div>
+
+      <!-- SPCX Trim Matrix -->
+      <div class="card-label" style="margin-bottom:8px">SPCX Position Sizing Rules (Option C)</div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="row gap-16" style="margin-bottom:12px">
+          <div class="col gap-4"><div class="text-xs text-dim">Soft Trigger</div><div class="stat-sm mono text-yellow">20% NW → trim to 12%</div></div>
+          <div class="col gap-4"><div class="text-xs text-dim">Hard Ceiling</div><div class="stat-sm mono text-red">25% NW → trim always</div></div>
+        </div>
+        <div class="card-label" style="margin-top:8px;margin-bottom:6px">Trim Proceeds Routing (VIX × BTC Composite)</div>
+        <table class="data-table w-full">
+          <thead><tr><th>VIX</th><th>BTC Trend</th><th>→ QQQI</th><th>→ BTCI</th></tr></thead>
+          <tbody>
+            <tr><td class="text-sm text-muted">&gt;25</td><td class="text-sm text-green">Uptrend</td><td class="num mono">50%</td><td class="num mono">50%</td></tr>
+            <tr><td class="text-sm text-muted">&gt;25</td><td class="text-sm text-red">Downtrend</td><td class="num mono">80%</td><td class="num mono">20%</td></tr>
+            <tr><td class="text-sm text-muted">15–25</td><td class="text-sm text-muted">Any</td><td class="num mono text-accent">80%</td><td class="num mono text-accent">20%</td></tr>
+            <tr><td class="text-sm text-muted">&lt;15</td><td class="text-sm text-green">Uptrend</td><td class="num mono">70%</td><td class="num mono">30%</td></tr>
+            <tr><td class="text-sm text-muted">&lt;15</td><td class="text-sm text-red">Downtrend</td><td class="num mono">95%</td><td class="num mono">5%</td></tr>
+          </tbody>
+        </table>
+        <div class="text-xs text-dim mt-8">BTC trend = 50dMA vs 200dMA ±2% threshold · Min trim $5K (else 100% QQQI) · BTCI cap: combined 28Z+88Z ≤20% NW</div>
+      </div>
+
+      <!-- Position Sizing Rules -->
+      <div class="card-label" style="margin-bottom:8px">Concentration Limits</div>
+      <div class="card" style="margin-bottom:16px">
+        <table class="data-table w-full">
+          <thead><tr><th>Position</th><th>Alert</th><th>Rule</th></tr></thead>
+          <tbody>
+            <tr><td class="mono fw-700">TSLA</td><td class="mono text-yellow">50% NW</td><td class="text-sm text-muted">Special override — alert only, no force action even at 50%</td></tr>
+            <tr><td class="mono fw-700">SPCX</td><td class="mono text-yellow">20% → trim to 12%</td><td class="text-sm text-muted">25% hard ceiling, always trim</td></tr>
+            <tr><td class="mono fw-700">NVDA</td><td class="mono text-yellow">25% NW</td><td class="text-sm text-muted">Alert only, no force action</td></tr>
+            <tr><td class="mono fw-700">All others</td><td class="mono text-red">25% NW</td><td class="text-sm text-muted">Hard ceiling</td></tr>
+            <tr><td class="mono fw-700">BTCI total</td><td class="mono text-yellow">20% NW</td><td class="text-sm text-muted">Combined 28Z + 88Z cap</td></tr>
+            <tr><td class="mono fw-700">Crypto-adjacent</td><td class="mono text-yellow">35% NW</td><td class="text-sm text-muted">IBIT+BTCI+MSTR+ETH/SOL/XRP/ADA soft alert</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Sacred Holds -->
@@ -750,15 +787,40 @@ input{font-family:inherit;outline:none}
         </table>
       </div>
 
+      <!-- Crypto Holdings -->
+      <div class="card-label" style="margin-bottom:8px;margin-top:4px">₿ Crypto Holdings (In-Scope for C7 Alert)</div>
+      <div class="card card-grid cols-4" style="margin-bottom:16px" id="crypto-holdings">
+        <div class="col gap-4">
+          <div class="text-xs text-dim">ETH</div>
+          <div class="stat-sm mono" id="eth-val">2 ETH</div>
+        </div>
+        <div class="col gap-4">
+          <div class="text-xs text-dim">SOL</div>
+          <div class="stat-sm mono" id="sol-val">57 SOL</div>
+        </div>
+        <div class="col gap-4">
+          <div class="text-xs text-dim">XRP</div>
+          <div class="stat-sm mono" id="xrp-val">1,700 XRP</div>
+        </div>
+        <div class="col gap-4">
+          <div class="text-xs text-dim">ADA</div>
+          <div class="stat-sm mono" id="ada-val">326 ADA</div>
+        </div>
+      </div>
+
       <!-- Bluestone -->
-      <div class="card" style="border-color:rgba(252,211,77,.2);background:rgba(252,211,77,.04)">
-        <div class="row-between">
-          <div>
-            <div class="card-label">🏦 Bluestone — Emergency Fund</div>
-            <div class="stat-big mono text-yellow">$94,000</div>
-            <div class="text-sm text-muted mt-4">Untouched. Non-negotiable. Do not deploy.</div>
-          </div>
-          <div class="badge badge-yellow">LOCKED</div>
+      <div class="card-label" style="margin-bottom:8px">🏦 Bluestone Structure</div>
+      <div class="card-grid cols-2" style="margin-bottom:0">
+        <div class="card" style="border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04)">
+          <div class="card-label">Tax Reserve</div>
+          <div class="stat-big mono text-red">$50,000</div>
+          <div class="text-sm text-muted mt-4">LOCKED. Never invest. IRS obligation reserve.</div>
+        </div>
+        <div class="card" style="border-color:rgba(252,211,77,.2);background:rgba(252,211,77,.04)">
+          <div class="card-label">Tactical Pool</div>
+          <div class="stat-big mono text-yellow">$44,000</div>
+          <div class="text-sm text-muted mt-4">Strategic deployment only. Floor: $10K minimum.</div>
+          <div class="text-xs text-dim mt-8">Post Year 0 transfer ($10K → CMA-28Z): ~$34K remaining</div>
         </div>
       </div>
     </div>
@@ -771,88 +833,129 @@ input{font-family:inherit;outline:none}
       </div>
 
       <!-- Year 0 -->
-      <div class="card-label" style="margin-bottom:8px">Year 0 — June 2026 ($70,000 total)</div>
+      <div class="card-label" style="margin-bottom:8px">Year 0 — 2026 ($70,000 total · execution only, no annual contribution)</div>
       <div class="col gap-8" style="margin-bottom:20px">
         <div class="deploy-item" style="border-color:rgba(217,119,87,.3)">
-          <div class="di-ticker text-accent">SPCX</div>
-          <div class="di-amount">$40,000</div>
-          <div class="di-info">CMA-28Z cash → IPO June 12, 2026. SpaceX direct listing. Buy at open.</div>
-          <div class="badge badge-yellow">⏳ 18d</div>
+          <div class="di-ticker text-accent">RONB</div>
+          <div class="di-amount">$20,000</div>
+          <div class="di-info">CMA-28Z → ~838 sh @ LIMIT $23.85. SpaceX bridge position. Default hold 10 years. Bot monitors for SPCX rotation signal.</div>
+          <div class="badge badge-yellow">MAY 26</div>
         </div>
-        <div class="deploy-item">
-          <div class="di-ticker">RONB</div>
-          <div class="di-amount">$30,000</div>
-          <div class="di-info">CMA-28Z cash → Buy at market open. 4 shares already held. SpaceX bridge position. May sell post-SPCX IPO.</div>
-          <div class="badge badge-dim">PENDING</div>
+        <div class="deploy-item" style="border-color:rgba(217,119,87,.3)">
+          <div class="di-ticker text-accent">SPCX</div>
+          <div class="di-amount">$50,000</div>
+          <div class="di-info">CMA-28Z → IPO June 12. LIMIT only. Execute 9:45-10:00 AM ET. Max price = offering + 25%. Stand down if opens 100%+ above offering price.</div>
+          <div class="badge badge-yellow">JUN 12</div>
+        </div>
+        <div class="card" style="background:rgba(252,211,77,.04);border-color:rgba(252,211,77,.2);padding:12px 16px">
+          <div class="text-xs text-dim" style="margin-bottom:6px">Year 0 Cash Math</div>
+          <div class="row gap-16 text-sm">
+            <span class="text-muted">$60K CMA cash + $10K Bluestone transfer = $70K total</span>
+            <span class="badge badge-yellow">$0 remaining</span>
+          </div>
+          <div class="text-xs text-dim mt-8">Dip protocol: if SPCX drops 15%+ in first 30 days → up to $24K more from tactical pool (floor $10K) → max $74K SPCX total</div>
         </div>
       </div>
 
-      <!-- Annual 5yr -->
-      <div class="card-label" style="margin-bottom:8px">Annual — Years 1–5 ($64,000/yr)</div>
+      <!-- IRA Cleanup (today) -->
+      <div class="card-label" style="margin-bottom:8px">IRA Cleanup — May 26, 2026 (Execute Today)</div>
+      <div class="card" style="margin-bottom:20px;border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.04)">
+        <div class="col gap-8">
+          <div class="row-between"><div class="row gap-8"><span class="badge badge-red">SELL</span><span class="mono fw-700">INSM</span></div><span class="mono text-sm">45 sh @ MARKET · ~$4,780</span></div>
+          <div class="row-between"><div class="row gap-8"><span class="badge badge-red">SELL</span><span class="mono fw-700">VIG</span></div><span class="mono text-sm">6 sh @ MARKET · ~$1,398</span></div>
+          <div class="row-between"><div class="row gap-8"><span class="badge badge-red">SELL</span><span class="mono fw-700">SCHD</span></div><span class="mono text-sm">200 sh @ MARKET · ~$6,566</span></div>
+          <div class="divider"></div>
+          <div class="row-between"><div class="row gap-8"><span class="badge badge-green">BUY</span><span class="mono fw-700">NVDA</span></div><span class="mono text-sm">~59 sh @ LIMIT $216.50 · May 27</span></div>
+        </div>
+      </div>
+
+      <!-- Annual Years 1-4 -->
+      <div class="card-label" style="margin-bottom:8px">Annual — Phase 1 (Years 1–4, 2027–2030) — $64,000/yr</div>
       <div class="col gap-8" style="margin-bottom:20px">
         <div class="deploy-item">
           <div class="di-ticker">VOO</div>
           <div class="di-amount">$7,000</div>
-          <div class="di-info">IRA → 100% DRIP forever. Max IRA contribution Jan 1 each year.</div>
+          <div class="di-info">IRA 20X → April 15 each year. 100% DRIP forever.</div>
+          <div class="badge badge-accent">IRA · APR 15</div>
+        </div>
+        <div class="deploy-item">
+          <div class="di-ticker">BTCI</div>
+          <div class="di-amount">$7,000</div>
+          <div class="di-info">$4,900 → CMA-28Z + $2,100 → CMA-88Z. May 27 each year. 100% DRIP forever.</div>
+          <div class="badge badge-accent">MAY 27</div>
+        </div>
+        <div class="deploy-item">
+          <div class="di-ticker">QQQ</div>
+          <div class="di-amount">$35,000</div>
+          <div class="di-info">CMA-28Z → Phase 1 growth. 100% DRIP. Sells at Year 5 pivot → converts to QQQI in 88Z.</div>
+          <div class="badge badge-blue">PHASE 1</div>
+        </div>
+        <div class="deploy-item">
+          <div class="di-ticker">VOO</div>
+          <div class="di-amount">$15,000</div>
+          <div class="di-info">CMA-28Z → Phase 1 growth alongside QQQ. 100% DRIP. Sells at Year 5 pivot.</div>
+          <div class="badge badge-blue">PHASE 1</div>
+        </div>
+      </div>
+
+      <!-- Year 5 Pivot -->
+      <div class="card-label" style="margin-bottom:8px">Year 5 Pivot — 2031 (Age 36) — Market-Opportunistic</div>
+      <div class="card" style="margin-bottom:20px;border-color:rgba(96,165,250,.2);background:rgba(96,165,250,.04)">
+        <div class="col gap-8">
+          <div class="row gap-8"><span class="badge badge-red">SELL</span><span class="text-sm">Entire QQQ + VOO stack in CMA-28Z</span></div>
+          <div class="row gap-8"><span class="badge badge-green">BUY</span><span class="text-sm">QQQI in CMA-88Z with full proceeds</span></div>
+          <div class="text-xs text-dim">Tax: ~$31K funded from store income (outside plan). Does not touch tactical pool.</div>
+          <div class="text-xs text-dim">Then Year 5 contribution executes normally: $50K → QQQI in 88Z</div>
+        </div>
+      </div>
+
+      <!-- Annual Years 5-19 -->
+      <div class="card-label" style="margin-bottom:8px">Annual — Phase 2–3 (Years 5–19, 2031–2045) — $64,000/yr</div>
+      <div class="col gap-8" style="margin-bottom:20px">
+        <div class="deploy-item">
+          <div class="di-ticker">VOO</div>
+          <div class="di-amount">$7,000</div>
+          <div class="di-info">IRA 20X → April 15. 100% DRIP forever. Unchanged.</div>
           <div class="badge badge-accent">IRA</div>
         </div>
         <div class="deploy-item">
           <div class="di-ticker">BTCI</div>
           <div class="di-amount">$7,000</div>
-          <div class="di-info">$4,500 → CMA-88Z + $2,500 → CMA-28Z. 100% DRIP forever. Both accounts.</div>
+          <div class="di-info">$4,900 → CMA-28Z + $2,100 → CMA-88Z. May 27. 100% DRIP forever.</div>
           <div class="badge badge-accent">DRIP</div>
         </div>
         <div class="deploy-item">
-          <div class="di-ticker">QQQ</div>
-          <div class="di-amount">$30,000</div>
-          <div class="di-info">CMA-28Z → Phase 1 growth stack. 100% DRIP until age 35–36 conversion.</div>
-          <div class="badge badge-blue">PHASE 1</div>
-        </div>
-        <div class="deploy-item">
-          <div class="di-ticker">VOO</div>
-          <div class="di-amount">$20,000</div>
-          <div class="di-info">CMA-28Z → Phase 1 growth stack alongside QQQ. 100% DRIP.</div>
-          <div class="badge badge-blue">PHASE 1</div>
+          <div class="di-ticker">QQQI</div>
+          <div class="di-amount">$50,000</div>
+          <div class="di-info">CMA-88Z (66X66) → May 27. 100% DRIP Years 5-9. DRIP OFF Year 10 (2036) → cash income.</div>
+          <div class="badge badge-accent">CMA-88Z</div>
         </div>
       </div>
 
-      <!-- Age 35-36 Conversion -->
-      <div class="card-label" style="margin-bottom:8px">Age 35–36 — Conversion Gate</div>
-      <div class="card" style="margin-bottom:20px;border-color:rgba(96,165,250,.2)">
-        <div class="text-sm" style="margin-bottom:10px">QQQ + VOO full stack converts to QQQI. Split:</div>
-        <div class="row gap-16">
-          <div class="col gap-4">
-            <div class="stat-med mono text-blue">70%</div>
-            <div class="text-xs text-muted">CMA-28Z (large account)</div>
-          </div>
-          <div class="col gap-4">
-            <div class="stat-med mono text-blue">30%</div>
-            <div class="text-xs text-muted">CMA-88Z (small account)</div>
-          </div>
-        </div>
-        <div class="text-xs text-dim mt-12">Call Kavita 90 days before conversion to plan tax year. Cost basis: ~$270K ($70K Day 0 + $50K × 4yr).</div>
-      </div>
-
-      <!-- Age 36+ -->
-      <div class="card-label" style="margin-bottom:8px">Age 36+ — QQQI Acceleration</div>
-      <div class="deploy-item" style="margin-bottom:20px">
-        <div class="di-ticker">QQQI</div>
-        <div class="di-amount">$50,000</div>
-        <div class="di-info">CMA-88Z (small account) → annual lump sum. 100% DRIP until age 40, then 100% cash income.</div>
-        <div class="badge badge-accent">CMA-88Z</div>
+      <!-- Key milestones -->
+      <div class="card-label" style="margin-bottom:8px">Key Milestones</div>
+      <div class="card" style="margin-bottom:20px">
+        <table class="data-table w-full">
+          <thead><tr><th>Event</th><th>When</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td class="mono text-accent">Year 10</td><td class="text-sm text-muted">May 2036 · Age 41</td><td class="text-sm">Turn off DRIP in CMA-88Z only. 88Z distributions → cash income.</td></tr>
+            <tr><td class="mono text-accent">Year 19</td><td class="text-sm text-muted">2045 · Age 50</td><td class="text-sm">STOP all contributions. Live off 88Z distributions. 28Z BTCI continues compounding.</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- DRIP Rules -->
       <div class="card-label" style="margin-bottom:8px">DRIP Rules</div>
       <div class="card">
         <table class="data-table w-full">
-          <thead><tr><th>Position</th><th>Account</th><th>DRIP</th><th>Stops When</th></tr></thead>
+          <thead><tr><th>Position</th><th>Account</th><th>DRIP</th><th>Changes When</th></tr></thead>
           <tbody>
-            <tr><td class="mono">QQQI</td><td class="text-muted text-sm">CMA-88Z</td><td><span class="badge badge-green">100% DRIP</span></td><td class="text-sm text-muted">Age 40 → switches to cash</td></tr>
-            <tr><td class="mono">QQQI</td><td class="text-muted text-sm">CMA-28Z</td><td><span class="badge badge-green">100% DRIP</span></td><td class="text-sm text-muted">Forever</td></tr>
-            <tr><td class="mono">BTCI</td><td class="text-muted text-sm">Both CMAs</td><td><span class="badge badge-green">100% DRIP</span></td><td class="text-sm text-muted">Forever</td></tr>
-            <tr><td class="mono">VOO</td><td class="text-muted text-sm">IRA</td><td><span class="badge badge-green">100% DRIP</span></td><td class="text-sm text-muted">Forever</td></tr>
-            <tr><td class="mono">QQQ/VOO</td><td class="text-muted text-sm">CMA-28Z</td><td><span class="badge badge-green">100% DRIP</span></td><td class="text-sm text-muted">Until age 35–36 conversion</td></tr>
+            <tr><td class="mono">IRA VOO</td><td class="text-muted text-sm">IRA 20X</td><td><span class="badge badge-green">ON forever</span></td><td class="text-sm text-muted">Never off</td></tr>
+            <tr><td class="mono">BTCI</td><td class="text-muted text-sm">Both CMAs</td><td><span class="badge badge-green">ON forever</span></td><td class="text-sm text-muted">Never off</td></tr>
+            <tr><td class="mono">QQQI</td><td class="text-muted text-sm">CMA-28Z</td><td><span class="badge badge-green">ON forever</span></td><td class="text-sm text-muted">Never off</td></tr>
+            <tr><td class="mono">QQQI</td><td class="text-muted text-sm">CMA-88Z</td><td><span class="badge badge-green">ON Years 1-9</span></td><td class="text-sm text-muted">Year 10 (2036) → cash income</td></tr>
+            <tr><td class="mono">QQQ/VOO</td><td class="text-muted text-sm">CMA-28Z</td><td><span class="badge badge-green">ON Phase 1</span></td><td class="text-sm text-muted">Sell at Year 5 pivot</td></tr>
+            <tr><td class="mono">SPCX/RONB</td><td class="text-muted text-sm">CMA-28Z</td><td><span class="badge badge-green">ON always</span></td><td class="text-sm text-muted">Until position exits</td></tr>
           </tbody>
         </table>
       </div>
