@@ -1540,7 +1540,12 @@ function renderThesis() {
   document.getElementById('thesis-freshness').textContent = 'Updated ' + fmt.ago(dd.generated_at);
   
   let html = '';
+  let shownTier2Label = false;
   Object.values(dd.positions).forEach(pos => {
+    if (pos.tier === 'lite' && !shownTier2Label) {
+      html += `<div class="card-label" style="margin:20px 0 8px">All Other Positions (R1 + Sonar)</div>`;
+      shownTier2Label = true;
+    }
     const id = 'thesis-' + pos.symbol;
     const bull = pos.bull || {};
     const bear = pos.bear || {};
@@ -1583,14 +1588,14 @@ function renderThesis() {
           ${pos.contradictions.map(c => `<div class="contradiction-item medium"><span class="contradiction-icon">⚡</span><div class="contradiction-text">${c}</div></div>`).join('')}
         </div>` : ''}
         <div class="deep-panels">
-          <div class="deep-panel">
+          <div class="deep-panel" style="${pos.tier==='lite' ? 'grid-column:1/-1' : ''}">
             <div class="deep-panel-label">🧠 R1 — Bull Thesis Verification</div>
             <div class="deep-panel-text">${(bull.analysis||'Unavailable').replace(/\n/g,'<br>')}</div>
           </div>
-          <div class="deep-panel">
+          ${pos.tier !== 'lite' ? `<div class="deep-panel">
             <div class="deep-panel-label">🐉 Kimi — Bear Case</div>
             <div class="deep-panel-text">${(bear.analysis||'Unavailable').replace(/\n/g,'<br>')}</div>
-          </div>
+          </div>` : ''}
           <div class="deep-panel" style="grid-column:1/-1">
             <div class="deep-panel-label">📡 Sonar — Near-Term Catalysts</div>
             <div class="deep-panel-text">${(cats.catalysts||'Unavailable').replace(/\n/g,'<br>')}</div>
