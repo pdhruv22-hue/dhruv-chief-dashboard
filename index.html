@@ -24,6 +24,7 @@
 <script src="crypto-analysis.js?v=1" onerror="window.CRYPTO_ANALYSIS=null"></script>
 <script src="position-deepdive.js?v=1" onerror="window.POSITION_DEEPDIVE=null"></script>
 <script src="news-data.js?v=1" onerror="window.NEWS_DATA=null"></script>
+<script src="fortress-analysis.js?v=1" onerror="window.FORTRESS_ANALYSIS=null"></script>
 
 <style>
 /* ── Reset & Base ─────────────────────────────────────────── */
@@ -671,6 +672,11 @@ input{font-family:inherit;outline:none}
         <div class="freshness">Income Engine</div>
       </div>
 
+      <!-- 3-Model Plan Analysis -->
+      <div id="fortress-analysis-container" style="margin-bottom:16px">
+        <div class="empty-state"><div class="empty-icon">🏰</div><div class="empty-title">Loading plan analysis...</div></div>
+      </div>
+
       <!-- SPCX Countdown + RONB -->
       <div class="card-grid cols-2" style="margin-bottom:16px">
         <div class="countdown-card">
@@ -886,6 +892,49 @@ input{font-family:inherit;outline:none}
         </div>
       </div>
     </div>
+
+    <script>
+    (function() {
+      function renderFortressAnalysis() {
+        const container = document.getElementById('fortress-analysis-container');
+        if (!container) return;
+        const d = window.FORTRESS_ANALYSIS;
+        if (!d) return;
+
+        const vs = d.vsBenchmark;
+        const vsColor = vs >= 0 ? '#22c55e' : '#ef4444';
+        const vsSign = vs >= 0 ? '+' : '';
+
+        let html = `
+          <div style="margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div style="font-size:11px;color:var(--text-dim)">Plan Analysis — ${d.generatedAt}</div>
+            <div style="font-size:12px;font-weight:700;color:${vsColor}">NW ${vsSign}${vs}% vs benchmark</div>
+            <div style="font-size:11px;color:var(--accent)">Next: ${d.nextMilestone}</div>
+          </div>`;
+
+        const modelColors = { sonar: '#38bdf8', r1: '#a78bfa', kimi: '#fb923c' };
+        const models = ['sonar', 'r1', 'kimi'];
+        models.forEach(key => {
+          const m = d.models[key];
+          if (!m) return;
+          const color = modelColors[key] || 'var(--text-dim)';
+          html += `
+            <div class="card" style="margin-bottom:10px;border-left:3px solid ${color};padding-left:12px">
+              <div style="font-size:11px;font-weight:700;color:${color};margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">${m.name}</div>
+              <div style="font-size:12px;line-height:1.6;color:var(--text-muted);white-space:pre-wrap">${m.content}</div>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderFortressAnalysis);
+      } else {
+        renderFortressAnalysis();
+      }
+    })();
+    </script>
 
     <script>
     (function() {
