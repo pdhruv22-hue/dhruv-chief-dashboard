@@ -12,14 +12,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <!-- Data files -->
-<script src="stocks-data.js?v=3" onerror="window.STOCKS_DATA=null"></script>
-<script src="stocks-wsb-data.js?v=3" onerror="window.STOCKS_WSB_DATA=null"></script>
-<script src="stocks-analyst-data.js?v=3" onerror="window.STOCKS_ANALYST_DATA=null"></script>
-<script src="stocks-ai-rec-data.js?v=3" onerror="window.STOCKS_AI_REC_DATA=null"></script>
-<script src="stocks-x-grok-data.js?v=3" onerror="window.STOCKS_X_GROK_DATA=null"></script>
-<script src="stocks-eod-summary.js?v=3" onerror="window.STOCKS_EOD_SUMMARY=null"></script>
-<script src="wealth-data.js?v=3" onerror="window.WEALTH_DATA=null"></script>
-<script src="health-tips-data.js?v=3" onerror="window.HEALTH_DATA=null"></script>
+<script src="stocks-data.js?v=4" onerror="window.STOCKS_DATA=null"></script>
+<script src="stocks-wsb-data.js?v=4" onerror="window.STOCKS_WSB_DATA=null"></script>
+<script src="stocks-analyst-data.js?v=4" onerror="window.STOCKS_ANALYST_DATA=null"></script>
+<script src="stocks-ai-rec-data.js?v=4" onerror="window.STOCKS_AI_REC_DATA=null"></script>
+<script src="stocks-x-grok-data.js?v=4" onerror="window.STOCKS_X_GROK_DATA=null"></script>
+<script src="stocks-eod-summary.js?v=4" onerror="window.STOCKS_EOD_SUMMARY=null"></script>
+<script src="wealth-data.js?v=4" onerror="window.WEALTH_DATA=null"></script>
+<script src="health-tips-data.js?v=4" onerror="window.HEALTH_DATA=null"></script>
+<script src="crypto-analysis.js?v=1" onerror="window.CRYPTO_ANALYSIS=null"></script>
+<script src="position-deepdive.js?v=1" onerror="window.POSITION_DEEPDIVE=null"></script>
 
 <style>
 /* ── Reset & Base ─────────────────────────────────────────── */
@@ -369,6 +371,45 @@ input{font-family:inherit;outline:none}
   .phase-timeline{display:flex}
 }
 
+/* ── Crypto specific ──────────────────────────────────────── */
+.coin-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.coin-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px}
+.coin-symbol{font-family:var(--mono);font-size:22px;font-weight:700}
+.coin-name{font-size:12px;color:var(--muted);margin-top:2px}
+.coin-price{font-family:var(--mono);font-size:22px;font-weight:700;text-align:right}
+.coin-change{font-family:var(--mono);font-size:13px;text-align:right;margin-top:2px}
+.coin-stats{display:flex;gap:20px;padding:0 20px 12px;border-bottom:1px solid var(--border)}
+.coin-stat{display:flex;flex-direction:column;gap:2px}
+.coin-stat .v{font-family:var(--mono);font-size:13px;font-weight:500}
+.coin-stat .l{font-size:10px;color:var(--dim)}
+.model-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.model-row:last-child{border-bottom:none}
+.model-name{font-size:10px;color:var(--dim);width:80px;flex-shrink:0}
+.model-verdict{font-size:12px;font-weight:600}
+.contradiction-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 12px;border-radius:8px;margin-bottom:6px;
+}
+.contradiction-item.high{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2)}
+.contradiction-item.medium{background:rgba(252,211,77,.08);border:1px solid rgba(252,211,77,.15)}
+.contradiction-item.low{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15)}
+.contradiction-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.contradiction-text{font-size:12px;line-height:1.5}
+
+/* ── Thesis Deep Dive ─────────────────────────────────────── */
+.thesis-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.thesis-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer}
+.thesis-ticker{font-family:var(--mono);font-size:20px;font-weight:700}
+.thesis-pillars{display:flex;flex-wrap:wrap;gap:6px;padding:0 20px 14px}
+.pillar-tag{font-size:11px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;color:var(--muted)}
+.deep-panels{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 20px}
+.deep-panel{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+.deep-panel-label{font-size:10px;font-weight:600;color:var(--dim);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.deep-panel-text{font-size:12px;color:var(--muted);line-height:1.6;max-height:220px;overflow-y:auto}
+.status-intact{color:var(--green);background:rgba(74,222,128,.12);padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700}
+.status-weakening{color:var(--yellow);background:rgba(252,211,77,.12);padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700}
+.status-broken{color:var(--red);background:rgba(248,113,113,.12);padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700}
+
 /* ── Expand toggle ────────────────────────────────────────── */
 .expand-icon{
   transition:transform .2s;font-size:12px;color:var(--dim);
@@ -418,6 +459,12 @@ input{font-family:inherit;outline:none}
       <div class="nav-label">Markets</div>
       <div class="nav-item active" onclick="switchTab('stocks',this)">
         <span class="icon">📊</span>Stocks
+      </div>
+      <div class="nav-item" onclick="switchTab('thesis',this)">
+        <span class="icon">🔬</span>Thesis Deep Dive
+      </div>
+      <div class="nav-item" onclick="switchTab('crypto',this)">
+        <span class="icon">₿</span>Crypto
       </div>
       <div class="nav-item" onclick="switchTab('fortress',this)">
         <span class="icon">🏰</span>Fortress
@@ -961,6 +1008,56 @@ input{font-family:inherit;outline:none}
       </div>
     </div>
 
+    <!-- ── CRYPTO TAB ────────────────────────────────────────── -->
+    <div class="tab-content" id="tab-crypto">
+      <div class="tab-header">
+        <div>
+          <div class="tab-title">₿ Crypto</div>
+          <div class="tab-meta" id="crypto-meta">BTC · ETH · SOL · 3-model analysis</div>
+        </div>
+        <div id="crypto-freshness" class="freshness">—</div>
+      </div>
+
+      <!-- Holdings Summary -->
+      <div class="card card-sm" style="margin-bottom:16px">
+        <div class="card-label">Your Direct Crypto Holdings</div>
+        <div class="card-grid cols-4">
+          <div class="col gap-2"><div class="text-xs text-dim">ETH</div><div class="stat-sm mono">2 ETH</div></div>
+          <div class="col gap-2"><div class="text-xs text-dim">SOL</div><div class="stat-sm mono">57 SOL</div></div>
+          <div class="col gap-2"><div class="text-xs text-dim">XRP</div><div class="stat-sm mono">1,700 XRP</div></div>
+          <div class="col gap-2"><div class="text-xs text-dim">ADA</div><div class="stat-sm mono">326 ADA</div></div>
+        </div>
+        <div class="text-xs text-dim mt-8">Portfolio exposure also via BTCI + MSTR + IBIT in CMA accounts. C7 alert triggers at 35% NW combined.</div>
+      </div>
+
+      <div id="crypto-coins-container">
+        <div class="empty-state">
+          <div class="empty-icon">₿</div>
+          <div class="empty-title">Crypto analysis loading…</div>
+          <div class="empty-hint">3-model analysis: Perplexity · DeepSeek R1 · Kimi K2</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── THESIS DEEP DIVE TAB ───────────────────────────────── -->
+    <div class="tab-content" id="tab-thesis">
+      <div class="tab-header">
+        <div>
+          <div class="tab-title">🔬 Thesis Deep Dive</div>
+          <div class="tab-meta">TSLA · NVDA · GOOGL · OKLO · XPEV</div>
+        </div>
+        <div id="thesis-freshness" class="freshness">—</div>
+      </div>
+      <div class="text-sm text-muted" style="margin-bottom:16px">Bull thesis (R1) vs Bear case (Kimi) + live catalysts (Sonar). Tap any position to expand all 3 layers.</div>
+      <div id="thesis-container">
+        <div class="empty-state">
+          <div class="empty-icon">🔬</div>
+          <div class="empty-title">Deep dive analysis loading…</div>
+          <div class="empty-hint">DeepSeek R1 · Kimi K2 · Perplexity Sonar running simultaneously</div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── HEALTH TAB ─────────────────────────────────────── -->
     <div class="tab-content" id="tab-health">
       <div class="tab-header">
@@ -993,8 +1090,11 @@ input{font-family:inherit;outline:none}
   <div class="mob-tab" onclick="switchTab('deploy',this,true)" id="mob-deploy">
     <span class="icon">🚀</span><span>Deploy</span>
   </div>
-  <div class="mob-tab" onclick="switchTab('news',this,true)" id="mob-news">
-    <span class="icon">📡</span><span>Intel</span>
+  <div class="mob-tab" onclick="switchTab('crypto',this,true)" id="mob-crypto">
+    <span class="icon">₿</span><span>Crypto</span>
+  </div>
+  <div class="mob-tab" onclick="switchTab('thesis',this,true)" id="mob-thesis">
+    <span class="icon">🔬</span><span>Thesis</span>
   </div>
 </nav>
 
@@ -1352,6 +1452,156 @@ function renderHealth() {
   if (html) el.innerHTML = html;
 }
 
+// ── CRYPTO rendering ──────────────────────────────────────────
+function renderCrypto() {
+  const ca = window.CRYPTO_ANALYSIS;
+  const el = document.getElementById('crypto-coins-container');
+  if (!ca || !ca.coins) {
+    el.innerHTML = '<div class="card"><div class="empty-state"><div class="empty-icon">₿</div><div class="empty-title">Crypto analysis not yet generated</div><div class="empty-hint">Runs daily at 6:05 AM ET</div></div></div>';
+    return;
+  }
+  document.getElementById('crypto-freshness').textContent = 'Updated ' + fmt.ago(ca.generated_at);
+  document.getElementById('crypto-meta').textContent = Object.keys(ca.coins).join(' · ') + ' · 3-model analysis';
+  
+  let html = '';
+  Object.values(ca.coins).forEach(coin => {
+    const chgCls = changeCls(coin.change_24h_pct);
+    const sonar = coin.sonar || {};
+    const r1 = coin.r1 || {};
+    const kimi = coin.kimi || {};
+    const contras = coin.contradictions || [];
+    const id = 'crypto-' + coin.symbol;
+    
+    const sonarCls = sonar.sentiment === 'BULLISH' ? 'badge-green' : sonar.sentiment === 'BEARISH' ? 'badge-red' : 'badge-dim';
+    const r1Cls = r1.verdict === 'ACCUMULATE' ? 'badge-green' : r1.verdict === 'REDUCE' || r1.verdict === 'AVOID' ? 'badge-red' : 'badge-dim';
+    const kimiCls = kimi.rating && kimi.rating.includes('DISAGREE') ? 'badge-yellow' : 'badge-dim';
+    
+    html += `
+    <div class="coin-card">
+      <div class="coin-header" onclick="toggleExpand('${id}')">
+        <div>
+          <div class="coin-symbol">${coin.symbol}</div>
+          <div class="coin-name">${coin.name}</div>
+          <div class="text-xs text-dim mt-4">Exposure: ${(coin.portfolio_exposure||[]).join(' · ')}</div>
+        </div>
+        <div>
+          <div class="coin-price mono">${coin.price ? '$' + coin.price.toLocaleString() : '—'}</div>
+          <div class="coin-change ${chgCls}">${coin.change_24h_pct != null ? (coin.change_24h_pct>0?'+':'') + coin.change_24h_pct.toFixed(2) + '%' : '—'}</div>
+          <div class="expand-icon mt-4" id="icon-${id}">▾</div>
+        </div>
+      </div>
+      ${coin.week_high ? `<div class="coin-stats">
+        <div class="coin-stat"><span class="v mono">${'$'+coin.week_high.toLocaleString()}</span><span class="l">7d High</span></div>
+        <div class="coin-stat"><span class="v mono">${'$'+coin.week_low.toLocaleString()}</span><span class="l">7d Low</span></div>
+        <div class="coin-stat"><span class="v mono"><span class="badge ${sonarCls}" style="font-size:11px">${sonar.sentiment||'—'}</span></span><span class="l">Sonar</span></div>
+        <div class="coin-stat"><span class="v mono"><span class="badge ${r1Cls}" style="font-size:11px">${r1.verdict||'—'}</span></span><span class="l">R1</span></div>
+        <div class="coin-stat"><span class="v mono" style="font-size:11px;color:var(--dim)">${kimi.rating||'—'}</span><span class="l">Kimi</span></div>
+      </div>` : ''}
+      <div class="expandable" id="${id}">
+        ${contras.length > 0 ? `
+        <div style="padding:12px 20px 0">
+          <div class="card-label">⚡ Contradictions & Conflicts</div>
+          ${contras.map(c => `<div class="contradiction-item ${(c.severity||'low').toLowerCase()}">
+            <span class="contradiction-icon">${c.severity==='HIGH'?'🔴':c.severity==='MEDIUM'?'🟡':'🟢'}</span>
+            <div><div class="text-xs fw-700" style="margin-bottom:3px">${c.type}</div><div class="contradiction-text">${c.description}</div></div>
+          </div>`).join('')}
+        </div>` : ''}
+        <div class="intel-grid" style="padding:12px 20px">
+          <div class="intel-panel" style="grid-column:1/-1">
+            <div class="intel-label">📡 Perplexity Sonar — News & On-Chain</div>
+            <div class="row gap-6" style="margin-bottom:8px"><span class="badge ${sonarCls}">${sonar.sentiment||'—'}</span></div>
+            <div class="intel-text" style="max-height:180px;overflow-y:auto">${sonar.summary||'No data'}</div>
+          </div>
+          <div class="intel-panel">
+            <div class="intel-label">🧠 DeepSeek R1 — Deep Analysis</div>
+            <div class="row gap-6" style="margin-bottom:8px"><span class="badge ${r1Cls}">${r1.verdict||'—'}</span></div>
+            <div class="intel-text" style="max-height:220px;overflow-y:auto">${r1.analysis||'No data'}</div>
+          </div>
+          <div class="intel-panel">
+            <div class="intel-label">🐉 Kimi K2 — Contrarian Bear Case</div>
+            <div class="row gap-6" style="margin-bottom:8px"><span class="badge ${kimiCls}" style="font-size:10px">${kimi.rating||'—'}</span></div>
+            <div class="intel-text" style="max-height:220px;overflow-y:auto">${kimi.analysis||'No data'}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ── THESIS DEEP DIVE rendering ────────────────────────────────
+function renderThesis() {
+  const dd = window.POSITION_DEEPDIVE;
+  const el = document.getElementById('thesis-container');
+  if (!dd || !dd.positions) {
+    el.innerHTML = '<div class="card"><div class="empty-state"><div class="empty-icon">🔬</div><div class="empty-title">Deep dive not yet generated</div><div class="empty-hint">Runs daily at 6:10 AM ET</div></div></div>';
+    return;
+  }
+  document.getElementById('thesis-freshness').textContent = 'Updated ' + fmt.ago(dd.generated_at);
+  
+  let html = '';
+  Object.values(dd.positions).forEach(pos => {
+    const id = 'thesis-' + pos.symbol;
+    const bull = pos.bull || {};
+    const bear = pos.bear || {};
+    const cats = pos.catalysts || {};
+    
+    const statusEl = bull.thesis_status === 'INTACT'
+      ? `<span class="status-intact">✓ INTACT</span>`
+      : bull.thesis_status === 'WEAKENING'
+      ? `<span class="status-weakening">⚠ WEAKENING</span>`
+      : `<span class="status-broken">✗ BROKEN</span>`;
+    
+    const bearCls = bear.bear_conviction === 'STRONG' ? 'badge-red' : bear.bear_conviction === 'WEAK' ? 'badge-green' : 'badge-yellow';
+    
+    html += `
+    <div class="thesis-card">
+      <div class="thesis-header" onclick="toggleExpand('${id}')">
+        <div>
+          <div class="row gap-10">
+            <span class="thesis-ticker">${pos.symbol}</span>
+            ${statusEl}
+            ${pos.never_sell ? '<span class="badge badge-hold">HOLD FOREVER</span>' : ''}
+          </div>
+          <div class="text-sm text-muted mt-4">${pos.name} · ${pos.shares} shares · ${pos.account}</div>
+          <div class="text-xs text-dim mt-4" style="max-width:500px;line-height:1.4">${pos.thesis}</div>
+        </div>
+        <div class="row gap-8">
+          <div class="col gap-2" style="text-align:right">
+            <div class="stat-sm mono">${pos.price ? '$'+pos.price : '—'}</div>
+            <div class="text-xs text-dim">Bear: <span class="badge ${bearCls}" style="font-size:10px">${bear.bear_conviction||'—'}</span></div>
+          </div>
+          <div class="expand-icon" id="icon-${id}">▾</div>
+        </div>
+      </div>
+      <div class="thesis-pillars">
+        ${(pos.thesis_pillars||[]).map(p => `<span class="pillar-tag">${p}</span>`).join('')}
+      </div>
+      <div class="expandable" id="${id}">
+        ${pos.contradictions && pos.contradictions.length > 0 ? `
+        <div style="padding:0 20px 12px">
+          ${pos.contradictions.map(c => `<div class="contradiction-item medium"><span class="contradiction-icon">⚡</span><div class="contradiction-text">${c}</div></div>`).join('')}
+        </div>` : ''}
+        <div class="deep-panels">
+          <div class="deep-panel">
+            <div class="deep-panel-label">🧠 R1 — Bull Thesis Verification</div>
+            <div class="deep-panel-text">${(bull.analysis||'Unavailable').replace(/\n/g,'<br>')}</div>
+          </div>
+          <div class="deep-panel">
+            <div class="deep-panel-label">🐉 Kimi — Bear Case</div>
+            <div class="deep-panel-text">${(bear.analysis||'Unavailable').replace(/\n/g,'<br>')}</div>
+          </div>
+          <div class="deep-panel" style="grid-column:1/-1">
+            <div class="deep-panel-label">📡 Sonar — Near-Term Catalysts</div>
+            <div class="deep-panel-text">${(cats.catalysts||'Unavailable').replace(/\n/g,'<br>')}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 function initDashboard() {
   calcDays();
@@ -1359,6 +1609,8 @@ function initDashboard() {
   renderIntelligence();
   renderWealth();
   renderHealth();
+  renderCrypto();
+  renderThesis();
 }
 </script>
 </body>
