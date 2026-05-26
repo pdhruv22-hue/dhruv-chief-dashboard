@@ -1,7 +1,7 @@
 window.ACCOUNTABILITY_DATA = {
-  "generated_at": "2026-05-10T06:00:25.773333",
-  "week_start": "2026-05-04",
-  "week_end": "2026-05-10",
+  "generated_at": "2026-05-12T06:00:07.067661",
+  "week_start": "2026-05-11",
+  "week_end": "2026-05-17",
   "scores": {
     "cre_reviewed": {
       "count": 0,
