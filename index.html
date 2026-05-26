@@ -1676,6 +1676,32 @@ document.getElementById('auth-input').addEventListener('keydown', e => { if(e.ke
   }
 })();
 
+// ── Timestamp injection ───────────────────────────────────────
+function injectTimestamps() {
+  const sets = [
+    { el: 'stocks-freshness',  src: window.STOCKS_DATA,       field: 'generatedAt' },
+    { el: 'news-freshness',    src: window.NEWS_DATA,          field: 'generatedAt' },
+    { el: 'wealth-freshness',  src: window.WEALTH_DATA,        field: 'generatedAt' },
+    { el: 'crypto-freshness',  src: window.CRYPTO_ANALYSIS,    field: 'generatedAt' },
+    { el: 'thesis-freshness',  src: window.POSITION_DEEPDIVE,  field: 'generatedAt' },
+    { el: 'health-freshness',  src: window.HEALTH_DATA,        field: 'generatedAt' },
+  ];
+  sets.forEach(({el, src, field}) => {
+    const node = document.getElementById(el);
+    if (node && src && src[field]) {
+      node.textContent = src[field];
+      node.title = 'Data generated: ' + src[field];
+    }
+  });
+  // Last updated header
+  const lu = document.getElementById('last-updated');
+  if (lu) {
+    const times = sets.map(s => s.src && s.src[s.field]).filter(Boolean);
+    if (times.length) lu.textContent = 'Last refresh: ' + times[0];
+  }
+}
+document.addEventListener('DOMContentLoaded', injectTimestamps);
+
 // ── Tab switching ─────────────────────────────────────────────
 let currentTab = 'stocks';
 function switchTab(tab, el, mobile=false) {
