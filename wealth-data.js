@@ -1,230 +1,221 @@
 window.WEALTH_DATA = {
-  "generatedAt": "May 26 12:43 PM ET",
-  "totalValue": 409949.77,
-  "gapTo1M": 590050.23,
-  "pctTo1M": 41.0,
-  "cash": {
-    "IRA_cash": 116.57,
-    "CMA28_cash": 40176.61,
-    "CMA88_cash": 6.84
+  "generatedAt": "May 26 07:27 PM ET",
+  "source": "Google Sheet (GOOGLEFINANCE live prices)",
+  "totalValue": 401321.2,
+  "totalStocks": 361029.79,
+  "totalCash": 40291.41,
+  "gapTo1M": 598678.8,
+  "pctTo1M": 40.1,
+  "accounts": {
+    "IRA": {
+      "stock_value": 142946.76,
+      "cash": 116.57,
+      "total": 143063.33
+    },
+    "28Z": {
+      "stock_value": 157686.13,
+      "cash": 40168.0,
+      "total": 197854.13
+    },
+    "88Z": {
+      "stock_value": 60396.9,
+      "cash": 6.84,
+      "total": 60403.74
+    }
   },
   "positions": [
     {
       "ticker": "TSLA",
-      "shares": 165,
-      "price": 432.2,
-      "value": 71313.0,
-      "account": "IRA"
-    },
-    {
-      "ticker": "GOOGL",
-      "shares": 85,
-      "price": 386.27,
-      "value": 32832.95,
-      "account": "IRA"
-    },
-    {
-      "ticker": "ARKK",
-      "shares": 125,
-      "price": 77.34,
-      "value": 9667.5,
-      "account": "IRA"
-    },
-    {
-      "ticker": "XPEV",
-      "shares": 612,
-      "price": 16.66,
-      "value": 10195.92,
-      "account": "IRA"
-    },
-    {
-      "ticker": "NVDA",
-      "shares": 94,
-      "price": 213.09,
-      "value": 20030.46,
-      "account": "IRA"
-    },
-    {
-      "ticker": "AAPL",
-      "shares": 13.6,
-      "price": 310.21,
-      "value": 4218.86,
-      "account": "IRA"
-    },
-    {
-      "ticker": "JOBY",
-      "shares": 128,
-      "price": 11.51,
-      "value": 1473.28,
-      "account": "IRA"
-    },
-    {
-      "ticker": "ACHR",
-      "shares": 138,
-      "price": 6.62,
-      "value": 913.56,
-      "account": "IRA"
-    },
-    {
-      "ticker": "LCID",
-      "shares": 66,
-      "price": 6.14,
-      "value": 405.24,
+      "shares": 165.0,
+      "price": 433.59,
+      "value": 71542.35,
       "account": "IRA"
     },
     {
       "ticker": "QQQ",
-      "shares": 70,
-      "price": 727.55,
-      "value": 50928.5,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "VOO",
-      "shares": 30,
-      "price": 688.97,
-      "value": 20669.1,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "ARKW",
-      "shares": 84,
-      "price": 146.78,
-      "value": 12329.52,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "XPEV",
-      "shares": 734,
-      "price": 16.66,
-      "value": 12228.44,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "OKLO",
-      "shares": 155,
-      "price": 70.64,
-      "value": 10949.2,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "IBIT",
-      "shares": 227,
-      "price": 43.3,
-      "value": 9829.1,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "AMZN",
-      "shares": 33,
-      "price": 263.75,
-      "value": 8703.75,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "CEG",
-      "shares": 15,
-      "price": 304.81,
-      "value": 4572.15,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "NNE",
-      "shares": 130,
-      "price": 30.07,
-      "value": 3909.1,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "SMR",
-      "shares": 200,
-      "price": 12.33,
-      "value": 2466.0,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "NXE",
-      "shares": 75,
-      "price": 10.95,
-      "value": 821.25,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "UUUU",
-      "shares": 43,
-      "price": 18.57,
-      "value": 798.51,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "RONB",
-      "shares": 833,
-      "price": 23.86,
-      "value": 19875.38,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "AEXA",
-      "shares": 4,
-      "price": 11.32,
-      "value": 45.28,
-      "account": "CMA-28Z"
-    },
-    {
-      "ticker": "TNYA",
-      "shares": 10,
-      "price": 0.8,
-      "value": 8.0,
-      "account": "CMA-28Z"
+      "shares": 70.0,
+      "price": 730.28,
+      "value": 51119.6,
+      "account": "28Z"
     },
     {
       "ticker": "QQQI",
-      "shares": 892,
-      "price": 56.75,
-      "value": 50621.0,
-      "account": "CMA-88Z"
+      "shares": 892.0,
+      "price": 56.85,
+      "value": 50710.2,
+      "account": "88Z"
+    },
+    {
+      "ticker": "GOOGL",
+      "shares": 85.0,
+      "price": 388.88,
+      "value": 33054.8,
+      "account": "IRA"
+    },
+    {
+      "ticker": "VOO",
+      "shares": 30.0,
+      "price": 690.01,
+      "value": 20700.3,
+      "account": "28Z"
+    },
+    {
+      "ticker": "NVDA",
+      "shares": 94.0,
+      "price": 214.86,
+      "value": 20196.84,
+      "account": "IRA"
+    },
+    {
+      "ticker": "RONB",
+      "shares": 833.0,
+      "price": 23.86,
+      "value": 19875.38,
+      "account": "28Z"
+    },
+    {
+      "ticker": "ARKW",
+      "shares": 84.0,
+      "price": 146.03,
+      "value": 12266.52,
+      "account": "28Z"
+    },
+    {
+      "ticker": "XPEV",
+      "shares": 734.0,
+      "price": 16.55,
+      "value": 12147.7,
+      "account": "28Z"
+    },
+    {
+      "ticker": "OKLO",
+      "shares": 155.0,
+      "price": 68.7,
+      "value": 10648.5,
+      "account": "28Z"
+    },
+    {
+      "ticker": "XPEV",
+      "shares": 612.0,
+      "price": 16.55,
+      "value": 10128.6,
+      "account": "IRA"
+    },
+    {
+      "ticker": "IBIT",
+      "shares": 227.0,
+      "price": 42.99,
+      "value": 9758.73,
+      "account": "28Z"
+    },
+    {
+      "ticker": "AMZN",
+      "shares": 33.0,
+      "price": 265.29,
+      "value": 8754.57,
+      "account": "28Z"
     },
     {
       "ticker": "BTCI",
-      "shares": 140,
-      "price": 35.23,
-      "value": 4932.2,
-      "account": "CMA-88Z"
+      "shares": 140.0,
+      "price": 34.92,
+      "value": 4888.8,
+      "account": "88Z"
     },
     {
       "ticker": "MSTR",
-      "shares": 30,
-      "price": 163.75,
-      "value": 4912.5,
-      "account": "CMA-88Z"
+      "shares": 30.0,
+      "price": 159.93,
+      "value": 4797.9,
+      "account": "88Z"
+    },
+    {
+      "ticker": "CEG",
+      "shares": 15.0,
+      "price": 301.57,
+      "value": 4523.55,
+      "account": "28Z"
+    },
+    {
+      "ticker": "AAPL",
+      "shares": 13.6492,
+      "price": 308.33,
+      "value": 4208.46,
+      "account": "IRA"
+    },
+    {
+      "ticker": "NNE",
+      "shares": 130.0,
+      "price": 29.07,
+      "value": 3779.1,
+      "account": "28Z"
+    },
+    {
+      "ticker": "SMR",
+      "shares": 200.0,
+      "price": 12.22,
+      "value": 2444.0,
+      "account": "28Z"
+    },
+    {
+      "ticker": "JOBY",
+      "shares": 128.0,
+      "price": 11.52,
+      "value": 1474.56,
+      "account": "IRA"
+    },
+    {
+      "ticker": "ARKK",
+      "shares": 125.0,
+      "price": 8.39,
+      "value": 1048.75,
+      "account": "IRA"
+    },
+    {
+      "ticker": "ACHR",
+      "shares": 138.0,
+      "price": 6.51,
+      "value": 898.38,
+      "account": "IRA"
+    },
+    {
+      "ticker": "NXE",
+      "shares": 75.0,
+      "price": 10.98,
+      "value": 823.5,
+      "account": "28Z"
+    },
+    {
+      "ticker": "UUUU",
+      "shares": 43.0,
+      "price": 18.4,
+      "value": 791.2,
+      "account": "28Z"
+    },
+    {
+      "ticker": "LCID",
+      "shares": 66.0,
+      "price": 5.97,
+      "value": 394.02,
+      "account": "IRA"
+    },
+    {
+      "ticker": "AEXA",
+      "shares": 4.0,
+      "price": 11.42,
+      "value": 45.68,
+      "account": "28Z"
+    },
+    {
+      "ticker": "TNYA",
+      "shares": 10.0,
+      "price": 0.78,
+      "value": 7.8,
+      "account": "28Z"
     }
   ],
-  "prices": {
-    "QQQI": 56.75,
-    "ARKW": 146.78,
-    "OKLO": 70.64,
-    "CEG": 304.81,
-    "BTCI": 35.23,
-    "LCID": 6.14,
-    "TNYA": 0.8,
-    "AEXA": 11.32,
-    "AMZN": 263.75,
-    "NNE": 30.07,
-    "UUUU": 18.57,
-    "SMR": 12.33,
-    "ACHR": 6.62,
-    "VOO": 688.97,
-    "IBIT": 43.3,
-    "GOOGL": 386.27,
-    "AAPL": 310.21,
-    "JOBY": 11.51,
-    "ARKK": 77.34,
-    "QQQ": 727.55,
-    "RONB": 23.86,
-    "NVDA": 213.09,
-    "TSLA": 432.2,
-    "XPEV": 16.66,
-    "MSTR": 163.75,
-    "NXE": 10.95
+  "bluestone": {
+    "tax_reserve": 50000,
+    "tactical": 34000
   }
 };
