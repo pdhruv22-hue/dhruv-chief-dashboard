@@ -2269,13 +2269,23 @@ function renderActionPlan() {
   // Build today's actions from PORTFOLIO_LIVE pending_actions or static defaults
   let actions = [];
   if (pl && pl.pending_actions && pl.pending_actions.length > 0) {
-    actions = pl.pending_actions.map((a, i) => ({
-      id: 'pl_' + i,
-      text: a.action || a.description || JSON.stringify(a),
-      meta: a.account || a.note || '',
-      badge: a.type === 'sell' ? 'badge-red' : a.type === 'buy' ? 'badge-green' : 'badge-accent',
-      badgeText: a.type ? a.type.toUpperCase() : 'ACTION',
-    }));
+    actions = pl.pending_actions.map((a, i) => {
+      const isSell = (a.action||'').toUpperCase() === 'SELL';
+      const isBuy  = (a.action||'').toUpperCase() === 'BUY';
+      const sym    = a.symbol || '';
+      const qty    = a.qty ? a.qty + ' shares' : '$' + (a.est_cost||0).toLocaleString();
+      const price  = a.price_type === 'LIMIT' ? '@ LIMIT $' + a.limit_price : '@ MARKET';
+      const proceeds = isSell && a.est_proceeds ? ' · ~$' + a.est_proceeds.toLocaleString() + ' proceeds' : '';
+      const cost     = isBuy  && a.est_cost     ? ' · $' + a.est_cost.toLocaleString() : '';
+      const noteText = a.note ? ' — ' + a.note.split('.')[0] : '';
+      return {
+        id: 'pl_' + i,
+        text: (a.action || 'ACTION') + ' ' + sym + ' — ' + qty + ' ' + price + noteText,
+        meta: a.account + proceeds + cost,
+        badge: isSell ? 'badge-red' : isBuy ? 'badge-green' : 'badge-accent',
+        badgeText: a.action || 'ACTION',
+      };
+    });
   } else {
     // Static fallback from spec
     actions = [
