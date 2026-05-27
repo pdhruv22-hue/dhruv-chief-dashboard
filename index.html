@@ -2576,8 +2576,17 @@ function initDashboard() {
   renderIntelligence();
   renderWealth();
   renderHealth();
-  renderCrypto();
-  renderThesis();
+  // Crypto and thesis JS files may still be loading — retry with delay if not ready
+  if (window.CRYPTO_ANALYSIS) {
+    renderCrypto();
+  } else {
+    setTimeout(() => { renderCrypto(); }, 1500);
+  }
+  if (window.POSITION_DEEPDIVE) {
+    renderThesis();
+  } else {
+    setTimeout(() => { renderThesis(); }, 1500);
+  }
   renderActionPlan();
   initForecasts();
 }
