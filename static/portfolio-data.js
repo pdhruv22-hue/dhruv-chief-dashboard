@@ -1,5 +1,5 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "May 27 08:59 AM ET",
+  "generatedAt": "May 27 09:02 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
   "liquid_net_worth": 494026.2,
   "liquid_gap_to_1m": 505973.8,
@@ -26,8 +26,8 @@ window.PORTFOLIO_DATA = {
       "total": 60403.74
     }
   },
-  "hysa_wealthfront": 65000,
-  "crypto": 19100,
+  "hysa_wealthfront": 65000.0,
+  "crypto": 19100.0,
   "positions": [
     {
       "ticker": "TSLA",
@@ -220,7 +220,7 @@ window.PORTFOLIO_DATA = {
     }
   ],
   "bluestone": {
-    "tax_reserve": 50000,
-    "tactical": 34000
+    "tax_reserve": 75000.0,
+    "tactical": 34000.0
   }
 };
