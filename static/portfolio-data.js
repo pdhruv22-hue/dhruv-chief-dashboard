@@ -1,13 +1,13 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "May 27 09:23 AM ET",
+  "generatedAt": "May 27 09:35 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 429026.2,
-  "liquid_gap_to_1m": 570973.8,
+  "liquid_net_worth": 428914.6,
+  "liquid_gap_to_1m": 571085.4,
   "liquid_pct_to_1m": 42.9,
-  "totalValue": 409926.2,
-  "totalStocks": 369634.79,
+  "totalValue": 409814.6,
+  "totalStocks": 369523.19,
   "totalCash": 40291.41,
-  "gapTo1M": 590073.8,
+  "gapTo1M": 590185.4,
   "pctTo1M": 41.0,
   "accounts": {
     "IRA": {
@@ -21,9 +21,9 @@ window.PORTFOLIO_DATA = {
       "total": 197854.13
     },
     "88Z": {
-      "stock_value": 60396.9,
+      "stock_value": 60285.3,
       "cash": 6.84,
-      "total": 60403.74
+      "total": 60292.14
     }
   },
   "hysa_wealthfront": 0,
@@ -137,8 +137,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "MSTR",
       "shares": 30.0,
-      "price": 159.93,
-      "value": 4797.9,
+      "price": 156.21,
+      "value": 4686.3,
       "account": "88Z"
     },
     {
