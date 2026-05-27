@@ -1,19 +1,19 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "May 27 03:00 PM ET",
+  "generatedAt": "May 27 03:31 PM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 429955.03,
-  "liquid_gap_to_1m": 570044.97,
+  "liquid_net_worth": 429873.65,
+  "liquid_gap_to_1m": 570126.35,
   "liquid_pct_to_1m": 43.0,
-  "totalValue": 410855.03,
-  "totalStocks": 370563.62,
+  "totalValue": 410773.65,
+  "totalStocks": 370482.24,
   "totalCash": 40291.41,
-  "gapTo1M": 589144.97,
+  "gapTo1M": 589226.35,
   "pctTo1M": 41.1,
   "accounts": {
     "IRA": {
-      "stock_value": 152691.11,
+      "stock_value": 152634.75,
       "cash": 116.57,
-      "total": 152807.68
+      "total": 152751.32
     },
     "28Z": {
       "stock_value": 157686.13,
@@ -21,9 +21,9 @@ window.PORTFOLIO_DATA = {
       "total": 197854.13
     },
     "88Z": {
-      "stock_value": 60186.38,
+      "stock_value": 60161.36,
       "cash": 6.84,
-      "total": 60193.22
+      "total": 60168.2
     }
   },
   "hysa_wealthfront": 0,
@@ -32,8 +32,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "TSLA",
       "shares": 165.0,
-      "price": 439.9,
-      "value": 72583.5,
+      "price": 440.28,
+      "value": 72646.2,
       "account": "IRA"
     },
     {
@@ -46,15 +46,15 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "QQQI",
       "shares": 892.0,
-      "price": 56.84,
-      "value": 50701.28,
+      "price": 56.83,
+      "value": 50692.36,
       "account": "88Z"
     },
     {
       "ticker": "GOOGL",
       "shares": 85.0,
-      "price": 392.22,
-      "value": 33338.7,
+      "price": 391.1,
+      "value": 33243.5,
       "account": "IRA"
     },
     {
@@ -67,8 +67,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "NVDA",
       "shares": 94.0,
-      "price": 213.25,
-      "value": 20045.5,
+      "price": 212.78,
+      "value": 20001.32,
       "account": "IRA"
     },
     {
@@ -102,8 +102,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "XPEV",
       "shares": 612.0,
-      "price": 16.44,
-      "value": 10061.28,
+      "price": 16.49,
+      "value": 10091.88,
       "account": "IRA"
     },
     {
@@ -130,15 +130,15 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "BTCI",
       "shares": 140.0,
-      "price": 34.5,
-      "value": 4830.0,
+      "price": 34.46,
+      "value": 4824.4,
       "account": "88Z"
     },
     {
       "ticker": "MSTR",
       "shares": 30.0,
-      "price": 155.17,
-      "value": 4655.1,
+      "price": 154.82,
+      "value": 4644.6,
       "account": "88Z"
     },
     {
@@ -151,8 +151,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "AAPL",
       "shares": 13.6492,
-      "price": 310.66,
-      "value": 4240.26,
+      "price": 310.44,
+      "value": 4237.26,
       "account": "IRA"
     },
     {
@@ -172,15 +172,15 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "JOBY",
       "shares": 128.0,
-      "price": 11.41,
-      "value": 1460.48,
+      "price": 11.34,
+      "value": 1451.52,
       "account": "IRA"
     },
     {
       "ticker": "ACHR",
       "shares": 138.0,
-      "price": 6.52,
-      "value": 899.76,
+      "price": 6.47,
+      "value": 892.86,
       "account": "IRA"
     },
     {
@@ -200,8 +200,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "LCID",
       "shares": 66.0,
-      "price": 6.18,
-      "value": 407.88,
+      "price": 6.31,
+      "value": 416.46,
       "account": "IRA"
     },
     {
