@@ -1,9 +1,9 @@
 window.WEALTH_DATA = {
-  "generatedAt": "May 27 09:22 AM ET",
+  "generatedAt": "May 27 09:23 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 494026.2,
-  "liquid_gap_to_1m": 505973.8,
-  "liquid_pct_to_1m": 49.4,
+  "liquid_net_worth": 429026.2,
+  "liquid_gap_to_1m": 570973.8,
+  "liquid_pct_to_1m": 42.9,
   "totalValue": 409926.2,
   "totalStocks": 369634.79,
   "totalCash": 40291.41,
@@ -26,7 +26,7 @@ window.WEALTH_DATA = {
       "total": 60403.74
     }
   },
-  "hysa_wealthfront": 65000,
+  "hysa_wealthfront": 0,
   "crypto": 19100.0,
   "positions": [
     {
