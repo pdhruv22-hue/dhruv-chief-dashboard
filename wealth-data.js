@@ -1,19 +1,19 @@
 window.WEALTH_DATA = {
-  "generatedAt": "May 27 04:00 PM ET",
+  "generatedAt": "May 27 05:00 PM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 429677.71,
-  "liquid_gap_to_1m": 570322.29,
+  "liquid_net_worth": 429698.03,
+  "liquid_gap_to_1m": 570301.97,
   "liquid_pct_to_1m": 43.0,
-  "totalValue": 410577.71,
-  "totalStocks": 370286.3,
+  "totalValue": 410598.03,
+  "totalStocks": 370306.62,
   "totalCash": 40291.41,
-  "gapTo1M": 589422.29,
+  "gapTo1M": 589401.97,
   "pctTo1M": 41.1,
   "accounts": {
     "IRA": {
-      "stock_value": 152436.87,
+      "stock_value": 152457.09,
       "cash": 116.57,
-      "total": 152553.44
+      "total": 152573.66
     },
     "28Z": {
       "stock_value": 157686.13,
@@ -21,9 +21,9 @@ window.WEALTH_DATA = {
       "total": 197854.13
     },
     "88Z": {
-      "stock_value": 60163.3,
+      "stock_value": 60163.4,
       "cash": 6.84,
-      "total": 60170.14
+      "total": 60170.24
     }
   },
   "hysa_wealthfront": 0,
@@ -32,8 +32,8 @@ window.WEALTH_DATA = {
     {
       "ticker": "TSLA",
       "shares": 165.0,
-      "price": 440.23,
-      "value": 72637.95,
+      "price": 440.36,
+      "value": 72659.4,
       "account": "IRA"
     },
     {
@@ -130,15 +130,15 @@ window.WEALTH_DATA = {
     {
       "ticker": "BTCI",
       "shares": 140.0,
-      "price": 34.49,
-      "value": 4828.6,
+      "price": 34.48,
+      "value": 4827.2,
       "account": "88Z"
     },
     {
       "ticker": "MSTR",
       "shares": 30.0,
-      "price": 154.15,
-      "value": 4624.5,
+      "price": 154.2,
+      "value": 4626.0,
       "account": "88Z"
     },
     {
@@ -151,8 +151,8 @@ window.WEALTH_DATA = {
     {
       "ticker": "AAPL",
       "shares": 13.6492,
-      "price": 310.94,
-      "value": 4244.08,
+      "price": 310.85,
+      "value": 4242.85,
       "account": "IRA"
     },
     {
