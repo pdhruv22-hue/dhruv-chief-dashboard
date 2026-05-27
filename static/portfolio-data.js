@@ -1,6 +1,9 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "May 27 08:55 AM ET",
+  "generatedAt": "May 27 08:59 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
+  "liquid_net_worth": 494026.2,
+  "liquid_gap_to_1m": 505973.8,
+  "liquid_pct_to_1m": 49.4,
   "totalValue": 409926.2,
   "totalStocks": 369634.79,
   "totalCash": 40291.41,
@@ -23,6 +26,8 @@ window.PORTFOLIO_DATA = {
       "total": 60403.74
     }
   },
+  "hysa_wealthfront": 65000,
+  "crypto": 19100,
   "positions": [
     {
       "ticker": "TSLA",
