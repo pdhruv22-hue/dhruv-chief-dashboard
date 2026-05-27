@@ -1,19 +1,19 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "May 27 02:31 PM ET",
+  "generatedAt": "May 27 02:32 PM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 430048.02,
-  "liquid_gap_to_1m": 569951.98,
+  "liquid_net_worth": 430036.07,
+  "liquid_gap_to_1m": 569963.93,
   "liquid_pct_to_1m": 43.0,
-  "totalValue": 410948.02,
-  "totalStocks": 370656.61,
+  "totalValue": 410936.07,
+  "totalStocks": 370644.66,
   "totalCash": 40291.41,
-  "gapTo1M": 589051.98,
+  "gapTo1M": 589063.93,
   "pctTo1M": 41.1,
   "accounts": {
     "IRA": {
-      "stock_value": 152792.38,
+      "stock_value": 152780.43,
       "cash": 116.57,
-      "total": 152908.95
+      "total": 152897.0
     },
     "28Z": {
       "stock_value": 157686.13,
@@ -32,8 +32,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "TSLA",
       "shares": 165.0,
-      "price": 441.34,
-      "value": 72821.1,
+      "price": 440.24,
+      "value": 72639.6,
       "account": "IRA"
     },
     {
@@ -53,8 +53,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "GOOGL",
       "shares": 85.0,
-      "price": 391.67,
-      "value": 33291.95,
+      "price": 392.49,
+      "value": 33361.65,
       "account": "IRA"
     },
     {
@@ -67,8 +67,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "NVDA",
       "shares": 94.0,
-      "price": 212.48,
-      "value": 19973.12,
+      "price": 213.03,
+      "value": 20024.82,
       "account": "IRA"
     },
     {
@@ -102,8 +102,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "XPEV",
       "shares": 612.0,
-      "price": 16.43,
-      "value": 10055.16,
+      "price": 16.49,
+      "value": 10091.88,
       "account": "IRA"
     },
     {
@@ -151,8 +151,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "AAPL",
       "shares": 13.6492,
-      "price": 310.77,
-      "value": 4241.76,
+      "price": 310.69,
+      "value": 4240.67,
       "account": "IRA"
     },
     {
@@ -172,15 +172,15 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "JOBY",
       "shares": 128.0,
-      "price": 11.36,
-      "value": 1454.08,
+      "price": 11.41,
+      "value": 1460.48,
       "account": "IRA"
     },
     {
       "ticker": "ACHR",
       "shares": 138.0,
-      "price": 6.48,
-      "value": 894.24,
+      "price": 6.51,
+      "value": 898.38,
       "account": "IRA"
     },
     {
@@ -200,8 +200,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "LCID",
       "shares": 66.0,
-      "price": 6.17,
-      "value": 407.22,
+      "price": 6.2,
+      "value": 409.2,
       "account": "IRA"
     },
     {
