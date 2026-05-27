@@ -1,1 +1,154 @@
-window.PORTFOLIO_DATA = {"generated_at": "2026-05-26T12:39:20.071381", "liquid_net_worth": 419728.28, "target_net_worth": 1000000, "gap_to_1m": 580271.72, "bluestone_personal": 200000, "total_cash": 200000, "total_hysa": 0, "hysa_deployable": 0, "roth_ira": 0, "locked_date": "2026-04-23", "hysa": {"status": "ACTIVE", "balance": 65000, "apy": 3.95, "note": "Wealthfront HYSA opened May 7, 2026"}, "positions": [{"ticker": "ARKK", "shares": 125, "price": 77.44, "value": 9680.0, "account": "IRA", "name": "ARK Innovation ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.3}, {"ticker": "INSM", "shares": 45, "price": 109.03, "value": 4906.35, "account": "IRA", "name": "Insmed Inc", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.2}, {"ticker": "GOOGL", "shares": 85, "price": 386.7, "value": 32869.5, "account": "IRA", "name": "Alphabet CL A", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 7.8}, {"ticker": "AAPL", "shares": 13.6369, "price": 310.25, "value": 4230.85, "account": "IRA", "name": "Apple Inc", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.0}, {"ticker": "ACHR", "shares": 138, "price": 6.63, "value": 914.94, "account": "IRA", "name": "Archer Aviation", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.2}, {"ticker": "JOBY", "shares": 128, "price": 11.54, "value": 1477.12, "account": "IRA", "name": "Joby Aviation", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.4}, {"ticker": "TSLA", "shares": 165, "price": 431.96, "value": 71273.4, "account": "IRA", "name": "Tesla Inc", "note": "HOLD  - merger thesis", "thesis": "", "harvest_loss": null, "pct_portfolio": 17.0}, {"ticker": "VIG", "shares": 6, "price": 233.49, "value": 1400.94, "account": "IRA", "name": "Vanguard Dividend Appreciation", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.3}, {"ticker": "XPEV", "shares": 1346, "price": 16.68, "value": 22451.28, "account": "IRA+CMA", "name": "XPeng ADR", "note": "HOLD  - Tesla of China", "thesis": "", "harvest_loss": null, "pct_portfolio": 5.3}, {"ticker": "LCID", "shares": 66, "price": 6.15, "value": 405.9, "account": "IRA", "name": "Lucid Group", "note": "Harvest candidate", "thesis": "", "harvest_loss": 16094.1, "pct_portfolio": 0.1}, {"ticker": "NVDA", "shares": 44, "price": 213.34, "value": 9386.96, "account": "IRA", "name": "Nvidia", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.2}, {"ticker": "SCHD", "shares": 200, "price": 32.73, "value": 6546.0, "account": "IRA", "name": "Schwab US Dividend", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.6}, {"ticker": "CEG", "shares": 15, "price": 305.55, "value": 4583.25, "account": "CMA", "name": "Constellation Energy", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 1.1}, {"ticker": "UUUU", "shares": 43, "price": 18.59, "value": 799.37, "account": "CMA", "name": "Energy Fuels (Uranium)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.2}, {"ticker": "AMZN", "shares": 33, "price": 263.99, "value": 8711.67, "account": "CMA", "name": "Amazon", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.1}, {"ticker": "AEXA", "shares": 4, "price": 11.32, "value": 45.28, "account": "CMA", "name": "American Exceptionalism ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.0}, {"ticker": "ARKW", "shares": 84, "price": 146.91, "value": 12340.44, "account": "CMA", "name": "ARK Next Generation ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.9}, {"ticker": "OKLO", "shares": 155, "price": 70.68, "value": 10955.4, "account": "CMA", "name": "Oklo Inc (Nuclear)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 2.6}, {"ticker": "TNYA", "shares": 10, "price": 0.8, "value": 8.0, "account": "CMA", "name": "Tenaya Therapeutics", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.0}, {"ticker": "NNE", "shares": 130, "price": 29.97, "value": 3896.1, "account": "CMA", "name": "Nano Nuclear Energy", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.9}, {"ticker": "NXE", "shares": 75, "price": 10.95, "value": 821.25, "account": "CMA", "name": "NexGen Energy (Uranium)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.2}, {"ticker": "SMR", "shares": 200, "price": 12.37, "value": 2474.0, "account": "CMA", "name": "NuScale Power (Nuclear)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.6}], "passive_income": {"sources": [{"source": "SCHD", "type": "dividend", "name": "Schwab US Dividend", "shares": 200, "price": 32.73, "value": 6546.0, "yield_pct": 3.22, "annual_div_per_share": 1.055, "annual_income": 211.0, "monthly_income": 17.58, "reinvested": true, "account": "IRA", "status": "active", "funded_date": null, "is_estimated": false}, {"source": "VIG", "type": "dividend", "name": "Vanguard Dividend Appreciation", "shares": 6, "price": 233.49, "value": 1400.94, "yield_pct": 1.48, "annual_div_per_share": 3.453, "annual_income": 20.72, "monthly_income": 1.73, "reinvested": true, "account": "IRA", "status": "active", "funded_date": null, "is_estimated": false}, {"source": "Wealthfront", "type": "hysa", "name": "Wealthfront", "balance": 65000, "apy": 3.95, "daily_income": 7.03, "monthly_income": 214.12, "annual_income": 2567.5, "reinvested": true, "funded_date": null, "days_earning": null, "earned_to_date": null, "is_estimated": true, "status": "active"}], "ai_plays": [], "optional_income": {"covered_calls": {"name": "TSLA Covered Calls (165 shares)", "type": "covered_call", "status": "not_started", "monthly_actual": 0, "monthly_potential": 1500, "entries": [], "action": "Call Merrill: 1-888-654-6837", "action_label": "Set Up Covered Calls \u00e2\u20ac\u00a0'"}, "nnn_deals": {"name": "NNN Deal NOI", "type": "nnn", "status": "not_started", "monthly_actual": 0, "monthly_potential": 2083, "deals_count": 0, "entries": [], "action": "Close first NNN by Sep 30, 2026", "action_label": "Log First NNN Deal \u00e2\u20ac\u00a0'"}}, "total_monthly": 233.43, "total_annual": 2801.16, "total_daily": 7.67, "note": "Passive reinvested  - compounds automatically toward $1M goal"}, "gap_acceleration": {"gap": 580271.72, "monthly_deploy": 3583, "monthly_passive": 233.43, "monthly_total_current": 3816.43, "scenarios": [{"name": "Current pace", "monthly": 3816.43, "months_to_1m": 152.0, "date_1m": "Jan 2039", "breakdown": "$3,583 deploy + $233 passive"}, {"name": "Add covered calls", "monthly": 5316.43, "months_to_1m": 109.1, "date_1m": "Jun 2035", "action": "Call Merrill: 1-888-654-6837", "adds_per_month": 1500, "months_saved": 42.9}, {"name": "Add first NNN deal", "monthly": 5899.43, "months_to_1m": 98.4, "date_1m": "Aug 2034", "action": "Close first NNN by Sep 30", "adds_per_month": 2083, "months_saved": 53.6}, {"name": "Covered calls + NNN deal", "monthly": 7399.43, "months_to_1m": 78.4, "date_1m": "Dec 2032", "is_best": true, "months_saved": 73.6}], "r1_insight": "Covered calls generate immediate cash flow to accelerate NNN lease investments, while NNN's stable income funds more covered call opportunities, creating a compounding loop that accelerates equity growth and passive income.", "tab_notes": {"stocks_note": "", "income_note": "", "cre_note": ""}, "calls_date": "Jun 2035", "nnn_date": "Aug 2034", "best_date": "Dec 2032"}, "thesis": {"liquid": 419728.28, "gap_to_target": 580271.72, "gap_pct": 42.0, "tsla": {"pct": 17.0, "shares": 165, "price": 431.96, "value": 71273.4, "flag": false}, "xpev": {"shares": 1346, "price": 16.68, "value": 22451.28}, "lcid": {"shares": 66, "price": 6.15, "value": 405.9, "harvest_loss": 15836, "tax_savings_35pct": 5543, "wash_sale_days": 31}, "hysa": {"status": "PENDING", "balance": 0}, "positions": [{"ticker": "ARKK", "shares": 125, "price": 77.44, "value": 9680.0, "account": "IRA", "name": "ARK Innovation ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.3}, {"ticker": "INSM", "shares": 45, "price": 109.03, "value": 4906.35, "account": "IRA", "name": "Insmed Inc", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.2}, {"ticker": "GOOGL", "shares": 85, "price": 386.7, "value": 32869.5, "account": "IRA", "name": "Alphabet CL A", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 7.8}, {"ticker": "AAPL", "shares": 13.6369, "price": 310.25, "value": 4230.85, "account": "IRA", "name": "Apple Inc", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.0}, {"ticker": "ACHR", "shares": 138, "price": 6.63, "value": 914.94, "account": "IRA", "name": "Archer Aviation", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.2}, {"ticker": "JOBY", "shares": 128, "price": 11.54, "value": 1477.12, "account": "IRA", "name": "Joby Aviation", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.4}, {"ticker": "TSLA", "shares": 165, "price": 431.96, "value": 71273.4, "account": "IRA", "name": "Tesla Inc", "note": "HOLD  - merger thesis", "thesis": "", "harvest_loss": null, "pct_portfolio": 17.0}, {"ticker": "VIG", "shares": 6, "price": 233.49, "value": 1400.94, "account": "IRA", "name": "Vanguard Dividend Appreciation", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.3}, {"ticker": "XPEV", "shares": 1346, "price": 16.68, "value": 22451.28, "account": "IRA+CMA", "name": "XPeng ADR", "note": "HOLD  - Tesla of China", "thesis": "", "harvest_loss": null, "pct_portfolio": 5.3}, {"ticker": "LCID", "shares": 66, "price": 6.15, "value": 405.9, "account": "IRA", "name": "Lucid Group", "note": "Harvest candidate", "thesis": "", "harvest_loss": 16094.1, "pct_portfolio": 0.1}, {"ticker": "NVDA", "shares": 44, "price": 213.34, "value": 9386.96, "account": "IRA", "name": "Nvidia", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.2}, {"ticker": "SCHD", "shares": 200, "price": 32.73, "value": 6546.0, "account": "IRA", "name": "Schwab US Dividend", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.6}, {"ticker": "CEG", "shares": 15, "price": 305.55, "value": 4583.25, "account": "CMA", "name": "Constellation Energy", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 1.1}, {"ticker": "UUUU", "shares": 43, "price": 18.59, "value": 799.37, "account": "CMA", "name": "Energy Fuels (Uranium)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.2}, {"ticker": "AMZN", "shares": 33, "price": 263.99, "value": 8711.67, "account": "CMA", "name": "Amazon", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.1}, {"ticker": "AEXA", "shares": 4, "price": 11.32, "value": 45.28, "account": "CMA", "name": "American Exceptionalism ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.0}, {"ticker": "ARKW", "shares": 84, "price": 146.91, "value": 12340.44, "account": "CMA", "name": "ARK Next Generation ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.9}, {"ticker": "OKLO", "shares": 155, "price": 70.68, "value": 10955.4, "account": "CMA", "name": "Oklo Inc (Nuclear)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 2.6}, {"ticker": "TNYA", "shares": 10, "price": 0.8, "value": 8.0, "account": "CMA", "name": "Tenaya Therapeutics", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 0.0}, {"ticker": "NNE", "shares": 130, "price": 29.97, "value": 3896.1, "account": "CMA", "name": "Nano Nuclear Energy", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.9}, {"ticker": "NXE", "shares": 75, "price": 10.95, "value": 821.25, "account": "CMA", "name": "NexGen Energy (Uranium)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.2}, {"ticker": "SMR", "shares": 200, "price": 12.37, "value": 2474.0, "account": "CMA", "name": "NuScale Power (Nuclear)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 0.6}], "projections": {"cagr_assumed": 10.0, "monthly_contribution": 3583, "fv_5yr": 968040, "fv_10yr": 1870181}, "thesis_themes": {"EV/Tesla Ecosystem": {"tickers": ["TSLA", "XPEV"], "color": "#3b82f6", "value": 93724.68, "pct": 22.3, "bar": "-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020"}, "Nuclear/Clean Energy": {"tickers": ["CEG", "OKLO", "NNE", "NXE", "SMR", "UUUU"], "color": "#22c55e", "value": 23529.37, "pct": 5.6, "bar": "-\u00cb\u2020-\u00cb\u2020"}, "AI/Tech Growth": {"tickers": ["GOOGL", "NVDA", "AMZN", "ARKK", "ARKW"], "color": "#a855f7", "value": 72988.57, "pct": 17.4, "bar": "-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020-\u00cb\u2020"}, "Speculative/Early": {"tickers": ["ACHR", "JOBY", "INSM", "TNYA"], "color": "#f59e0b", "value": 7306.41, "pct": 1.7, "bar": ""}, "Income/Stability": {"tickers": ["VIG", "SCHD"], "color": "#eab308", "value": 7946.94, "pct": 1.9, "bar": ""}, "Other": {"tickers": ["AEXA", "AAPL", "LCID"], "color": "#737373", "value": 4682.03, "pct": 1.1, "bar": ""}}, "flags": ["LCID harvest: ~$15,836 tax loss available (~$5,543 in tax savings)", "April deploy: $3,583 deployed \u00c5\u201c...", "[OK] T-bills (4.30%) currently yield more than Axos HYSA (3.95%)  - consider moving some HYSA to T-bills"], "buckets": {}, "etf_core": {}, "roth_ira": 0}, "crypto": {"total": 9550.28, "coinbase_total": 7220.3, "eth_offline": 2329.98, "detail": [{"symbol": "SOL", "qty": 57.64, "price": 84.36, "value": 4862.75, "source": "Coinbase"}, {"symbol": "XRP", "qty": 1700.55, "price": 1.34, "value": 2278.74, "source": "Coinbase"}, {"symbol": "ADA", "qty": 326.06, "price": 0.241691, "value": 78.81, "source": "Coinbase"}, {"symbol": "ETH", "qty": 1.12, "price": 2080.34, "value": 2329.98, "source": "Offline/Cold"}], "prices": {"bitcoin": 76579, "ethereum": 2080.34, "solana": 84.36, "ripple": 1.34, "cardano": 0.2417}}, "tbill": {"yield": 4.3, "wealthfront_apy": 3.95, "sofi_apy": 4.5, "flag": "[OK] T-bills (4.30%) currently yield more than Axos HYSA (3.95%)  - consider moving some HYSA to T-bills", "recommendation": "Move to T-bills"}, "deploy": null, "deploy_recommendation": {"raw": "Okay, let's tackle Dhruv's situation step by step. First, the main goal is to reach a $1M net worth in 5 years. He has a monthly deployment of $4,167 and a $50k bucket from his savings. His target allocation is QQQ 40%, VOO 25%, SCHD 20%, VIG 15%. Current holdings are SCHD and VIG, but not QQQ or VOO. The market is extended with SPY RSI at 71.1, which is elevated but not extreme.\n\nSo, should he deploy now? The RSI is over 70, which usually indicates overbought, but since it's not extreme (maybe ", "error": "JSON parse failed", "deploy_now": false}, "hysa_rates": {"top_rates": [{"institution": "CloudBank 24/7 High Yield Savings", "apy": 5.22, "min_balance": 0, "notes": "Online-only; no minimum balance to earn APY; APY listed among top HYSA rates.[8]"}, {"institution": "Bask Bank Interest Savings", "apy": 4.85, "min_balance": 0, "notes": "No minimum balance to earn APY; competitive top-tier rate.[8]"}, {"institution": "Laurel Road High Yield Savings", "apy": 4.8, "min_balance": 0, "notes": "No minimum balance; online-focused, FDIC-insured.[8]"}, {"institution": "UFB Direct Portfolio Savings", "apy": 4.77, "min_balance": 0, "notes": "No minimum to earn APY; historically among the highest advertised HYSA rates.[8]"}, {"institution": "Barclays Tiered Online Savings", "apy": 4.5, "min_balance": 0, "notes": "No minimum balance; widely available online savings account.[8]"}], "best_for_75k": {"institution": "CloudBank 24/7 High Yield Savings", "apy": 5.22, "reason": "Among widely listed national HYSAs with no minimum balance, CloudBank 24/7 shows the highest current APY (5.22%) and does not cap the rate at low balance tiers, so the full $75,000 can earn the top rate while remaining in a simple, liquid, FDIC-insured personal savings account.[8]"}, "account_type_recommendation": "personal", "account_type_reason": "For money that belongs to you as an individual (not a registered business\u2019s operating funds), a personal HYSA is generally appropriate and simpler from both a legal-ownership and tax-reporting standpoint; business savings accounts rarely pay higher APYs than the best personal HYSAs, so using a business account just for yield typically adds paperwork and potential compliance issues without improving returns.[7][8]", "rate_trend": "falling", "rate_trend_note": "Nationally available HYSAs have drifted down from peak levels near or above 5.00% APY in early 2026 toward a lower band around the mid\u20114% range, and several best-of lists from major comparison sites (Bankrate, NerdWallet, Forbes Advisor, U.S. News) show slightly lower top rates now than three months ago, indicating a modest downward trend rather than flat or rising rates.[1][3][4][6][8]", "checked_sources": ["Bankrate", "NerdWallet", "DepositAccounts.com (via aggregate comparisons referenced in major rankings)", "Forbes Advisor", "U.S. News Money", "Investopedia"], "generated_at": "2026-05-26"}, "trajectory": {"scenarios": [{"name": "Current pace", "monthly_cashflow": 4167, "months_to_900k": 51, "date_900k": "Sep 2028", "months_to_1m": 58, "date_1m": "Apr 2029", "note": "Baseline with $4,167 monthly deployment"}, {"name": "Add covered calls", "monthly_cashflow": 5412, "months_to_900k": 45, "date_900k": "Mar 2028", "months_to_1m": 53, "date_1m": "Nov 2028", "note": "Includes $1,245/month from covered calls starting immediately"}, {"name": "Add first NNN CRE deal", "monthly_cashflow": 4167, "months_to_900k": 41, "date_900k": "Nov 2027", "months_to_1m": 46, "date_1m": "Apr 2028", "note": "CRE adds $8,000/month starting Oct 2026; cashflow increases to $12,167 after month 28"}, {"name": "All three combined", "monthly_cashflow": 5412, "months_to_900k": 32, "date_900k": "Feb 2027", "months_to_1m": 38, "date_1m": "Aug 2027", "note": "Calls start immediately; CRE adds $8,000/month from Oct 2026; cashflow increases to $13,412 after month 28"}, {"name": "All three + baby impact", "monthly_cashflow": 5412, "months_to_900k": 35, "date_900k": "May 2027", "months_to_1m": 41, "date_1m": "Nov 2027", "note": "Baby reduces cashflow by $1,500/month from Aug 2026 to Jul 2028; CRE starts Oct 2026; cashflow varies by period"}], "deploy_bucket_analysis": {"lump_sum_50k_now": {"months_saved_vs_baseline": 5, "new_date_1m": "Nov 2028"}, "monthly_installments_12x": {"months_saved_vs_baseline": 5, "new_date_1m": "Nov 2028"}, "recommendation": "Lump sum is preferred for immediate market exposure, though both save 5 months; installments may reduce timing risk in volatile markets."}, "key_insight": "Adding the CRE deal provides the most significant acceleration, reducing time to $1M by 14 months compared to baseline when combined with covered calls."}, "weekly_narrative": "MOMENTUM\n\nDhruv, you added $2,894 since April 1, putting liquid net worth at $419,728 and holding a 0.7% gain for the month. At $881 per week, you reach $1M in April 2029\u201458 months out\u2014but that number compresses fast once you stop leaving money on the sideline.\n\nTHIS WEEK'S DECISION\n\nExecute the $50,000 Bluestone transfer this week and deploy it as a lump sum: $20,000 into QQQ, $15,000 into VOO, $10,000 into SCHD, $5,000 into VIG. That $50K sitting in a pending status is earning zero while the market is open. At a blended 10% annualized return, every week you delay costs you roughly $96 in foregone growth. There is no tactical reason to wait. Call Bluestone Monday morning, confirm wire timing, and have the funds in your brokerage by Wednesday. Deploy Thursday at open.\n\nTHE UNLOCK\n\nSetting up covered calls on your existing QQQ and VOO positions is the single fastest accelerator\u2014it puts approximately $1,245 per month back into your deploy pipeline, adding $14,940 per year in income you are currently leaving on the table. That alone, combined with the $50K deploy and your existing monthly contributions, pulls your $1M date from April 2029 to roughly August 2027\u2014shaving 20 months off the timeline without taking on a single dollar of additional risk.", "session_brief": "Market overbought (RSI 71.1)  - hold deploy, review HYSA rates, initiate CRE sourcing: current $1M pace is Apr 2029, accelerates to Nov 2027 with NNN+calls.", "spy_rsi": 71.1};
+window.PORTFOLIO_DATA = {
+  "liquid": 419728.28,
+  "liquid_net_worth": 419728.28,
+  "total_net_worth": 419728.28,
+  "roth_ira": 0,
+  "amda_equity": 0,
+  "april_start_nw": 266834.0,
+  "month_delta": 152894.28,
+  "month_delta_pct": 57.3,
+  "target": 1000000,
+  "gap": 580271.72,
+  "pct_to_target": 42.0,
+  "breakdown": {
+    "merrill": 210178.0,
+    "bluestone_checking": 200000,
+    "emergency_fund": 75000,
+    "hysa_pending": 75000,
+    "deployment_bucket": 50000,
+    "roth_ira": 0,
+    "crypto": 9550.28
+  },
+  "positions": [
+    {
+      "ticker": "TSLA",
+      "shares": 165,
+      "price": 431.96,
+      "value": 71273.4,
+      "account": "IRA",
+      "name": "Tesla Inc",
+      "note": "HOLD  - merger thesis",
+      "thesis": "",
+      "harvest_loss": null,
+      "pct_portfolio": 34.2
+    },
+    {
+      "ticker": "GOOGL",
+      "shares": 85,
+      "price": 386.7,
+      "value": 32869.5,
+      "account": "IRA",
+      "name": "Alphabet CL A",
+      "note": "",
+      "thesis": "",
+      "harvest_loss": null,
+      "pct_portfolio": 15.8
+    },
+    {
+      "ticker": "XPEV",
+      "shares": 1346,
+      "price": 16.68,
+      "value": 22451.28,
+      "account": "IRA+CMA",
+      "name": "XPeng ADR",
+      "note": "HOLD  - Tesla of China",
+      "thesis": "",
+      "harvest_loss": null,
+      "pct_portfolio": 10.8
+    },
+    {
+      "ticker": "ARKW",
+      "shares": 84,
+      "price": 146.91,
+      "value": 12340.44,
+      "account": "CMA",
+      "name": "ARK Next Generation ETF",
+      "note": "",
+      "thesis": "",
+      "harvest_loss": null,
+      "pct_portfolio": 5.9
+    },
+    {
+      "ticker": "OKLO",
+      "shares": 155,
+      "price": 70.68,
+      "value": 10955.4,
+      "account": "CMA",
+      "name": "Oklo Inc (Nuclear)",
+      "note": "",
+      "thesis": "nuclear",
+      "harvest_loss": null,
+      "pct_portfolio": 5.3
+    },
+    {
+      "ticker": "ARKK",
+      "shares": 125,
+      "price": 77.44,
+      "value": 9680.0,
+      "account": "IRA",
+      "name": "ARK Innovation ETF",
+      "note": "",
+      "thesis": "",
+      "harvest_loss": null,
+      "pct_portfolio": 4.6
+    },
+    {
+      "ticker": "NVDA",
+      "shares": 94,
+      "price": 213.34,
+      "value": 20053.96,
+      "account": "IRA",
+      "name": "Nvidia",
+      "note": "",
+      "thesis": "",
+      "harvest_loss": null,
+      "pct_portfolio": 9.6
+    },
+    {
+      "ticker": "AMZN",
+      "shares": 33,
+      "price": 263.99,
+      "value": 8711.67,
+      "account": "CMA",
+      "name": "Amazon",
+      "note": "",
+      "thesis": "",
+      "harvest_loss": null,
+      "pct_portfolio": 4.2
+    },
+    {
+      "ticker": "RONB",
+      "shares": 833,
+      "price": 23.86,
+      "value": 19875.38,
+      "account": "CMA-28Z",
+      "name": "Ronco Holdings (SpaceX Bridge)",
+      "note": "Year 0 bridge position - holds until SPCX IPO",
+      "thesis": "fortress",
+      "harvest_loss": null,
+      "pct_portfolio": 9.5
+    }
+  ],
+  "tsla_pct": 17.0,
+  "tsla_alert": false,
+  "bluestone_checking": 200000,
+  "emergency_fund": 75000,
+  "hysa_pending": 75000,
+  "hysa_funded": false,
+  "deployment_bucket": 50000,
+  "ai_income_confirmed": 0,
+  "cre_income_confirmed": 0,
+  "cash_locked": true,
+  "locked_snapshot_date": "2026-04-22",
+  "note": "Cash positions locked. Market positions float daily.",
+  "hysa_axos": 75000,
+  "hysa_sofi": 25000,
+  "sparkline": [
+    {
+      "date": "2026-05-27",
+      "value": 419728.28
+    }
+  ],
+  "snapshot_date": "",
+  "updated_at": "2026-05-27"
+};
