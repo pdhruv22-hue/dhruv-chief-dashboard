@@ -1,5 +1,5 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "May 27 07:15 AM ET",
+  "generatedAt": "May 27 08:55 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
   "totalValue": 409926.2,
   "totalStocks": 369634.79,
