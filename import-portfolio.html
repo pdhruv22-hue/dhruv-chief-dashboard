@@ -355,9 +355,9 @@ function renderResults(data){
   // Diff
   const diffEl = document.getElementById('diff-table');
   diffEl.innerHTML = '';
-  const current = window.PORTFOLIO_DATA?.top_positions || [];
+  const current = window.PORTFOLIO_DATA?.positions || window.PORTFOLIO_DATA?.top_positions || [];
   const currentMap = {};
-  current.forEach(p => currentMap[p.symbol] = p);
+  current.forEach(p => currentMap[p.ticker || p.symbol] = p);
   const newMap = {};
   positions.forEach(p => newMap[p.symbol] = p);
 
@@ -430,6 +430,7 @@ function buildGeneratedJS(data, isoDate, buckets){
   const tslaPct = +(((positions.find(p=>p.symbol==='TSLA')?.value||0)/totalPortfolio)*100).toFixed(2);
 
   const topPositions = positions.map(p => ({
+    ticker: p.symbol,
     symbol: p.symbol,
     shares: p.shares,
     value: +p.value.toFixed(2),
