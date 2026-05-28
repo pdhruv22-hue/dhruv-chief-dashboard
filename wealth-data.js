@@ -1,19 +1,19 @@
 window.WEALTH_DATA = {
-  "generatedAt": "May 27 05:00 PM ET",
+  "generatedAt": "May 28 06:20 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 429698.03,
-  "liquid_gap_to_1m": 570301.97,
+  "liquid_net_worth": 429685.79,
+  "liquid_gap_to_1m": 570314.21,
   "liquid_pct_to_1m": 43.0,
-  "totalValue": 410598.03,
-  "totalStocks": 370306.62,
+  "totalValue": 410585.79,
+  "totalStocks": 370294.38,
   "totalCash": 40291.41,
-  "gapTo1M": 589401.97,
+  "gapTo1M": 589414.21,
   "pctTo1M": 41.1,
   "accounts": {
     "IRA": {
-      "stock_value": 152457.09,
+      "stock_value": 152444.85,
       "cash": 116.57,
-      "total": 152573.66
+      "total": 152561.42
     },
     "28Z": {
       "stock_value": 157686.13,
@@ -102,8 +102,8 @@ window.WEALTH_DATA = {
     {
       "ticker": "XPEV",
       "shares": 612.0,
-      "price": 16.47,
-      "value": 10079.64,
+      "price": 16.45,
+      "value": 10067.4,
       "account": "IRA"
     },
     {
