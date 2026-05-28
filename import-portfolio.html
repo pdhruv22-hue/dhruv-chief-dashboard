@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio Import Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="portfolio-data.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .diff-new  { background: rgba(16,185,129,0.08); border-left: 3px solid #10b981; }
+    .diff-gone { background: rgba(239,68,68,0.08);  border-left: 3px solid #ef4444; }
+    .diff-chg  { background: rgba(245,158,11,0.08); border-left: 3px solid #f59e0b; }
+    .diff-same { opacity: 0.6; }
+    #result-section { display: none; }
+    .step-num { width:28px; height:28px; border-radius:50%; background:#6366f1; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- Top nav -->
+  <div class="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 border-b border-gray-800 flex items-center justify-between px-6" style="height:44px; backdrop-filter:blur(8px)">
+    <a href="index.html" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm">
+      <i class="fas fa-arrow-left text-xs"></i> Dashboard
+    </a>
+    <span class="text-sm font-semibold text-white">Portfolio Import Tool</span>
+    <span class="text-xs text-gray-500">Merrill Edge export parser</span>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-6 pt-16 pb-16">
+
+    <!-- Header -->
+    <div class="mb-8 pt-4">
+      <h1 class="text-3xl font-bold text-white mb-2">Update Your Portfolio</h1>
+      <p class="text-gray-400">Paste your Merrill Edge export below. Positions are parsed, diffed against your current data, and a ready-to-commit <span class="mono text-indigo-400">portfolio-data.js</span> is generated.</p>
+    </div>
+
+    <!-- How-to steps -->
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+      <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-4">How to update in 4 steps</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="flex gap-3 items-start">
+          <span class="step-num mt-0.5">1</span>
+          <div>
+            <div class="text-sm font-semibold text-white">Export from Merrill</div>
+            <div class="text-xs text-gray-400 mt-1">Accounts → Holdings → select all accounts → Export (.txt)</div>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <span class="step-num mt-0.5">2</span>
+          <div>
+            <div class="text-sm font-semibold text-white">Paste text below</div>
+            <div class="text-xs text-gray-400 mt-1">Open the .txt file, Ctrl+A, Ctrl+C, paste here. Or use the file upload button.</div>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <span class="step-num mt-0.5">3</span>
+          <div>
+            <div class="text-sm font-semibold text-white">Review & generate</div>
+            <div class="text-xs text-gray-400 mt-1">Check the diff, then click "Download portfolio-data.js"</div>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <span class="step-num mt-0.5">4</span>
+          <div>
+            <div class="text-sm font-semibold text-white">Commit & push</div>
+            <div class="text-xs text-gray-400 mt-1">Replace the file in your repo, run the git commands shown below.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-widest">Paste Export Text</h2>
+        <label class="cursor-pointer flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm px-3 py-1.5 rounded-lg transition-colors">
+          <i class="fas fa-upload text-xs"></i> Upload .txt file
+          <input type="file" accept=".txt,.csv" id="file-upload" class="hidden"/>
+        </label>
+      </div>
+      <textarea id="export-text"
+        class="w-full mono text-xs bg-gray-950 border border-gray-700 rounded-lg p-4 text-gray-300 placeholder-gray-600 focus:outline-none focus:border-indigo-500 resize-none"
+        rows="12"
+        placeholder="Exported on: 05/25/2026 10:53 AM ET&#10;&#10;Selected account(s):CMA-Edge 28Z-88A81; IRA-Edge 20X-61X93&#10;&#10;All Accounts   Value   ...&#10;  $406,202.17  ...&#10;&#10;Symbol  Description  Quantity  Price  Value  ...&#10;TSLA  TESLA INC  165  $426.01  $70,291.65  ..."></textarea>
+      <div class="flex items-center gap-3 mt-4">
+        <button id="parse-btn" onclick="parseAndRender()"
+          class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2">
+          <i class="fas fa-bolt"></i> Parse Export
+        </button>
+        <button onclick="document.getElementById('export-text').value=''; document.getElementById('result-section').style.display='none'"
+          class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2.5 rounded-lg transition-colors text-sm">
+          Clear
+        </button>
+        <span id="parse-error" class="text-red-400 text-sm hidden"></span>
+      </div>
+    </div>
+
+    <!-- Results section -->
+    <div id="result-section">
+
+      <!-- Summary cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-center">
+          <div class="text-xs text-gray-500 mb-1 uppercase tracking-wide">Total Value</div>
+          <div id="r-total" class="text-2xl font-bold text-white">—</div>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-center">
+          <div class="text-xs text-gray-500 mb-1 uppercase tracking-wide">Positions</div>
+          <div id="r-count" class="text-2xl font-bold text-white">—</div>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-center">
+          <div class="text-xs text-gray-500 mb-1 uppercase tracking-wide">Export Date</div>
+          <div id="r-date" class="text-lg font-bold text-indigo-400">—</div>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-center">
+          <div class="text-xs text-gray-500 mb-1 uppercase tracking-wide">Cash in Accounts</div>
+          <div id="r-cash" class="text-2xl font-bold text-white">—</div>
+        </div>
+      </div>
+
+      <!-- Diff + Positions grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
+        <!-- Parsed positions table -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <h3 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-4">Parsed Positions</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="text-gray-500 border-b border-gray-800">
+                  <th class="text-left pb-2">Symbol</th>
+                  <th class="text-right pb-2">Shares</th>
+                  <th class="text-right pb-2">Price</th>
+                  <th class="text-right pb-2">Value</th>
+                  <th class="text-right pb-2">G/L</th>
+                </tr>
+              </thead>
+              <tbody id="positions-table" class="divide-y divide-gray-800/50"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Diff vs current -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <h3 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-4">
+            Changes vs Current Data
+            <span class="ml-2 text-gray-600 font-normal normal-case">vs portfolio-data.js</span>
+          </h3>
+          <div id="diff-table" class="space-y-1 text-xs"></div>
+        </div>
+      </div>
+
+      <!-- Bucket summary -->
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-6">
+        <h3 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-4">Bucket Allocation</h3>
+        <div id="bucket-table" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+      </div>
+
+      <!-- Generate buttons -->
+      <div class="bg-gray-900 border border-indigo-500/30 rounded-xl p-6 mb-6">
+        <h3 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-2">Generate Updated File</h3>
+        <p class="text-xs text-gray-500 mb-4">Downloads a ready-to-commit <span class="mono text-indigo-400">portfolio-data.js</span> with all positions, prices, buckets, and a new history snapshot.</p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="downloadFile()"
+            class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-download"></i> Download portfolio-data.js
+          </button>
+          <button onclick="copyToClipboard()"
+            class="bg-gray-700 hover:bg-gray-600 text-white px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 text-sm">
+            <i class="fas fa-copy"></i> Copy to clipboard
+          </button>
+          <span id="copy-confirm" class="hidden text-emerald-400 text-sm self-center"><i class="fas fa-check mr-1"></i>Copied!</span>
+        </div>
+      </div>
+
+      <!-- Commit instructions -->
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+        <h3 class="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-3">
+          <i class="fas fa-terminal mr-2 text-indigo-400"></i>Commit to repo
+        </h3>
+        <div class="mono text-xs bg-gray-950 rounded-lg p-4 text-green-400 space-y-1 relative">
+          <div id="commit-cmd-1">git add portfolio-data.js</div>
+          <div id="commit-cmd-2">git commit -m "Update portfolio — <span id='commit-date-display'>today</span>"</div>
+          <div>git push origin main</div>
+          <button onclick="copyCommands()"
+            class="absolute top-3 right-3 bg-gray-800 hover:bg-gray-700 text-gray-400 text-xs px-2 py-1 rounded transition-colors">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">After pushing, all dashboard pages (Signal Intelligence, Income Engine, Risk Radar) will reflect the new data on next load.</p>
+      </div>
+
+    </div><!-- /result-section -->
+  </div>
+
+<script>
+const BUCKET_MAP = {
+  TSLA:'Core', GOOGL:'Core', NVDA:'Core', AAPL:'Core', AMZN:'Core',
+  QQQ:'Core', VOO:'Core', MSFT:'Core', META:'Core', GOOG:'Core',
+  QQQI:'Income', SCHD:'Income', VIG:'Income', JEPI:'Income', JEPQ:'Income', DGRO:'Income',
+  ARKK:'ARK', ARKW:'ARK', ARKG:'ARK', ARKF:'ARK', ARKQ:'ARK',
+  XPEV:'EV/China', LCID:'EV/China', NIO:'EV/China', LI:'EV/China', BYDDY:'EV/China',
+  OKLO:'Nuclear', CEG:'Nuclear', NNE:'Nuclear', SMR:'Nuclear', NXE:'Nuclear', UUUU:'Nuclear', CCJ:'Nuclear',
+  JOBY:'eVTOL', ACHR:'eVTOL', LILM:'eVTOL',
+  INSM:'Biotech', TNYA:'Biotech', MRNA:'Biotech', CRSP:'Biotech',
+  IBIT:'Bitcoin', BTCI:'Bitcoin', MSTR:'Bitcoin', GBTC:'Bitcoin', BITO:'Bitcoin',
+};
+function getBucket(sym){ return BUCKET_MAP[sym] || 'Other'; }
+
+const BUCKET_COLORS = {
+  Core:'indigo', Income:'blue', ARK:'purple', 'EV/China':'red',
+  Nuclear:'yellow', Bitcoin:'orange', Biotech:'pink', eVTOL:'teal', Other:'slate'
+};
+
+let parsedData = null;
+let generatedJS = '';
+
+// File upload handler
+document.getElementById('file-upload').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => { document.getElementById('export-text').value = ev.target.result; };
+  reader.readAsText(file);
+});
+
+function parseExport(text) {
+  const lines = text.split('\n').map(l => l.trim());
+  const exportDateMatch = text.match(/Exported on:\s*(\d+\/\d+\/\d+)/);
+  const exportDate = exportDateMatch ? exportDateMatch[1] : new Date().toLocaleDateString('en-US');
+
+  let totalPortfolio = 0, totalCash = 0;
+  const posMap = {};
+
+  // Parse all-accounts total
+  const totalMatch = text.match(/All Accounts.*?\n\s+\$([\d,]+\.?\d*)/s);
+  if (totalMatch) totalPortfolio = parseFloat(totalMatch[1].replace(/,/g,''));
+
+  const tickerRe = /^[A-Z]{1,5}[!]?$/;
+  const skipRe = /^(Balances|Money accounts|Cash balance|Pending activity|Total|Symbol|Selected|Exported|All Accounts)/i;
+
+  for (const line of lines) {
+    if (!line) continue;
+    const cols = line.split('\t').map(c => c.trim());
+    if (cols.length < 3) continue;
+
+    // Cash lines
+    if (/Money accounts/i.test(cols[0])) {
+      const v = parseFloat((cols[4]||cols[3]||'').replace(/[$,]/g,''));
+      if (!isNaN(v) && v > 0) totalCash += v;
+      continue;
+    }
+    if (skipRe.test(cols[0])) continue;
+
+    const rawSym = cols[0];
+    const sym = rawSym.replace('!','').toUpperCase();
+    if (!tickerRe.test(rawSym)) continue;
+
+    const shares = parseFloat(cols[2]) || 0;
+    const price  = parseFloat((cols[3]||'').replace(/[$,]/g,'')) || 0;
+    const value  = parseFloat((cols[4]||'').replace(/[$,]/g,'')) || 0;
+    if (shares <= 0 || value <= 0) continue;
+
+    // Unrealized G/L — last column with $ sign
+    const glStr = cols[cols.length - 1] || '';
+    const glSign = glStr.trimStart().startsWith('-') ? -1 : 1;
+    const glDollar = glStr.match(/\$([\d,]+\.?\d*)/);
+    const unrealized_gl = glDollar ? glSign * parseFloat(glDollar[1].replace(/,/g,'')) : 0;
+    const glPct = glStr.match(/([\+\-]?[\d.]+)%\s*$/);
+    const unrealized_pct = glPct ? parseFloat(glPct[1]) : 0;
+    const description = cols[1] || sym;
+
+    if (posMap[sym]) {
+      posMap[sym].shares += shares;
+      posMap[sym].value  += value;
+      posMap[sym].unrealized_gl += unrealized_gl;
+    } else {
+      posMap[sym] = { symbol:sym, description, shares, price, value, unrealized_gl, unrealized_pct };
+    }
+  }
+
+  const positions = Object.values(posMap).sort((a,b) => b.value - a.value);
+  if (!totalPortfolio && positions.length) totalPortfolio = positions.reduce((s,p)=>s+p.value,0) + totalCash;
+
+  return { positions, totalPortfolio, totalCash, exportDate };
+}
+
+function fmt(n){ return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtShort(n){ return '$'+Math.round(n).toLocaleString(); }
+function toISODate(mdy){
+  // "05/25/2026" → "2026-05-25"
+  const [m,d,y] = (mdy||'').split('/');
+  return y && m && d ? `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}` : new Date().toISOString().slice(0,10);
+}
+
+function parseAndRender(){
+  const text = document.getElementById('export-text').value.trim();
+  const errEl = document.getElementById('parse-error');
+  errEl.classList.add('hidden');
+
+  if (!text){ errEl.textContent='Paste export text first.'; errEl.classList.remove('hidden'); return; }
+
+  try {
+    parsedData = parseExport(text);
+  } catch(e) {
+    errEl.textContent = 'Parse error: '+e.message;
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  if (!parsedData.positions.length){
+    errEl.textContent = 'No positions found. Make sure you copied the full export text.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  renderResults(parsedData);
+  document.getElementById('result-section').style.display = 'block';
+  document.getElementById('result-section').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderResults(data){
+  const { positions, totalPortfolio, totalCash, exportDate } = data;
+  const isoDate = toISODate(exportDate);
+
+  document.getElementById('r-total').textContent = fmtShort(totalPortfolio);
+  document.getElementById('r-count').textContent = positions.length;
+  document.getElementById('r-date').textContent = exportDate;
+  document.getElementById('r-cash').textContent = fmtShort(totalCash);
+  document.getElementById('commit-date-display').textContent = isoDate;
+
+  // Positions table
+  const tbody = document.getElementById('positions-table');
+  tbody.innerHTML = '';
+  for (const p of positions){
+    const gl = p.unrealized_gl;
+    const glColor = gl >= 0 ? 'text-emerald-400' : 'text-red-400';
+    const glSign = gl >= 0 ? '+' : '';
+    tbody.innerHTML += `
+      <tr class="border-b border-gray-800/40 hover:bg-gray-800/30">
+        <td class="py-1.5 font-bold text-white">${p.symbol}
+          <span class="ml-1 text-gray-500 font-normal text-xs hidden md:inline">${getBucket(p.symbol)}</span>
+        </td>
+        <td class="py-1.5 text-right text-gray-300">${p.shares % 1 === 0 ? p.shares : p.shares.toFixed(4)}</td>
+        <td class="py-1.5 text-right text-gray-300">${fmt(p.price)}</td>
+        <td class="py-1.5 text-right font-semibold text-white">${fmtShort(p.value)}</td>
+        <td class="py-1.5 text-right ${glColor}">${glSign}${fmtShort(gl)}</td>
+      </tr>`;
+  }
+
+  // Diff
+  const diffEl = document.getElementById('diff-table');
+  diffEl.innerHTML = '';
+  const current = window.PORTFOLIO_DATA?.top_positions || [];
+  const currentMap = {};
+  current.forEach(p => currentMap[p.symbol] = p);
+  const newMap = {};
+  positions.forEach(p => newMap[p.symbol] = p);
+
+  const allSyms = new Set([...Object.keys(newMap), ...Object.keys(currentMap)]);
+  let newCount=0, goneCount=0, chgCount=0;
+
+  for (const sym of [...allSyms].sort()){
+    const n = newMap[sym], c = currentMap[sym];
+    let cls, badge, detail;
+    if (n && !c){
+      cls='diff-new'; badge=`<span class="bg-emerald-900/50 text-emerald-400 px-1.5 py-0.5 rounded text-xs">NEW</span>`;
+      detail=`${n.shares} sh · ${fmtShort(n.value)}`; newCount++;
+    } else if (!n && c){
+      cls='diff-gone'; badge=`<span class="bg-red-900/50 text-red-400 px-1.5 py-0.5 rounded text-xs">REMOVED</span>`;
+      detail=`was ${fmtShort(c.value)}`; goneCount++;
+    } else {
+      const valChg = Math.abs((n.value - c.value) / c.value);
+      if (valChg > 0.01){
+        cls='diff-chg'; badge=`<span class="bg-amber-900/50 text-amber-400 px-1.5 py-0.5 rounded text-xs">CHANGED</span>`;
+        const arrow = n.value > c.value ? '↑' : '↓';
+        detail=`${fmtShort(c.value)} → ${fmtShort(n.value)} ${arrow}`; chgCount++;
+      } else {
+        cls='diff-same'; badge=`<span class="text-gray-600 text-xs">—</span>`;
+        detail=`${fmtShort(n.value)}`;
+      }
+    }
+    diffEl.innerHTML += `
+      <div class="${cls} flex items-center justify-between px-2 py-1 rounded text-xs">
+        <span class="font-bold text-white w-14">${sym}</span>
+        ${badge}
+        <span class="text-gray-400 ml-auto">${detail}</span>
+      </div>`;
+  }
+
+  if (!diffEl.children.length){
+    diffEl.innerHTML = '<div class="text-gray-500 text-xs p-2">No current portfolio-data.js loaded for comparison.</div>';
+  } else {
+    const summary = `<div class="text-xs text-gray-500 mb-2">${newCount} new · ${goneCount} removed · ${chgCount} changed</div>`;
+    diffEl.insertAdjacentHTML('afterbegin', summary);
+  }
+
+  // Buckets
+  const bucketEl = document.getElementById('bucket-table');
+  bucketEl.innerHTML = '';
+  const buckets = {};
+  for (const p of positions){
+    const b = getBucket(p.symbol);
+    buckets[b] = (buckets[b]||0) + p.value;
+  }
+  const sortedBuckets = Object.entries(buckets).sort((a,b)=>b[1]-a[1]);
+  for (const [name, val] of sortedBuckets){
+    const pct = (val/totalPortfolio*100).toFixed(1);
+    const col = BUCKET_COLORS[name] || 'slate';
+    bucketEl.innerHTML += `
+      <div class="bg-gray-800 rounded-lg p-3">
+        <div class="text-xs text-gray-400 mb-1">${name}</div>
+        <div class="font-bold text-white">${fmtShort(val)}</div>
+        <div class="text-xs text-${col}-400 mt-0.5">${pct}%</div>
+      </div>`;
+  }
+
+  // Build generated JS
+  buildGeneratedJS(data, isoDate, buckets);
+}
+
+function buildGeneratedJS(data, isoDate, buckets){
+  const { positions, totalPortfolio, totalCash, exportDate } = data;
+  const existing = window.PORTFOLIO_DATA || {};
+  const equityValue = totalPortfolio - totalCash;
+  const tslaPct = +(((positions.find(p=>p.symbol==='TSLA')?.value||0)/totalPortfolio)*100).toFixed(2);
+
+  const topPositions = positions.map(p => ({
+    symbol: p.symbol,
+    shares: p.shares,
+    value: +p.value.toFixed(2),
+    price: +p.price.toFixed(4),
+    pct_of_portfolio: +((p.value/totalPortfolio)*100).toFixed(2)
+  }));
+
+  const bucketValues = {};
+  for (const [k,v] of Object.entries(buckets)) bucketValues[k] = +v.toFixed(2);
+
+  const positionsForSnapshot = {};
+  positions.forEach(p => {
+    positionsForSnapshot[p.symbol] = { qty: p.shares, value: +p.value.toFixed(2), price: +p.price.toFixed(4) };
+  });
+
+  const newSnapshot = {
+    date: isoDate,
+    label: new Date(isoDate+'T12:00:00').toLocaleString('en-US',{month:'long',year:'numeric'}),
+    merrill_portfolio: +totalPortfolio.toFixed(2),
+    crypto: 0,
+    hysa_tbills: 0,
+    roth_ira: 0,
+    amda_equity: 0,
+    storebot_equity: 0,
+    cre_equity: 0,
+    total_liabilities: 0,
+    liquid_net_worth: +totalPortfolio.toFixed(2),
+    total_assets: +(totalPortfolio + 200000).toFixed(2),
+    total_net_worth: +(totalPortfolio + 200000).toFixed(2),
+    notes: `Manual export ${exportDate}. Total unrealized via Merrill Edge export.`,
+    positions: positionsForSnapshot,
+    bucket_values: bucketValues,
+    tsla_pct: tslaPct,
+    crypto_detail: []
+  };
+
+  const updatedData = {
+    ...existing,
+    liquid_net_worth: +totalPortfolio.toFixed(2),
+    total_net_worth: +(totalPortfolio + 200000).toFixed(2),
+    total_assets: +(totalPortfolio + 200000).toFixed(2),
+    total_liabilities: 0,
+    merrill_portfolio: +totalPortfolio.toFixed(2),
+    total_stocks: +equityValue.toFixed(2),
+    hysa_tbills: 0,
+    hysa_axos: 0,
+    hysa_sofi: 0,
+    roth_ira: 0,
+    amda_equity: 0,
+    crypto: 0,
+    tsla_pct: tslaPct,
+    top_positions: topPositions,
+    positions: topPositions,
+    bucket_values: bucketValues,
+    concentration: { TSLA: tslaPct },
+    bluestone: existing.bluestone || 200000,
+    snapshot_date: isoDate,
+    updated_at: isoDate,
+    _exported_at: isoDate,
+    _config: existing._config || {},
+    _raw_snapshots: [newSnapshot, ...(existing._raw_snapshots || [])]
+  };
+
+  generatedJS = 'window.PORTFOLIO_DATA = ' + JSON.stringify(updatedData, null, 2) + ';';
+}
+
+function downloadFile(){
+  if (!generatedJS){ alert('Parse an export first.'); return; }
+  const blob = new Blob([generatedJS], { type: 'application/javascript' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'portfolio-data.js';
+  a.click();
+}
+
+function copyToClipboard(){
+  if (!generatedJS){ alert('Parse an export first.'); return; }
+  navigator.clipboard.writeText(generatedJS).then(() => {
+    const el = document.getElementById('copy-confirm');
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 2500);
+  });
+}
+
+function copyCommands(){
+  const isoDate = document.getElementById('commit-date-display').textContent;
+  const cmds = `git add portfolio-data.js\ngit commit -m "Update portfolio — ${isoDate}"\ngit push origin main`;
+  navigator.clipboard.writeText(cmds);
+}
+</script>
+</body>
+</html>
