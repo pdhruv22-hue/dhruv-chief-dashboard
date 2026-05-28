@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today's Brief — Chief Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="portfolio-live.js" onerror="window.PORTFOLIO_LIVE=null"></script>
+<script src="portfolio-data.js" onerror="window.PORTFOLIO_DATA=null"></script>
+<script src="market-pulse-data.js" onerror="window.MARKET_PULSE_DATA=null"></script>
+<script src="live-prices-data.js" onerror="window.LIVE_PRICES_DATA=null"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #020817; color: #e2e8f0; margin: 0; padding: 0; }
+  .top-bar { background: #0a1628; border-bottom: 1px solid #1e293b; padding: 10px 20px; display: flex; align-items: center; gap: 16px; }
+  .top-bar a { color: #64748b; text-decoration: none; font-size: 13px; }
+  .top-bar a:hover { color: #e2e8f0; }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+  .date-hero { margin-bottom: 28px; }
+  .date-hero .day { font-size: 13px; color: #64748b; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
+  .date-hero .headline { font-family: 'Playfair Display', serif; font-size: clamp(24px,5vw,36px); color: #f1f5f9; line-height: 1.2; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .kpi { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 16px; }
+  .kpi-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+  .kpi-val { font-size: 22px; font-weight: 800; color: #f1f5f9; letter-spacing: -0.02em; line-height: 1; }
+  .kpi-sub { font-size: 11px; color: #64748b; margin-top: 4px; }
+  .section { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  .section-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; display: flex; align-items: center; gap-8px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 8px; flex-shrink: 0; }
+  .action-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px; margin-bottom: 6px; }
+  .action-buy { background: #052e16; border: 1px solid #14532d; }
+  .action-sell { background: #3b0a0a; border: 1px solid #7f1d1d; }
+  .action-ipo { background: #1c0a3b; border: 1px solid #4c1d95; }
+  .pos-row { display: flex; align-items: center; padding: 7px 0; border-bottom: 1px solid #1e293b; }
+  .pos-row:last-child { border-bottom: none; }
+  .milestone-bar { background: #1e293b; border-radius: 6px; height: 10px; overflow: hidden; margin: 10px 0; }
+  .milestone-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #6366f1, #a855f7); transition: width .6s ease; }
+  .market-chip { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #0a1628; border: 1px solid #1e293b; border-radius: 8px; }
+  .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (min-width: 600px) { .market-grid { grid-template-columns: repeat(4, 1fr); } }
+  .up { color: #34d399; }
+  .dn { color: #f87171; }
+  .neutral { color: #94a3b8; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .decisions-list li { padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 14px; color: #cbd5e1; display: flex; gap: 10px; }
+  .decisions-list li:last-child { border-bottom: none; }
+  .decisions-list li .bullet { color: #6366f1; font-weight: 900; flex-shrink: 0; }
+  .income-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #1e293b; font-size: 13px; }
+  .income-row:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <a href="index.html"><i class="fas fa-arrow-left mr-1"></i> Dashboard</a>
+  <span style="color:#1e293b">|</span>
+  <a href="signal-intelligence.html"><i class="fas fa-brain mr-1"></i> Signal Intel</a>
+  <a href="income-engine.html"><i class="fas fa-dollar-sign mr-1"></i> Income</a>
+  <a href="risk-radar.html"><i class="fas fa-radar mr-1"></i> Risk</a>
+  <span style="color:#475569;font-size:11px;margin-left:auto" id="data-freshness">—</span>
+</div>
+
+<div class="container">
+
+  <!-- Date/Hero -->
+  <div class="date-hero">
+    <div class="day" id="today-day-str">—</div>
+    <div class="headline" id="brief-headline">Morning Brief</div>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Portfolio Value</div>
+      <div class="kpi-val" id="kpi-portfolio">—</div>
+      <div class="kpi-sub" id="kpi-portfolio-sub">Merrill + Bluestone</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Liquid Net Worth</div>
+      <div class="kpi-val" id="kpi-liquid">—</div>
+      <div class="kpi-sub" id="kpi-liquid-sub">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Annual Income</div>
+      <div class="kpi-val" id="kpi-income">—</div>
+      <div class="kpi-sub">QQQI + BTCI dividends</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Positions</div>
+      <div class="kpi-val" id="kpi-positions">—</div>
+      <div class="kpi-sub" id="kpi-pending-count">—</div>
+    </div>
+  </div>
+
+  <!-- Progress to $1M -->
+  <div class="section" style="margin-bottom:16px">
+    <div class="section-title"><span class="dot" style="background:#a855f7"></span>Progress to $1M Liquid</div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+      <span id="milestone-current" class="text-slate-200 font-bold">—</span>
+      <span class="text-slate-500">Goal: $1,000,000</span>
+    </div>
+    <div class="milestone-bar">
+      <div class="milestone-fill" id="milestone-fill" style="width:0%"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748b;margin-top:4px">
+      <span id="milestone-pct">—% there</span>
+      <span id="milestone-gap">Gap: —</span>
+    </div>
+  </div>
+
+  <!-- Pending Actions — most critical -->
+  <div class="section" id="pending-section" style="border-color:#7c3aed40">
+    <div class="section-title" style="color:#a78bfa"><span class="dot" style="background:#7c3aed"></span>Pending Orders <span id="pending-badge" class="badge ml-2" style="background:#4c1d95;color:#a78bfa">0</span></div>
+    <div id="pending-list"><div class="text-slate-600 text-sm">No pending orders.</div></div>
+    <div id="pending-footer" style="display:none" class="mt-3 text-xs text-slate-600">Update portfolio-live.js to clear completed orders</div>
+  </div>
+
+  <!-- Market Pulse -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#3b82f6"></span>Market Pulse</div>
+    <div class="market-grid" id="market-chips">
+      <div class="market-chip"><div><div class="text-xs text-slate-500 mb-0.5">QQQ</div><div class="font-bold text-white" id="mp-qqq-price">—</div></div><div class="text-right"><div class="text-sm font-bold" id="mp-qqq-chg">—</div></div></div>
+      <div class="market-chip"><div><div class="text-xs text-slate-500 mb-0.5">TSLA</div><div class="font-bold text-white" id="mp-tsla-price">—</div></div><div class="text-right"><div class="text-sm font-bold" id="mp-tsla-chg">—</div></div></div>
+      <div class="market-chip"><div><div class="text-xs text-slate-500 mb-0.5">BTC</div><div class="font-bold text-white" id="mp-btc-price">—</div></div><div class="text-right"><div class="text-sm font-bold" id="mp-btc-chg">—</div></div></div>
+      <div class="market-chip"><div><div class="text-xs text-slate-500 mb-0.5">VIX</div><div class="font-bold text-white" id="mp-vix-price">—</div></div><div class="text-right"><div class="text-sm font-bold neutral" id="mp-vix-lbl">—</div></div></div>
+    </div>
+  </div>
+
+  <!-- Two-column: Positions + Income -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px" id="two-col">
+    <!-- Top Positions -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-title"><span class="dot" style="background:#6366f1"></span>Top Positions</div>
+      <div id="top-positions-list"></div>
+    </div>
+    <!-- Income Breakdown -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-title"><span class="dot" style="background:#10b981"></span>Income Breakdown</div>
+      <div id="income-breakdown-list"></div>
+      <div class="income-row" style="border-bottom:none;margin-top:6px">
+        <span class="font-bold text-white">Monthly Total</span>
+        <span class="font-bold text-emerald-400" id="income-monthly-total">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Decisions / Watch List -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#f59e0b"></span>Key Decisions &amp; Watch</div>
+    <ul class="decisions-list" id="decisions-list"></ul>
+  </div>
+
+  <!-- Unrealized P&L Leaderboard -->
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:#ec4899"></span>Unrealized P&amp;L — Full Leaderboard</div>
+    <div id="pnl-table" style="font-size:13px"></div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid #1e293b;display:flex;justify-content:space-between;font-size:13px">
+      <span class="text-slate-400">Total Unrealized Gain</span>
+      <span class="font-bold text-emerald-400" id="pnl-total">—</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const pl = window.PORTFOLIO_LIVE;
+  const pd = window.PORTFOLIO_DATA;
+  const mp = window.MARKET_PULSE_DATA;
+
+  // ── Date / headline ──────────────────────────────────
+  const now = new Date();
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dayStr = `${dayNames[now.getDay()]}, ${monthNames[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  document.getElementById('today-day-str').textContent = dayStr;
+
+  const hour = now.getHours();
+  const greeting = hour < 12 ? 'Morning Brief' : hour < 17 ? 'Afternoon Brief' : 'Evening Brief';
+  document.getElementById('brief-headline').textContent = greeting + ' — Dhruv Patel';
+
+  // ── Data freshness ────────────────────────────────────
+  const genAt = pl?.generated_at || pd?.generatedAt;
+  if (genAt) document.getElementById('data-freshness').textContent = 'Data: ' + genAt.replace('T', ' ').replace('Z', ' UTC').slice(0, 22);
+
+  // ── Helpers ───────────────────────────────────────────
+  function fmt$(n) { if (n == null) return '—'; return '$' + Number(n).toLocaleString('en-US', {maximumFractionDigits: 0}); }
+  function fmtChg(c) {
+    if (c == null) return { txt: '—', cls: 'neutral' };
+    const s = (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
+    return { txt: s, cls: c >= 0 ? 'up' : 'dn' };
+  }
+  function setTxt(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+  function setCls(id, cls) { const el = document.getElementById(id); if (el) el.className = el.className.replace(/\b(up|dn|neutral)\b/g, '') + ' ' + cls; }
+
+  // ── KPI Strip ─────────────────────────────────────────
+  const totalPortfolio = pl?.total_portfolio_value || pd?.totalValue || 0;
+  const bluestoneTotal = pl?.bluestone?.total || pd?.bluestone?.tactical || 0;
+  const liquidNW = pd?.liquid_net_worth || totalPortfolio;
+  const annualIncome = pl?.total_annual_income || 0;
+  const posCount = pl?.position_count || (pl?.positions?.length) || 0;
+  const pendingCount = (pl?.pending_actions || []).filter(a => a.status === 'PENDING').length;
+
+  setTxt('kpi-portfolio', fmt$(totalPortfolio + bluestoneTotal));
+  setTxt('kpi-portfolio-sub', `Merrill ${fmt$(totalPortfolio)} + Bluestone ${fmt$(bluestoneTotal)}`);
+  setTxt('kpi-liquid', fmt$(liquidNW));
+  setTxt('kpi-liquid-sub', `${((liquidNW / 1000000) * 100).toFixed(1)}% of $1M goal`);
+  setTxt('kpi-income', fmt$(annualIncome));
+  setTxt('kpi-positions', posCount + ' positions');
+  setTxt('kpi-pending-count', pendingCount > 0 ? `⚡ ${pendingCount} pending orders` : 'No pending orders');
+
+  // ── Milestone ─────────────────────────────────────────
+  const pct = Math.min((liquidNW / 1000000) * 100, 100);
+  const gap = 1000000 - liquidNW;
+  document.getElementById('milestone-fill').style.width = pct.toFixed(1) + '%';
+  setTxt('milestone-current', fmt$(liquidNW));
+  setTxt('milestone-pct', pct.toFixed(1) + '% there');
+  setTxt('milestone-gap', 'Gap: ' + fmt$(gap));
+
+  // ── Pending Orders ────────────────────────────────────
+  const pending = (pl?.pending_actions || []).filter(a => a.status === 'PENDING');
+  const pendingBadge = document.getElementById('pending-badge');
+  if (pendingBadge) { pendingBadge.textContent = pending.length; }
+
+  const pendingList = document.getElementById('pending-list');
+  if (pending.length === 0) {
+    pendingList.innerHTML = '<div class="text-slate-600 text-sm py-2">No pending orders. </div>';
+  } else {
+    document.getElementById('pending-footer').style.display = 'block';
+    pendingList.innerHTML = pending.map(a => {
+      const isBuy = a.action === 'BUY';
+      const isIPO = a.symbol === 'SPCX';
+      const rowCls = isIPO ? 'action-ipo' : isBuy ? 'action-buy' : 'action-sell';
+      const acColor = isIPO ? '#a78bfa' : isBuy ? '#34d399' : '#f87171';
+      const price = a.limit_price ? ` @ $${a.limit_price}` : ' @ MARKET';
+      const qty = a.qty ? `${a.qty} sh` : 'all';
+      const amt = a.est_cost ? fmt$(a.est_cost) : (a.est_proceeds ? fmt$(a.est_proceeds) : '');
+      const acct = a.account ? `<span class="text-slate-600 text-xs ml-auto">${a.account}</span>` : '';
+      const noteHtml = a.note ? `<div class="text-slate-500 text-xs mt-1 ml-0">${a.note}</div>` : '';
+      return `<div class="action-row ${rowCls}" style="flex-wrap:wrap">
+        <span style="color:${acColor};font-weight:900;font-size:13px;min-width:36px">${a.action}</span>
+        <span style="font-weight:700;color:#f1f5f9;font-size:15px">${a.symbol}</span>
+        <span style="color:#94a3b8;font-size:13px">${qty}${price}</span>
+        ${amt ? `<span style="color:#e2e8f0;font-weight:600;font-size:13px">${amt}</span>` : ''}
+        <span style="color:#64748b;font-size:12px">${a.target_date || ''}</span>
+        ${acct}
+        ${noteHtml ? `<div style="width:100%">${noteHtml}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // ── Market Pulse ──────────────────────────────────────
+  function mpPrice(sym) {
+    const p = mp?.tickers?.[sym]?.price;
+    if (p) return '$' + Number(p).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const lp = window.LIVE_PRICES_DATA?.prices?.[sym];
+    if (lp) return '$' + Number(lp).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const pos = (pl?.positions || []).find(x => x.symbol === sym);
+    if (pos?.price) return '$' + Number(pos.price).toFixed(2);
+    return '—';
+  }
+  setTxt('mp-qqq-price', mpPrice('QQQ'));
+  setTxt('mp-tsla-price', mpPrice('TSLA'));
+  const btcP = mp?.tickers?.['BTC-USD']?.price || mp?.tickers?.['BTC']?.price;
+  setTxt('mp-btc-price', btcP ? '$' + Number(btcP).toLocaleString('en-US', {maximumFractionDigits: 0}) : '—');
+  const vixP = mp?.tickers?.['VIX']?.price;
+  setTxt('mp-vix-price', vixP ? vixP.toFixed(2) : '—');
+  setTxt('mp-vix-lbl', vixP ? (vixP < 15 ? 'CALM' : vixP < 20 ? 'MODERATE' : vixP < 30 ? 'ELEVATED' : 'EXTREME') : '—');
+
+  function applyChg(priceId, chgId, sym) {
+    const chg = mp?.tickers?.[sym]?.change_pct;
+    const r = fmtChg(chg);
+    setTxt(chgId, r.txt);
+    const el = document.getElementById(chgId);
+    if (el) el.className = 'text-sm font-bold ' + r.cls;
+  }
+  applyChg('mp-qqq-price', 'mp-qqq-chg', 'QQQ');
+  applyChg('mp-tsla-price', 'mp-tsla-chg', 'TSLA');
+  const btcChg = mp?.tickers?.['BTC-USD']?.change_pct || mp?.tickers?.['BTC']?.change_pct;
+  const btcR = fmtChg(btcChg);
+  setTxt('mp-btc-chg', btcR.txt);
+  const btcEl = document.getElementById('mp-btc-chg'); if (btcEl) btcEl.className = 'text-sm font-bold ' + btcR.cls;
+
+  // ── Top Positions ─────────────────────────────────────
+  const positions = pl?.positions || [];
+  const top8 = [...positions].sort((a,b) => b.value - a.value).slice(0, 8);
+  const topListEl = document.getElementById('top-positions-list');
+  if (topListEl) {
+    topListEl.innerHTML = top8.map(p => {
+      const pct = p.portfolio_pct ? p.portfolio_pct.toFixed(1) + '%' : '—';
+      const income = p.income_engine ? '<span style="color:#10b981;font-size:10px;margin-left:4px">INCOME</span>' : '';
+      const sacred = p.sacred ? '<span style="color:#6366f1;font-size:10px;margin-left:4px">CORE</span>' : '';
+      return `<div class="pos-row">
+        <span style="font-weight:700;color:#f1f5f9;min-width:46px;font-size:13px">${p.symbol}${income}${sacred}</span>
+        <span style="flex:1;color:#94a3b8;font-size:12px;text-align:right">${fmt$(p.value)}</span>
+        <span style="color:#64748b;font-size:11px;text-align:right;min-width:36px;margin-left:8px">${pct}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Income Breakdown ──────────────────────────────────
+  const incomePositions = positions.filter(p => p.income_engine || p.div_yield_pct > 2);
+  const incomeBreakEl = document.getElementById('income-breakdown-list');
+  let totalMonthly = 0;
+  const incomeRows = [
+    { sym: 'QQQI', label: 'QQQI', monthly: 469, note: '~$0.526/sh' },
+    { sym: 'BTCI', label: 'BTCI', monthly: 60, note: '~$0.43/sh' },
+    { sym: 'TSLA CC', label: 'TSLA CCs', monthly: 1870, note: 'covered calls mid' },
+  ];
+  // Try to get actual annual income from portfolio-live
+  const qqqiPos = positions.find(p => p.symbol === 'QQQI');
+  const btciPos = positions.find(p => p.symbol === 'BTCI');
+  if (qqqiPos?.annual_income) incomeRows[0].monthly = +(qqqiPos.annual_income / 12).toFixed(0);
+  if (btciPos?.annual_income_tp) incomeRows[1].monthly = +(btciPos.annual_income_tp / 12 / 100).toFixed(0);
+
+  if (incomeBreakEl) {
+    incomeBreakEl.innerHTML = incomeRows.map(r => {
+      totalMonthly += r.monthly;
+      return `<div class="income-row">
+        <span style="font-weight:600;color:#f1f5f9">${r.label}</span>
+        <div style="text-align:right">
+          <div style="font-weight:700;color:#10b981">+${fmt$(r.monthly)}/mo</div>
+          <div style="font-size:10px;color:#64748b">${r.note}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  setTxt('income-monthly-total', '+' + fmt$(totalMonthly) + '/mo');
+
+  // ── Key Decisions ─────────────────────────────────────
+  const decEl = document.getElementById('decisions-list');
+  const decisions = [];
+
+  // Dynamic decisions from pending actions
+  pending.forEach(a => {
+    if (a.symbol === 'SPCX') {
+      decisions.push({ icon: '🚀', text: `SPCX IPO: $50K ready in CMA-28Z. Wait 9:45–10:00 AM ET on ${a.target_date}. Max price = offering+25%.`, urgent: true });
+    } else if (a.action === 'BUY' && a.symbol === 'NVDA') {
+      decisions.push({ icon: '🟢', text: `BUY NVDA: 59 shares @ $${a.limit_price} limit in IRA-Edge after funds settle. Est. $${Number(a.est_cost).toLocaleString()}.` });
+    } else if (a.action === 'SELL') {
+      decisions.push({ icon: '🔴', text: `SELL ${a.symbol}: ${a.qty} shares at market in ${a.account}. Est. ${fmt$(a.est_proceeds)} proceeds.` });
+    }
+  });
+
+  // Static strategic reminders
+  if (decisions.length === 0 || !decisions.some(d => d.text.includes('NVDA'))) {
+    decisions.push({ icon: '📈', text: 'NVDA: Currently 94 shares IRA ($19,984). Consider adding after any settled IRA cash.' });
+  }
+
+  const tslaPct = pl?.positions?.find(p=>p.symbol==='TSLA')?.portfolio_pct || 17.7;
+  if (tslaPct > 15) {
+    decisions.push({ icon: '⚠️', text: `TSLA at ${tslaPct.toFixed(1)}% of portfolio. Consider trimming to 15% if it runs above $500.` });
+  }
+
+  decisions.push({ icon: '💸', text: 'QQQI DRIP: Monthly distribution expected first week of month. Confirm DRIP is OFF (manual reinvestment strategy).', });
+  decisions.push({ icon: '🏗️', text: 'Bluestone: $44K tactical pool available. $10K floor. SPCX pre-IPO wire: $10K to CMA-28Z when ready.' });
+
+  if (decEl) {
+    decEl.innerHTML = decisions.map(d => `<li>
+      <span class="bullet">${d.icon}</span>
+      <span style="${d.urgent ? 'color:#fbbf24;font-weight:600' : ''}">${d.text}</span>
+    </li>`).join('');
+  }
+
+  // ── Unrealized P&L Leaderboard ────────────────────────
+  const pnlEl = document.getElementById('pnl-table');
+  const sorted = [...positions].filter(p => p.unrealized_pnl != null).sort((a,b) => (b.unrealized_pnl||0) - (a.unrealized_pnl||0));
+  let totalUnrealized = 0;
+  if (pnlEl) {
+    pnlEl.innerHTML = `
+      <div style="display:grid;grid-template-columns:60px 1fr 80px 80px 70px;gap:4px;padding:6px 0;font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #1e293b">
+        <div>Ticker</div><div>Description</div><div class="text-right">Value</div><div class="text-right">Unrealized</div><div class="text-right">%</div>
+      </div>` +
+      sorted.map(p => {
+        totalUnrealized += (p.unrealized_pnl || 0);
+        const unr = p.unrealized_pnl || 0;
+        const pctStr = p.unrealized_pct != null ? (p.unrealized_pct * 100 > 0 ? '+' : '') + (p.unrealized_pct * 100).toFixed(0) + '%' : '—';
+        const unrCls = unr >= 0 ? 'color:#34d399' : 'color:#f87171';
+        const avgStr = p.avg_cost ? `<div style="font-size:10px;color:#64748b">avg $${Number(p.avg_cost).toFixed(2)}</div>` : '';
+        return `<div style="display:grid;grid-template-columns:60px 1fr 80px 80px 70px;gap:4px;padding:6px 0;border-bottom:1px solid #0f172a;align-items:start">
+          <div style="font-weight:700;color:#f1f5f9;font-size:13px">${p.symbol}</div>
+          <div style="color:#94a3b8;font-size:12px">${(p.description||'').replace(/\s+/g,' ').trim().slice(0,28)}${avgStr}</div>
+          <div style="text-align:right;font-weight:600;color:#e2e8f0;font-size:12px">${fmt$(p.value)}</div>
+          <div style="text-align:right;font-weight:700;font-size:12px;${unrCls}">${unr >= 0 ? '+' : ''}${fmt$(Math.abs(unr)).replace('$','')}</div>
+          <div style="text-align:right;font-size:12px;${unrCls}">${pctStr}</div>
+        </div>`;
+      }).join('');
+  }
+  const totalEl = document.getElementById('pnl-total');
+  if (totalEl) {
+    totalEl.textContent = (totalUnrealized >= 0 ? '+' : '-') + '$' + Math.abs(totalUnrealized).toLocaleString('en-US', {maximumFractionDigits: 0});
+    totalEl.style.color = totalUnrealized >= 0 ? '#34d399' : '#f87171';
+  }
+
+  // ── Responsive: stack columns on mobile ──────────────
+  if (window.innerWidth < 600) {
+    const twoCol = document.getElementById('two-col');
+    if (twoCol) twoCol.style.gridTemplateColumns = '1fr';
+  }
+
+});
+</script>
+</body>
+</html>
