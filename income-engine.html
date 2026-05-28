@@ -512,10 +512,10 @@ const COVERED_CALL = {
 function mergeWithLiveData() {
   const pd = window.PORTFOLIO_DATA || {};
   const lp = window.LIVE_PRICES_DATA || {};
-  const topPos = pd.top_positions || [];
+  const topPos = pd.positions || [];
 
   INCOME_POSITIONS.forEach(pos => {
-    const live = topPos.find(p => p.symbol === pos.symbol);
+    const live = topPos.find(p => p.ticker === pos.symbol);
     if (live) {
       pos.shares = live.shares ?? pos.shares;
       pos.value  = live.value  ?? pos.value;

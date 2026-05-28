@@ -1,7 +1,9 @@
 window.PORTFOLIO_DATA = {
   "generatedAt": "May 28 06:20 AM ET",
+  "snapshot_date": "2026-05-28",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
   "liquid_net_worth": 429685.79,
+  "merrill_portfolio": 410585.79,
   "liquid_gap_to_1m": 570314.21,
   "liquid_pct_to_1m": 43.0,
   "totalValue": 410585.79,
@@ -9,6 +11,17 @@ window.PORTFOLIO_DATA = {
   "totalCash": 40291.41,
   "gapTo1M": 589414.21,
   "pctTo1M": 41.1,
+  "bucket_values": {
+    "Core":     210511.67,
+    "Income":    50710.20,
+    "EV/China":  22628.26,
+    "ARK":       21920.27,
+    "Nuclear":   23009.85,
+    "Bitcoin":   19211.93,
+    "Biotech":       7.80,
+    "eVTOL":      2373.34,
+    "Other":     19928.86
+  },
   "accounts": {
     "IRA": {
       "stock_value": 152444.85,

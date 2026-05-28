@@ -778,7 +778,8 @@
         }
         const pulse = window.MARKET_PULSE_DATA?.tickers?.[sym]?.price;
         const live = window.LIVE_PRICES_DATA?.prices?.[sym];
-        return pulse || live || null;
+        const port = (window.PORTFOLIO_DATA?.positions || []).find(p => p.ticker === sym)?.price;
+        return pulse || live || port || null;
       } catch(e) { return null; }
     }
 
@@ -794,8 +795,13 @@
 
     function getPortfolioPos(sym) {
       try {
-        const tops = window.PORTFOLIO_DATA?.top_positions || [];
-        return tops.find(p => p.symbol === sym) || null;
+        const positions = window.PORTFOLIO_DATA?.positions || [];
+        const totalVal = window.PORTFOLIO_DATA?.totalValue || 1;
+        const pos = positions.find(p => p.ticker === sym) || null;
+        if (pos && pos.pct_of_portfolio == null) {
+          pos.pct_of_portfolio = (pos.value / totalVal) * 100;
+        }
+        return pos;
       } catch(e) { return null; }
     }
 
@@ -931,7 +937,7 @@
 
       if (nvdaPos) {
         setTxt('nvda-pos-value', '$' + Number(nvdaPos.value).toLocaleString('en-US', {maximumFractionDigits: 0}));
-        setTxt('nvda-portfolio-pct', nvdaPos.pct_of_portfolio?.toFixed(1) + '%');
+        setTxt('nvda-portfolio-pct', (nvdaPos.pct_of_portfolio ?? 0).toFixed(1) + '%');
       }
 
       const nvdaAnalyst = window.STOCKS_ANALYST_DATA?.tickers?.['NVDA'];
