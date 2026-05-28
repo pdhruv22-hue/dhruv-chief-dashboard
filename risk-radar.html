@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Risk Radar — Portfolio Risk Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="portfolio-data.js"></script>
+  <script src="live-prices-data.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+    /* Slider styling */
+    .risk-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #374151;
+      outline: none;
+      cursor: pointer;
+    }
+    .risk-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #6366f1;
+      cursor: pointer;
+      border: 2px solid #818cf8;
+      transition: background 0.2s;
+    }
+    .risk-slider::-webkit-slider-thumb:hover { background: #818cf8; }
+    .risk-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #6366f1;
+      cursor: pointer;
+      border: 2px solid #818cf8;
+    }
+
+    /* Table sort indicator */
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: #c7d2fe; }
+    th.sort-asc::after { content: ' ↑'; color: #6366f1; }
+    th.sort-desc::after { content: ' ↓'; color: #6366f1; }
+
+    /* Progress bar animation */
+    .drawdown-bar { transition: width 0.4s ease, background-color 0.4s ease; }
+
+    /* Card hover */
+    .risk-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .risk-card:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+
+    /* Pulse animation for critical alerts */
+    @keyframes pulse-amber {
+      0%, 100% { border-color: #d97706; }
+      50% { border-color: #f59e0b; }
+    }
+    .alert-warning { animation: pulse-amber 2s infinite; }
+
+    /* Cluster card border glow */
+    .cluster-tech { border-color: #6366f1; box-shadow: 0 0 12px rgba(99,102,241,0.15); }
+    .cluster-crypto { border-color: #f59e0b; box-shadow: 0 0 12px rgba(245,158,11,0.15); }
+    .cluster-ev { border-color: #ef4444; box-shadow: 0 0 12px rgba(239,68,68,0.15); }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gray: {
+              950: '#030712',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- Fixed Top Nav -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800" style="height:44px;">
+    <div class="flex items-center justify-between h-full px-4">
+      <a href="index.html" class="flex items-center gap-2 text-gray-400 hover:text-gray-100 transition-colors text-sm font-medium">
+        <i class="fas fa-arrow-left text-xs"></i>
+        <span>Dashboard</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <i class="fas fa-radar text-indigo-400 text-sm"></i>
+        <span class="text-white font-semibold text-sm tracking-wide">Risk Radar</span>
+        <span class="text-gray-500 text-xs ml-1">— Portfolio Risk Monitor</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-gray-500">
+        <i class="fas fa-clock text-xs"></i>
+        <span id="last-updated">Loading…</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="pt-14 pb-12 px-4 max-w-screen-2xl mx-auto">
+
+    <!-- ───────────────────────────────────────────── -->
+    <!-- SECTION 1: RISK SCORECARD                     -->
+    <!-- ───────────────────────────────────────────── -->
+    <section class="mt-6 mb-6">
+      <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <i class="fas fa-shield-halved text-indigo-400"></i>
+        Risk Scorecard
+      </h2>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="scorecard-grid">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────── -->
+    <!-- SECTION 2: STRESS TEST                        -->
+    <!-- ───────────────────────────────────────────── -->
+    <section class="mb-6">
+      <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <i class="fas fa-vials text-rose-400"></i>
+        Stress Test Simulator
+      </h2>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2">
+
+          <!-- Left: Sliders -->
+          <div class="p-6 border-b lg:border-b-0 lg:border-r border-gray-800">
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="text-sm font-semibold text-gray-200">Scenario Parameters</h3>
+              <div class="flex gap-2">
+                <button id="btn-crash" onclick="applyPreset('crash')"
+                  class="text-xs px-3 py-1.5 rounded-md bg-red-900/60 text-red-300 border border-red-800 hover:bg-red-900 transition-colors font-medium">
+                  <i class="fas fa-skull-crossbones mr-1"></i>Market Crash
+                </button>
+                <button id="btn-mild" onclick="applyPreset('mild')"
+                  class="text-xs px-3 py-1.5 rounded-md bg-amber-900/60 text-amber-300 border border-amber-800 hover:bg-amber-900 transition-colors font-medium">
+                  <i class="fas fa-cloud-rain mr-1"></i>Mild Correction
+                </button>
+                <button id="btn-reset" onclick="applyPreset('reset')"
+                  class="text-xs px-3 py-1.5 rounded-md bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700 transition-colors font-medium">
+                  <i class="fas fa-rotate-left mr-1"></i>Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Slider: TSLA -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-sm text-gray-300 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
+                  TSLA Drawdown
+                </label>
+                <span id="tsla-val" class="text-sm font-mono font-bold text-red-400">-30%</span>
+              </div>
+              <input type="range" id="slider-tsla" class="risk-slider" min="-80" max="0" step="5" value="-30"
+                oninput="document.getElementById('tsla-val').textContent = this.value + '%'; updateStressTest();" />
+              <div class="flex justify-between text-xs text-gray-600 mt-1">
+                <span>-80%</span><span>0%</span>
+              </div>
+            </div>
+
+            <!-- Slider: BTC -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-sm text-gray-300 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+                  BTC / Crypto (IBIT+BTCI+MSTR)
+                </label>
+                <span id="btc-val" class="text-sm font-mono font-bold text-amber-400">-50%</span>
+              </div>
+              <input type="range" id="slider-btc" class="risk-slider" min="-80" max="0" step="5" value="-50"
+                oninput="document.getElementById('btc-val').textContent = this.value + '%'; updateStressTest();" />
+              <div class="flex justify-between text-xs text-gray-600 mt-1">
+                <span>-80%</span><span>0%</span>
+              </div>
+            </div>
+
+            <!-- Slider: QQQ -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-sm text-gray-300 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400 inline-block"></span>
+                  QQQ / Tech (QQQ+QQQI+VOO)
+                </label>
+                <span id="qqq-val" class="text-sm font-mono font-bold text-indigo-400">-20%</span>
+              </div>
+              <input type="range" id="slider-qqq" class="risk-slider" min="-80" max="0" step="5" value="-20"
+                oninput="document.getElementById('qqq-val').textContent = this.value + '%'; updateStressTest();" />
+              <div class="flex justify-between text-xs text-gray-600 mt-1">
+                <span>-80%</span><span>0%</span>
+              </div>
+            </div>
+
+            <!-- Slider: Nuclear -->
+            <div class="mb-2">
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-sm text-gray-300 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span>
+                  Nuclear Sector (OKLO+CEG+NNE+SMR+NXE+UUUU)
+                </label>
+                <span id="nuke-val" class="text-sm font-mono font-bold text-yellow-400">-30%</span>
+              </div>
+              <input type="range" id="slider-nuke" class="risk-slider" min="-80" max="0" step="5" value="-30"
+                oninput="document.getElementById('nuke-val').textContent = this.value + '%'; updateStressTest();" />
+              <div class="flex justify-between text-xs text-gray-600 mt-1">
+                <span>-80%</span><span>0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Impact Display -->
+          <div class="p-6">
+            <h3 class="text-sm font-semibold text-gray-200 mb-5">Estimated Portfolio Impact</h3>
+
+            <!-- Main Impact Numbers -->
+            <div class="text-center mb-6 py-4 rounded-xl bg-gray-950/60 border border-gray-800">
+              <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">Portfolio Loss</div>
+              <div id="impact-loss" class="text-4xl font-black text-red-400 tabular-nums">—</div>
+              <div class="mt-2 flex justify-center gap-8 text-sm">
+                <div>
+                  <div class="text-xs text-gray-500 mb-0.5">New Value</div>
+                  <div id="impact-new-value" class="font-bold text-gray-200 tabular-nums">—</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500 mb-0.5">% Drawdown</div>
+                  <div id="impact-pct" class="font-bold text-rose-400 tabular-nums">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drawdown Severity Bar -->
+            <div class="mb-6">
+              <div class="flex justify-between text-xs text-gray-500 mb-1.5">
+                <span>Drawdown Severity</span>
+                <span id="severity-label" class="font-medium">—</span>
+              </div>
+              <div class="h-3 bg-gray-800 rounded-full overflow-hidden">
+                <div id="drawdown-progress" class="h-full rounded-full drawdown-bar bg-green-500" style="width:0%"></div>
+              </div>
+              <div class="flex justify-between text-xs text-gray-700 mt-1">
+                <span>0%</span><span>10%</span><span>20%</span><span>35%</span><span>50%+</span>
+              </div>
+            </div>
+
+            <!-- Per-Group Breakdown -->
+            <div>
+              <div class="text-xs text-gray-500 uppercase tracking-wide mb-2">Breakdown by Group</div>
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-xs text-gray-600 border-b border-gray-800">
+                    <th class="text-left pb-1.5 font-medium">Group</th>
+                    <th class="text-right pb-1.5 font-medium">Exposure</th>
+                    <th class="text-right pb-1.5 font-medium">Loss</th>
+                  </tr>
+                </thead>
+                <tbody id="breakdown-tbody" class="divide-y divide-gray-800/50">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────── -->
+    <!-- SECTION 3: CHARTS                             -->
+    <!-- ───────────────────────────────────────────── -->
+    <section class="mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Doughnut: Concentration -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <h3 class="text-sm font-semibold text-gray-200 mb-1 flex items-center gap-2">
+            <i class="fas fa-chart-pie text-indigo-400 text-xs"></i>
+            Bucket Concentration
+          </h3>
+          <p class="text-xs text-gray-500 mb-4">Portfolio allocation by strategy bucket</p>
+          <div class="flex flex-col lg:flex-row items-center gap-4">
+            <div style="position:relative; width:220px; height:220px; flex-shrink:0;">
+              <canvas id="doughnut-chart"></canvas>
+            </div>
+            <div id="doughnut-legend" class="flex flex-col gap-1.5 text-xs flex-1 min-w-0"></div>
+          </div>
+        </div>
+
+        <!-- Bar: Beta Distribution -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <h3 class="text-sm font-semibold text-gray-200 mb-1 flex items-center gap-2">
+            <i class="fas fa-chart-bar text-rose-400 text-xs"></i>
+            Beta Distribution — Top 15 Positions
+          </h3>
+          <p class="text-xs text-gray-500 mb-4">Colored by beta level: <span class="text-green-400">β&lt;1</span> <span class="text-yellow-400 ml-1">β 1–1.5</span> <span class="text-orange-400 ml-1">β 1.5–2</span> <span class="text-red-400 ml-1">β&gt;2</span></p>
+          <div style="position:relative; height:220px;">
+            <canvas id="beta-chart"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────── -->
+    <!-- SECTION 4: POSITION RISK TABLE                -->
+    <!-- ───────────────────────────────────────────── -->
+    <section class="mb-6">
+      <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <i class="fas fa-table text-blue-400"></i>
+        Position Risk Table
+        <span class="text-gray-700 font-normal normal-case tracking-normal text-xs">— click headers to sort</span>
+      </h2>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm" id="risk-table">
+            <thead>
+              <tr class="text-xs text-gray-500 bg-gray-950/80 border-b border-gray-800">
+                <th class="sortable text-left px-4 py-3 font-semibold" data-col="symbol">Symbol</th>
+                <th class="sortable text-right px-4 py-3 font-semibold" data-col="value">Value</th>
+                <th class="sortable text-right px-4 py-3 font-semibold" data-col="pct">% Portfolio</th>
+                <th class="sortable text-right px-4 py-3 font-semibold" data-col="beta">Beta</th>
+                <th class="sortable text-right px-4 py-3 font-semibold" data-col="corr">Corr to QQQ</th>
+                <th class="sortable text-right px-4 py-3 font-semibold" data-col="impact">$−Impact (−20%)</th>
+                <th class="sortable text-right px-4 py-3 font-semibold" data-col="risk">Risk Level</th>
+              </tr>
+            </thead>
+            <tbody id="risk-table-body" class="divide-y divide-gray-800/60">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────── -->
+    <!-- SECTION 5: CORRELATION RISK CLUSTERS          -->
+    <!-- ───────────────────────────────────────────── -->
+    <section class="mb-6">
+      <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <i class="fas fa-circle-nodes text-purple-400"></i>
+        Correlation Risk Clusters
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="clusters-grid">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────── -->
+    <!-- SECTION 6: RISK ALERTS                        -->
+    <!-- ───────────────────────────────────────────── -->
+    <section class="mb-6">
+      <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <i class="fas fa-triangle-exclamation text-amber-400"></i>
+        Risk Alerts
+      </h2>
+      <div id="alerts-container" class="flex flex-col gap-3">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────── -->
+    <!-- SECTION 7: UPDATE NOTE                        -->
+    <!-- ───────────────────────────────────────────── -->
+    <section class="mb-2">
+      <div class="bg-gray-900/50 border border-gray-800/50 rounded-xl p-4 text-xs text-gray-500">
+        <p>
+          <span class="text-gray-400 font-semibold">Keeping risk data current:</span>
+          All position values and counts read from <code class="text-indigo-300 bg-gray-800 px-1 py-0.5 rounded">portfolio-data.js</code>.
+          Upload a new brokerage export to automatically refresh all risk calculations.
+          Beta and correlation estimates are hardcoded approximations — update them in the
+          <code class="text-indigo-300 bg-gray-800 px-1 py-0.5 rounded">POSITIONS</code> constant
+          at the top of this file if your risk model changes.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+  // ══════════════════════════════════════════════════
+  // DATA SETUP
+  // ══════════════════════════════════════════════════
+
+  const PORTFOLIO_TOTAL = window.PORTFOLIO_DATA?.merrill_portfolio || 406202.17;
+  const SNAPSHOT_DATE   = window.PORTFOLIO_DATA?.snapshot_date || '2026-05-25';
+
+  // Positions with hardcoded betas and correlations
+  const POSITIONS = [
+    { symbol:'TSLA',  shares:165,    value:70291.65,  price:426.01,  beta:2.0,  corr:0.65 },
+    { symbol:'QQQ',   shares:70,     value:50227.80,  price:717.54,  beta:1.0,  corr:1.00 },
+    { symbol:'QQQI',  shares:892,    value:50219.60,  price:56.30,   beta:0.7,  corr:0.75 },
+    { symbol:'GOOGL', shares:85,     value:32552.45,  price:382.97,  beta:1.1,  corr:0.80 },
+    { symbol:'VOO',   shares:30,     value:20566.50,  price:685.55,  beta:1.0,  corr:0.95 },
+    { symbol:'XPEV',  shares:1346,   value:20984.14,  price:15.59,   beta:2.5,  corr:0.40 },
+    { symbol:'ARKW',  shares:84,     value:12203.52,  price:145.28,  beta:1.8,  corr:0.75 },
+    { symbol:'OKLO',  shares:155,    value:10211.40,  price:65.88,   beta:2.2,  corr:0.45 },
+    { symbol:'IBIT',  shares:227,    value:9751.92,   price:42.96,   beta:3.0,  corr:0.60 },
+    { symbol:'NVDA',  shares:44,     value:9474.52,   price:215.33,  beta:1.7,  corr:0.85 },
+    { symbol:'ARKK',  shares:125,    value:9550.00,   price:76.40,   beta:1.9,  corr:0.78 },
+    { symbol:'AMZN',  shares:33,     value:8788.56,   price:266.32,  beta:1.1,  corr:0.82 },
+    { symbol:'SCHD',  shares:200,    value:6566.00,   price:32.83,   beta:0.75, corr:0.60 },
+    { symbol:'INSM',  shares:45,     value:4780.80,   price:106.24,  beta:0.9,  corr:0.20 },
+    { symbol:'BTCI',  shares:140,    value:4905.60,   price:35.04,   beta:2.5,  corr:0.55 },
+    { symbol:'MSTR',  shares:30,     value:4796.70,   price:159.89,  beta:3.5,  corr:0.65 },
+    { symbol:'AAPL',  shares:13.65,  value:4215.14,   price:308.82,  beta:1.2,  corr:0.88 },
+    { symbol:'CEG',   shares:15,     value:4411.05,   price:294.07,  beta:0.8,  corr:0.35 },
+    { symbol:'NNE',   shares:130,    value:3474.90,   price:26.73,   beta:2.8,  corr:0.40 },
+    { symbol:'SMR',   shares:200,    value:2280.00,   price:11.40,   beta:2.5,  corr:0.38 },
+    { symbol:'VIG',   shares:6,      value:1398.60,   price:233.10,  beta:0.8,  corr:0.75 },
+    { symbol:'JOBY',  shares:128,    value:1397.76,   price:10.92,   beta:2.2,  corr:0.45 },
+    { symbol:'ACHR',  shares:138,    value:877.68,    price:6.36,    beta:2.4,  corr:0.42 },
+    { symbol:'NXE',   shares:75,     value:799.50,    price:10.66,   beta:1.5,  corr:0.30 },
+    { symbol:'UUUU',  shares:43,     value:775.72,    price:18.04,   beta:1.6,  corr:0.35 },
+    { symbol:'LCID',  shares:66,     value:385.46,    price:5.84,    beta:2.0,  corr:0.50 },
+  ];
+
+  const BUCKETS = {
+    'Core':     { label: 'Core (TSLA/GOOGL/NVDA/QQQ/VOO/AMZN/AAPL)', value: 196116.62, color: '#6366f1' },
+    'Income':   { label: 'Income (QQQI/SCHD/VIG)',                      value:  58184.20, color: '#3b82f6' },
+    'EV/China': { label: 'EV/China (XPEV/LCID)',                        value:  21369.60, color: '#ef4444' },
+    'ARK':      { label: 'ARK (ARKK/ARKW)',                             value:  21753.52, color: '#a855f7' },
+    'Nuclear':  { label: 'Nuclear (OKLO/CEG/NNE/SMR/NXE/UUUU)',        value:  21952.57, color: '#eab308' },
+    'Bitcoin':  { label: 'Bitcoin (IBIT/BTCI/MSTR)',                    value:  19454.22, color: '#f59e0b' },
+    'Biotech':  { label: 'Biotech (INSM/TNYA)',                         value:   4788.53, color: '#ec4899' },
+    'eVTOL':    { label: 'eVTOL (JOBY/ACHR)',                          value:   2275.44, color: '#14b8a6' },
+    'Other':    { label: 'Other',                                        value:    140.40, color: '#64748b' },
+  };
+
+  // Override values from live data if available
+  if (window.PORTFOLIO_DATA?.bucket_values) {
+    const bv = window.PORTFOLIO_DATA.bucket_values;
+    if (bv.Nuclear)  BUCKETS['Nuclear'].value  = bv.Nuclear;
+    if (bv.eVTOL)    BUCKETS['eVTOL'].value    = bv.eVTOL;
+    if (bv['EV/China']) BUCKETS['EV/China'].value = bv['EV/China'];
+    if (bv.Core)     BUCKETS['Core'].value     = bv.Core;
+    if (bv.ARK)      BUCKETS['ARK'].value      = bv.ARK;
+    if (bv.Income)   BUCKETS['Income'].value   = bv.Income;
+    if (bv.Biotech)  BUCKETS['Biotech'].value  = bv.Biotech;
+    if (bv.Bitcoin)  BUCKETS['Bitcoin'].value  = bv.Bitcoin;
+    if (bv.Other)    BUCKETS['Other'].value    = bv.Other;
+  }
+
+  // ══════════════════════════════════════════════════
+  // COMPUTED METRICS
+  // ══════════════════════════════════════════════════
+
+  const portBeta = POSITIONS.reduce((s, p) => s + (p.value / PORTFOLIO_TOTAL) * p.beta, 0);
+
+  const topPos = [...POSITIONS].sort((a, b) => b.value - a.value)[0];
+
+  const cryptoSymbols = ['IBIT', 'BTCI', 'MSTR'];
+  const cryptoValue = POSITIONS
+    .filter(p => cryptoSymbols.includes(p.symbol))
+    .reduce((s, p) => s + p.value, 0);
+
+  const highBetaValue = POSITIONS
+    .filter(p => p.beta > 1.5)
+    .reduce((s, p) => s + p.value, 0);
+
+  // ══════════════════════════════════════════════════
+  // HELPERS
+  // ══════════════════════════════════════════════════
+
+  function fmt$(n) {
+    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+  function fmtPct(n) {
+    return n.toFixed(1) + '%';
+  }
+
+  // ══════════════════════════════════════════════════
+  // SECTION 1: SCORECARD
+  // ══════════════════════════════════════════════════
+
+  function renderScorecard() {
+    const betaColor = portBeta > 1.5 ? 'text-red-400'
+                    : portBeta > 1.2 ? 'text-amber-400'
+                    : portBeta < 1.0 ? 'text-green-400'
+                    : 'text-yellow-400';
+
+    const topPct = topPos.value / PORTFOLIO_TOTAL * 100;
+    const topColor = topPct > 20 ? 'text-red-400' : topPct > 15 ? 'text-amber-400' : 'text-green-400';
+    const topBadge = topPct > 20 ? 'bg-red-950/60 border-red-800/60' : topPct > 15 ? 'bg-amber-950/60 border-amber-800/60' : 'bg-green-950/60 border-green-800/60';
+
+    const cryptoPct = cryptoValue / PORTFOLIO_TOTAL * 100;
+    const highBetaPct = highBetaValue / PORTFOLIO_TOTAL * 100;
+
+    const cards = [
+      {
+        icon: 'fas fa-wave-square',
+        iconColor: 'text-indigo-400',
+        label: 'Portfolio Beta',
+        value: portBeta.toFixed(2),
+        valueClass: betaColor,
+        sub: portBeta > 1.5 ? 'High sensitivity to market swings' : portBeta > 1.2 ? 'Moderately aggressive' : 'Near-market beta',
+        badge: portBeta > 1.5 ? 'HIGH' : portBeta > 1.2 ? 'ELEVATED' : 'MODERATE',
+        badgeBg: portBeta > 1.5 ? 'bg-red-900/50 text-red-300 border-red-800' : portBeta > 1.2 ? 'bg-amber-900/50 text-amber-300 border-amber-800' : 'bg-green-900/50 text-green-300 border-green-800',
+      },
+      {
+        icon: 'fas fa-circle-dot',
+        iconColor: 'text-rose-400',
+        label: 'Largest Position',
+        value: `${topPos.symbol} — ${fmtPct(topPct)}`,
+        valueClass: topColor,
+        sub: `${fmt$(topPos.value)} · ${topPos.shares} shares`,
+        badge: topPct > 20 ? 'OVERWEIGHT' : topPct > 15 ? 'ELEVATED' : 'OK',
+        badgeBg: topBadge + ' text-amber-300',
+      },
+      {
+        icon: 'fab fa-bitcoin',
+        iconColor: 'text-amber-400',
+        label: 'Crypto Exposure',
+        value: `${fmt$(cryptoValue)}`,
+        valueClass: 'text-amber-300',
+        sub: `${fmtPct(cryptoPct)} of portfolio · IBIT+BTCI+MSTR`,
+        badge: cryptoPct > 5 ? 'VOLATILE' : 'MODERATE',
+        badgeBg: cryptoPct > 5 ? 'bg-amber-900/50 text-amber-300 border-amber-800' : 'bg-green-900/50 text-green-300 border-green-800',
+      },
+      {
+        icon: 'fas fa-fire-flame-curved',
+        iconColor: 'text-orange-400',
+        label: 'High-Beta Assets (β>1.5)',
+        value: fmtPct(highBetaPct),
+        valueClass: highBetaPct > 50 ? 'text-red-400' : highBetaPct > 35 ? 'text-amber-400' : 'text-yellow-400',
+        sub: `${fmt$(highBetaValue)} in β>1.5 positions`,
+        badge: highBetaPct > 50 ? 'CRITICAL' : highBetaPct > 35 ? 'HIGH' : 'MODERATE',
+        badgeBg: highBetaPct > 50 ? 'bg-red-900/50 text-red-300 border-red-800' : 'bg-amber-900/50 text-amber-300 border-amber-800',
+      },
+    ];
+
+    const grid = document.getElementById('scorecard-grid');
+    grid.innerHTML = cards.map(c => `
+      <div class="risk-card bg-gray-900 border border-gray-800 rounded-xl p-5">
+        <div class="flex items-start justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i class="${c.icon} ${c.iconColor} text-sm"></i>
+            <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">${c.label}</span>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full border ${c.badgeBg}">${c.badge}</span>
+        </div>
+        <div class="text-2xl font-black ${c.valueClass} tabular-nums leading-tight mb-1">${c.value}</div>
+        <div class="text-xs text-gray-500">${c.sub}</div>
+      </div>
+    `).join('');
+  }
+
+  // ══════════════════════════════════════════════════
+  // SECTION 2: STRESS TEST
+  // ══════════════════════════════════════════════════
+
+  function computeImpact(tslaChg, btcChg, qqqChg, nuclearChg) {
+    let loss = 0;
+    // TSLA
+    loss += 70291.65 * (tslaChg / 100);
+    // BTC group
+    loss += (9751.92 + 4905.60 + 4796.70) * (btcChg / 100);
+    // QQQ group — QQQI has 0.7 sensitivity
+    loss += 50227.80 * (qqqChg / 100);
+    loss += 50219.60 * (qqqChg / 100) * 0.7;
+    loss += 20566.50 * (qqqChg / 100);
+    // Nuclear sector
+    loss += (10211.40 + 4411.05 + 3474.90 + 2280.00 + 799.50 + 775.72) * (nuclearChg / 100);
+    return loss;
+  }
+
+  function updateStressTest() {
+    const tslaChg   = parseFloat(document.getElementById('slider-tsla').value);
+    const btcChg    = parseFloat(document.getElementById('slider-btc').value);
+    const qqqChg    = parseFloat(document.getElementById('slider-qqq').value);
+    const nuclearChg = parseFloat(document.getElementById('slider-nuke').value);
+
+    const impact = computeImpact(tslaChg, btcChg, qqqChg, nuclearChg);
+    const newVal = PORTFOLIO_TOTAL + impact;
+    const pctDrawdown = (impact / PORTFOLIO_TOTAL) * 100;
+
+    // Main numbers
+    document.getElementById('impact-loss').textContent = '-' + fmt$(impact);
+    document.getElementById('impact-new-value').textContent = fmt$(newVal);
+    document.getElementById('impact-pct').textContent = fmtPct(pctDrawdown);
+
+    // Progress bar
+    const absPct = Math.abs(pctDrawdown);
+    const barWidth = Math.min(absPct / 50 * 100, 100);
+    const bar = document.getElementById('drawdown-progress');
+    bar.style.width = barWidth + '%';
+    let barColor, severity;
+    if (absPct <= 10) { barColor = '#22c55e'; severity = 'Mild (<10%)'; }
+    else if (absPct <= 20) { barColor = '#eab308'; severity = 'Moderate (10–20%)'; }
+    else if (absPct <= 35) { barColor = '#f97316'; severity = 'Significant (20–35%)'; }
+    else { barColor = '#ef4444'; severity = 'Severe (>35%)'; }
+    bar.style.backgroundColor = barColor;
+    document.getElementById('severity-label').textContent = severity;
+    document.getElementById('severity-label').style.color = barColor;
+
+    // Group breakdown
+    const tslaLoss   = 70291.65 * (tslaChg / 100);
+    const btcLoss    = (9751.92 + 4905.60 + 4796.70) * (btcChg / 100);
+    const qqqLoss    = 50227.80 * (qqqChg / 100) + 50219.60 * (qqqChg / 100) * 0.7 + 20566.50 * (qqqChg / 100);
+    const nukeLoss   = (10211.40 + 4411.05 + 3474.90 + 2280.00 + 799.50 + 775.72) * (nuclearChg / 100);
+
+    const qqqExposure = 50227.80 + 50219.60 + 20566.50;
+    const nukeExposure = 10211.40 + 4411.05 + 3474.90 + 2280.00 + 799.50 + 775.72;
+    const cryptoExposure = 9751.92 + 4905.60 + 4796.70;
+    const remaining = PORTFOLIO_TOTAL - 70291.65 - cryptoExposure - qqqExposure - nukeExposure;
+
+    const rows = [
+      { name: 'TSLA', exposure: 70291.65, loss: tslaLoss, color: 'text-red-400' },
+      { name: 'BTC/Crypto', exposure: cryptoExposure, loss: btcLoss, color: 'text-amber-400' },
+      { name: 'QQQ / Tech ETFs', exposure: qqqExposure, loss: qqqLoss, color: 'text-indigo-400' },
+      { name: 'Nuclear Sector', exposure: nukeExposure, loss: nukeLoss, color: 'text-yellow-400' },
+      { name: 'Remaining', exposure: remaining, loss: 0, color: 'text-gray-400' },
+    ];
+
+    document.getElementById('breakdown-tbody').innerHTML = rows.map(r => `
+      <tr class="hover:bg-gray-800/30 transition-colors">
+        <td class="py-2 ${r.color} font-medium">${r.name}</td>
+        <td class="py-2 text-right text-gray-400 tabular-nums">${fmt$(r.exposure)}</td>
+        <td class="py-2 text-right tabular-nums ${r.loss < 0 ? 'text-red-400' : 'text-gray-500'} font-medium">
+          ${r.loss < 0 ? '-' + fmt$(r.loss) : '—'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function applyPreset(name) {
+    const presets = {
+      crash:  { tsla: -40, btc: -60, qqq: -35, nuke: -40 },
+      mild:   { tsla: -15, btc: -30, qqq: -10, nuke: -15 },
+      reset:  { tsla: -30, btc: -50, qqq: -20, nuke: -30 },
+    };
+    const p = presets[name];
+    document.getElementById('slider-tsla').value = p.tsla;
+    document.getElementById('slider-btc').value  = p.btc;
+    document.getElementById('slider-qqq').value  = p.qqq;
+    document.getElementById('slider-nuke').value = p.nuke;
+    document.getElementById('tsla-val').textContent = p.tsla + '%';
+    document.getElementById('btc-val').textContent  = p.btc  + '%';
+    document.getElementById('qqq-val').textContent  = p.qqq  + '%';
+    document.getElementById('nuke-val').textContent = p.nuke + '%';
+    updateStressTest();
+  }
+
+  // ══════════════════════════════════════════════════
+  // SECTION 3: CHARTS
+  // ══════════════════════════════════════════════════
+
+  function renderDoughnut() {
+    const labels  = Object.values(BUCKETS).map(b => b.label);
+    const data    = Object.values(BUCKETS).map(b => b.value);
+    const colors  = Object.values(BUCKETS).map(b => b.color);
+    const keys    = Object.keys(BUCKETS);
+
+    const ctx = document.getElementById('doughnut-chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          backgroundColor: colors.map(c => c + 'cc'),
+          borderColor: colors,
+          borderWidth: 2,
+          hoverOffset: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                const v = ctx.parsed;
+                const pct = (v / PORTFOLIO_TOTAL * 100).toFixed(1);
+                return ` ${fmt$(v)} (${pct}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Custom legend
+    const legendEl = document.getElementById('doughnut-legend');
+    legendEl.innerHTML = keys.map(k => {
+      const b = BUCKETS[k];
+      const pct = (b.value / PORTFOLIO_TOTAL * 100).toFixed(1);
+      return `
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-sm flex-shrink-0" style="background:${b.color}"></span>
+            <span class="text-gray-400 truncate">${k}</span>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class="text-gray-300 font-medium tabular-nums">${pct}%</span>
+            <span class="text-gray-600 tabular-nums">${fmt$(b.value)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderBetaBar() {
+    const sorted = [...POSITIONS].sort((a, b) => b.value - a.value).slice(0, 15);
+
+    const betaColor = (b) => {
+      if (b < 1)   return 'rgba(34,197,94,0.75)';
+      if (b < 1.5) return 'rgba(234,179,8,0.75)';
+      if (b < 2)   return 'rgba(249,115,22,0.75)';
+      return 'rgba(239,68,68,0.75)';
+    };
+    const betaBorder = (b) => {
+      if (b < 1)   return '#22c55e';
+      if (b < 1.5) return '#eab308';
+      if (b < 2)   return '#f97316';
+      return '#ef4444';
+    };
+
+    const ctx = document.getElementById('beta-chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: sorted.map(p => p.symbol),
+        datasets: [{
+          label: 'Beta',
+          data: sorted.map(p => p.beta),
+          backgroundColor: sorted.map(p => betaColor(p.beta)),
+          borderColor: sorted.map(p => betaBorder(p.beta)),
+          borderWidth: 1.5,
+          borderRadius: 3,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => ctx[0].label,
+              label: ctx => {
+                const p = sorted[ctx.dataIndex];
+                return [` Beta: ${p.beta}`, ` Value: ${fmt$(p.value)}`, ` Corr to QQQ: ${p.corr}`];
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: '#1f2937' },
+            ticks: { color: '#9ca3af', font: { size: 11 } },
+          },
+          y: {
+            grid: { color: '#1f2937' },
+            ticks: { color: '#9ca3af', font: { size: 11 } },
+            beginAtZero: true,
+            max: 4,
+          }
+        }
+      }
+    });
+  }
+
+  // ══════════════════════════════════════════════════
+  // SECTION 4: RISK TABLE
+  // ══════════════════════════════════════════════════
+
+  let tableSort = { col: 'value', dir: 'desc' };
+
+  function getRiskScore(p) {
+    return p.beta * p.corr * (p.value / PORTFOLIO_TOTAL * 100);
+  }
+  function getRiskLevel(score) {
+    if (score >= 3)   return { label: 'Critical', class: 'text-red-400',    bg: 'bg-red-950/50 border-red-800/60' };
+    if (score >= 1.5) return { label: 'High',     class: 'text-orange-400', bg: 'bg-orange-950/50 border-orange-800/60' };
+    if (score >= 0.7) return { label: 'Medium',   class: 'text-amber-400',  bg: 'bg-amber-950/50 border-amber-800/60' };
+    return              { label: 'Low',      class: 'text-green-400',  bg: 'bg-green-950/50 border-green-800/60' };
+  }
+
+  function renderRiskTable() {
+    const sortedPositions = [...POSITIONS].sort((a, b) => {
+      let av, bv;
+      switch (tableSort.col) {
+        case 'symbol': av = a.symbol; bv = b.symbol; break;
+        case 'value':  av = a.value;  bv = b.value;  break;
+        case 'pct':    av = a.value;  bv = b.value;  break;
+        case 'beta':   av = a.beta;   bv = b.beta;   break;
+        case 'corr':   av = a.corr;   bv = b.corr;   break;
+        case 'impact': av = a.value * 0.20 * a.beta * a.corr; bv = b.value * 0.20 * b.beta * b.corr; break;
+        case 'risk':   av = getRiskScore(a); bv = getRiskScore(b); break;
+        default:       av = a.value;  bv = b.value;
+      }
+      if (typeof av === 'string') return tableSort.dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+      return tableSort.dir === 'asc' ? av - bv : bv - av;
+    });
+
+    const tbody = document.getElementById('risk-table-body');
+    tbody.innerHTML = sortedPositions.map(p => {
+      const pct     = p.value / PORTFOLIO_TOTAL * 100;
+      const impact  = p.value * 0.20 * p.beta * p.corr;
+      const score   = getRiskScore(p);
+      const risk    = getRiskLevel(score);
+      const betaColor = p.beta > 2 ? 'text-red-400' : p.beta > 1.5 ? 'text-orange-400' : p.beta > 1 ? 'text-amber-400' : 'text-green-400';
+      return `
+        <tr class="hover:bg-gray-800/40 transition-colors">
+          <td class="px-4 py-2.5 font-bold text-white tabular-nums">${p.symbol}</td>
+          <td class="px-4 py-2.5 text-right text-gray-200 tabular-nums">${fmt$(p.value)}</td>
+          <td class="px-4 py-2.5 text-right text-gray-400 tabular-nums">${fmtPct(pct)}</td>
+          <td class="px-4 py-2.5 text-right ${betaColor} font-mono font-semibold tabular-nums">${p.beta.toFixed(1)}</td>
+          <td class="px-4 py-2.5 text-right text-gray-400 tabular-nums">${p.corr.toFixed(2)}</td>
+          <td class="px-4 py-2.5 text-right text-rose-400 font-medium tabular-nums">-${fmt$(impact)}</td>
+          <td class="px-4 py-2.5 text-right">
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full border ${risk.bg} ${risk.class}">${risk.label}</span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Update header sort indicators
+    document.querySelectorAll('#risk-table th.sortable').forEach(th => {
+      th.classList.remove('sort-asc', 'sort-desc');
+      if (th.dataset.col === tableSort.col) {
+        th.classList.add(tableSort.dir === 'asc' ? 'sort-asc' : 'sort-desc');
+      }
+    });
+  }
+
+  function setupTableSort() {
+    document.querySelectorAll('#risk-table th.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.col;
+        if (tableSort.col === col) {
+          tableSort.dir = tableSort.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          tableSort.col = col;
+          tableSort.dir = 'desc';
+        }
+        renderRiskTable();
+      });
+    });
+  }
+
+  // ══════════════════════════════════════════════════
+  // SECTION 5: CLUSTERS
+  // ══════════════════════════════════════════════════
+
+  function renderClusters() {
+    const techSymbols = ['TSLA','NVDA','GOOGL','AAPL','AMZN','QQQ','QQQI','VOO','ARKK','ARKW'];
+    const techValue = POSITIONS.filter(p => techSymbols.includes(p.symbol)).reduce((s,p) => s + p.value, 0);
+    const techImpact25 = techValue * 0.25;
+
+    const cryptoClusterSymbols = ['IBIT','BTCI','MSTR'];
+    const cryptoClusterValue = POSITIONS.filter(p => cryptoClusterSymbols.includes(p.symbol)).reduce((s,p) => s + p.value, 0);
+    // TSLA ~60% correlated to BTC
+    const tslaBtcCorr = (POSITIONS.find(p=>p.symbol==='TSLA')?.value || 0) * 0.6;
+    const totalCryptoCorrelated = cryptoClusterValue + tslaBtcCorr;
+
+    const evSymbols = ['XPEV','LCID'];
+    const evValue = POSITIONS.filter(p => evSymbols.includes(p.symbol)).reduce((s,p) => s + p.value, 0);
+
+    const clusters = [
+      {
+        title: 'Tech / AI Downturn',
+        icon: 'fas fa-microchip',
+        iconColor: 'text-indigo-400',
+        borderClass: 'cluster-tech',
+        positions: techSymbols,
+        body: `
+          <div class="text-xs text-gray-400 mb-3">Positions that move together when tech sells off</div>
+          <div class="flex flex-wrap gap-1.5 mb-4">
+            ${techSymbols.map(s => `<span class="text-xs px-2 py-0.5 bg-indigo-900/40 border border-indigo-800/60 rounded-md text-indigo-300 font-medium">${s}</span>`).join('')}
+          </div>
+          <div class="bg-gray-950/60 rounded-lg p-3 mb-2">
+            <div class="text-xs text-gray-500 mb-0.5">Combined Exposure</div>
+            <div class="text-xl font-black text-indigo-300 tabular-nums">${fmt$(techValue)}</div>
+            <div class="text-xs text-gray-500">${(techValue/PORTFOLIO_TOTAL*100).toFixed(1)}% of portfolio</div>
+          </div>
+          <div class="text-xs text-amber-400 flex items-start gap-2 mt-3">
+            <i class="fas fa-triangle-exclamation mt-0.5 flex-shrink-0"></i>
+            <span>If tech corrects 25%, estimated portfolio impact: <span class="font-bold text-red-400">-${fmt$(techImpact25)}</span></span>
+          </div>
+        `
+      },
+      {
+        title: 'Crypto Contagion',
+        icon: 'fab fa-bitcoin',
+        iconColor: 'text-amber-400',
+        borderClass: 'cluster-crypto',
+        positions: cryptoClusterSymbols,
+        body: `
+          <div class="text-xs text-gray-400 mb-3">Direct crypto + TSLA Bitcoin correlation overlay</div>
+          <div class="flex flex-wrap gap-1.5 mb-4">
+            ${cryptoClusterSymbols.map(s => `<span class="text-xs px-2 py-0.5 bg-amber-900/40 border border-amber-800/60 rounded-md text-amber-300 font-medium">${s}</span>`).join('')}
+            <span class="text-xs px-2 py-0.5 bg-amber-900/20 border border-amber-800/30 rounded-md text-amber-500 font-medium">TSLA (~0.6 corr)</span>
+          </div>
+          <div class="bg-gray-950/60 rounded-lg p-3 mb-2">
+            <div class="text-xs text-gray-500 mb-0.5">Bitcoin-Correlated Exposure</div>
+            <div class="text-xl font-black text-amber-300 tabular-nums">${fmt$(totalCryptoCorrelated)}</div>
+            <div class="text-xs text-gray-500">${(totalCryptoCorrelated/PORTFOLIO_TOTAL*100).toFixed(1)}% effective BTC exposure</div>
+          </div>
+          <div class="text-xs text-amber-400 flex items-start gap-2 mt-3">
+            <i class="fas fa-triangle-exclamation mt-0.5 flex-shrink-0"></i>
+            <span>Bitcoin historical volatility ~75%. Crypto contagion events can cause 40–60% drawdowns across cluster.</span>
+          </div>
+        `
+      },
+      {
+        title: 'China / EV Geopolitical',
+        icon: 'fas fa-car-side',
+        iconColor: 'text-red-400',
+        borderClass: 'cluster-ev',
+        positions: evSymbols,
+        body: `
+          <div class="text-xs text-gray-400 mb-3">US-China tension exposure via Chinese EV ADRs</div>
+          <div class="flex flex-wrap gap-1.5 mb-4">
+            ${evSymbols.map(s => `<span class="text-xs px-2 py-0.5 bg-red-900/40 border border-red-800/60 rounded-md text-red-300 font-medium">${s}</span>`).join('')}
+          </div>
+          <div class="bg-gray-950/60 rounded-lg p-3 mb-2">
+            <div class="text-xs text-gray-500 mb-0.5">Combined EV/China Exposure</div>
+            <div class="text-xl font-black text-red-300 tabular-nums">${fmt$(evValue)}</div>
+            <div class="text-xs text-gray-500">${(evValue/PORTFOLIO_TOTAL*100).toFixed(1)}% of portfolio</div>
+          </div>
+          <div class="text-xs text-red-400 flex items-start gap-2 mt-3">
+            <i class="fas fa-triangle-exclamation mt-0.5 flex-shrink-0"></i>
+            <span>XPEV subject to ADR delisting risk, tariffs, and EV subsidy policy. LCID has deep structural losses — primary risk is capital impairment.</span>
+          </div>
+        `
+      },
+    ];
+
+    document.getElementById('clusters-grid').innerHTML = clusters.map(c => `
+      <div class="risk-card bg-gray-900 border-2 rounded-xl p-5 ${c.borderClass}">
+        <div class="flex items-center gap-2 mb-3">
+          <i class="${c.icon} ${c.iconColor}"></i>
+          <h3 class="text-sm font-bold text-gray-200">${c.title}</h3>
+        </div>
+        ${c.body}
+      </div>
+    `).join('');
+  }
+
+  // ══════════════════════════════════════════════════
+  // SECTION 6: ALERTS
+  // ══════════════════════════════════════════════════
+
+  function renderAlerts() {
+    const alerts = [];
+
+    const tslaPos = POSITIONS.find(p => p.symbol === 'TSLA');
+    if (tslaPos && tslaPos.value / PORTFOLIO_TOTAL > 0.15) {
+      alerts.push({
+        level: 'warning',
+        icon: 'fas fa-triangle-exclamation',
+        title: 'Concentration Risk — TSLA',
+        msg: `TSLA exceeds 15% concentration limit (currently ${(tslaPos.value/PORTFOLIO_TOTAL*100).toFixed(1)}%). Consider trimming or hedging with puts. A 50% TSLA drawdown alone would cost ${fmt$(tslaPos.value * 0.50)}.`
+      });
+    }
+
+    if (highBetaValue / PORTFOLIO_TOTAL > 0.50) {
+      alerts.push({
+        level: 'warning',
+        icon: 'fas fa-fire-flame-curved',
+        title: 'High-Beta Overweight',
+        msg: `${(highBetaValue/PORTFOLIO_TOTAL*100).toFixed(0)}% of portfolio in high-beta (β>1.5) assets. Elevated drawdown risk in risk-off regimes. In a −30% QQQ move, beta-amplified losses could exceed portfolio beta × 30%.`
+      });
+    }
+
+    if (cryptoValue / PORTFOLIO_TOTAL > 0.05) {
+      alerts.push({
+        level: 'info',
+        icon: 'fab fa-bitcoin',
+        title: 'Crypto Volatility Alert',
+        msg: `Crypto exposure (IBIT+BTCI+MSTR) at ${(cryptoValue/PORTFOLIO_TOTAL*100).toFixed(1)}%. Bitcoin historical annualized volatility ~75% can produce rapid portfolio swings. MSTR carries additional leverage risk.`
+      });
+    }
+
+    alerts.push({
+      level: 'info',
+      icon: 'fas fa-seedling',
+      title: 'Tax-Loss Harvest Candidates',
+      msg: 'LCID ($385) and TNYA ($8) are effectively dead positions with minimal upside. Consider tax-loss harvesting to offset gains elsewhere. LCID carries an estimated $16,080 in unrealized losses.'
+    });
+
+    const alertColors = {
+      warning: {
+        container: 'bg-amber-950/40 border-amber-800/60 alert-warning',
+        icon: 'text-amber-400',
+        title: 'text-amber-300',
+        msg: 'text-amber-200/80',
+        badge: 'bg-amber-900/60 text-amber-300 border-amber-700'
+      },
+      info: {
+        container: 'bg-blue-950/40 border-blue-800/60',
+        icon: 'text-blue-400',
+        title: 'text-blue-300',
+        msg: 'text-blue-200/80',
+        badge: 'bg-blue-900/60 text-blue-300 border-blue-700'
+      }
+    };
+
+    document.getElementById('alerts-container').innerHTML = alerts.map(a => {
+      const c = alertColors[a.level];
+      return `
+        <div class="flex items-start gap-4 rounded-xl border p-4 ${c.container}">
+          <i class="${a.icon} ${c.icon} text-lg mt-0.5 flex-shrink-0"></i>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-sm font-semibold ${c.title}">${a.title}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full border font-medium uppercase tracking-wide ${c.badge}">${a.level}</span>
+            </div>
+            <p class="text-sm ${c.msg}">${a.msg}</p>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ══════════════════════════════════════════════════
+  // INIT
+  // ══════════════════════════════════════════════════
+
+  function init() {
+    // Last updated
+    const dateStr = window.PORTFOLIO_DATA?.snapshot_date || SNAPSHOT_DATE;
+    document.getElementById('last-updated').textContent = 'Snapshot: ' + dateStr;
+
+    renderScorecard();
+    updateStressTest();
+    renderDoughnut();
+    renderBetaBar();
+    renderRiskTable();
+    setupTableSort();
+    renderClusters();
+    renderAlerts();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
