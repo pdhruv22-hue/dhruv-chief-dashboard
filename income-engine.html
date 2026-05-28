@@ -11,6 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="portfolio-data.js"></script>
+  <script src="portfolio-live.js" onerror="window.PORTFOLIO_LIVE=null"></script>
   <script src="live-prices-data.js"></script>
 
   <style>
@@ -512,10 +513,13 @@ const COVERED_CALL = {
 function mergeWithLiveData() {
   const pd = window.PORTFOLIO_DATA || {};
   const lp = window.LIVE_PRICES_DATA || {};
-  const topPos = pd.positions || [];
+  // Prefer PORTFOLIO_LIVE (symbol key) then fall back to PORTFOLIO_DATA (ticker key)
+  const livePositions = window.PORTFOLIO_LIVE?.positions || [];
+  const topPos = livePositions.length ? livePositions : (pd.positions || []);
+  const useSymbol = livePositions.length > 0;
 
   INCOME_POSITIONS.forEach(pos => {
-    const live = topPos.find(p => p.ticker === pos.symbol);
+    const live = topPos.find(p => (useSymbol ? p.symbol : p.ticker) === pos.symbol);
     if (live) {
       pos.shares = live.shares ?? pos.shares;
       pos.value  = live.value  ?? pos.value;

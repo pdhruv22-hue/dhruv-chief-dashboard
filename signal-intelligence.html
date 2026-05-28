@@ -19,6 +19,7 @@
   <script src="stocks-x-grok-data.js"></script>
   <script src="prediction-data.js"></script>
   <script src="portfolio-data.js"></script>
+  <script src="portfolio-live.js" onerror="window.PORTFOLIO_LIVE=null"></script>
 
   <style>
     * { font-family: 'Inter', sans-serif; }
@@ -161,6 +162,15 @@
       </div>
     </section>
 
+    <!-- PENDING ORDERS ALERT BAR -->
+    <div id="pending-orders-bar" style="display:none" class="bg-amber-950/60 border border-amber-800/50 rounded-lg p-3 mb-6">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">⚡ Pending Orders</span>
+        <span id="pending-count" class="bg-amber-600 text-white text-xs px-1.5 py-0.5 rounded-full font-bold">0</span>
+      </div>
+      <div id="pending-orders-list" class="space-y-1"></div>
+    </div>
+
     <!-- ============================
          SECTION 2: TSLA COMMAND CENTER
          ============================ -->
@@ -203,6 +213,14 @@
               <div class="flex justify-between items-center">
                 <span class="text-slate-400 text-xs">Day P&amp;L</span>
                 <span id="tsla-day-pnl" class="font-bold text-lg">–</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-xs">Avg Cost</span>
+                <span id="tsla-avg-cost" class="text-slate-300 font-semibold">$18.93</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-xs">Unrealized Gain</span>
+                <span id="tsla-unrealized" class="font-bold text-emerald-400">–</span>
               </div>
             </div>
 
@@ -795,12 +813,16 @@
 
     function getPortfolioPos(sym) {
       try {
+        // Prefer rich PORTFOLIO_LIVE (has unrealized_pnl, avg_cost, portfolio_pct)
+        const live = (window.PORTFOLIO_LIVE?.positions || []).find(p => p.symbol === sym);
+        if (live) {
+          live.pct_of_portfolio = live.portfolio_pct ?? live.pct_of_portfolio;
+          return live;
+        }
         const positions = window.PORTFOLIO_DATA?.positions || [];
         const totalVal = window.PORTFOLIO_DATA?.totalValue || 1;
         const pos = positions.find(p => p.ticker === sym) || null;
-        if (pos && pos.pct_of_portfolio == null) {
-          pos.pct_of_portfolio = (pos.value / totalVal) * 100;
-        }
+        if (pos) pos.pct_of_portfolio = pos.pct_of_portfolio ?? (pos.value / totalVal) * 100;
         return pos;
       } catch(e) { return null; }
     }
@@ -870,6 +892,18 @@
         if (pnlEl) {
           pnlEl.textContent = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
           pnlEl.className = 'font-bold text-lg ' + (pnl >= 0 ? 'text-emerald-400' : 'text-red-400');
+        }
+      }
+
+      // Avg cost + unrealized gain from PORTFOLIO_LIVE
+      if (tslaPos?.avg_cost) setTxt('tsla-avg-cost', '$' + Number(tslaPos.avg_cost).toFixed(2));
+      if (tslaPos?.unrealized_pnl != null) {
+        const unrEl = document.getElementById('tsla-unrealized');
+        const unrPct = tslaPos.unrealized_pct ? (tslaPos.unrealized_pct * 100).toFixed(1) : null;
+        const unrVal = tslaPos.unrealized_pnl;
+        if (unrEl) {
+          unrEl.textContent = (unrVal >= 0 ? '+$' : '-$') + Math.abs(unrVal).toLocaleString('en-US', {maximumFractionDigits: 0}) + (unrPct ? ` (${unrPct > 0 ? '+' : ''}${unrPct}%)` : '');
+          unrEl.className = 'font-bold ' + (unrVal >= 0 ? 'text-emerald-400' : 'text-red-400');
         }
       }
 
@@ -1183,6 +1217,37 @@
         }
       }
     } catch(e) { console.warn('Predictions section error:', e); }
+
+    // =====================
+    // PENDING ORDERS
+    // =====================
+    try {
+      const pending = window.PORTFOLIO_LIVE?.pending_actions?.filter(a => a.status === 'PENDING') || [];
+      if (pending.length > 0) {
+        const bar = document.getElementById('pending-orders-bar');
+        const list = document.getElementById('pending-orders-list');
+        const count = document.getElementById('pending-count');
+        if (bar) bar.style.display = 'block';
+        if (count) count.textContent = pending.length;
+        if (list) {
+          list.innerHTML = pending.map(a => {
+            const color = a.action === 'BUY' ? 'text-emerald-400' : 'text-red-400';
+            const bg = a.action === 'BUY' ? 'bg-emerald-950/50' : 'bg-red-950/50';
+            const price = a.limit_price ? ` @ $${a.limit_price}` : '';
+            const qty = a.qty ? ` ${a.qty} sh` : '';
+            const cost = a.est_cost ? ` · $${Number(a.est_cost).toLocaleString()}` : (a.est_proceeds ? ` · $${Number(a.est_proceeds).toLocaleString()}` : '');
+            const note = a.note ? `<span class="text-slate-500 ml-2">— ${a.note}</span>` : '';
+            return `<div class="flex items-center gap-2 text-xs ${bg} rounded px-2 py-1">
+              <span class="font-black ${color}">${a.action}</span>
+              <span class="font-bold text-white">${a.symbol}</span>
+              <span class="text-slate-300">${qty}${price}${cost}</span>
+              <span class="text-slate-500">${a.target_date || ''}</span>
+              ${note}
+            </div>`;
+          }).join('');
+        }
+      }
+    } catch(e) { console.warn('Pending orders error:', e); }
 
     // =====================
     // BACK TO TOP

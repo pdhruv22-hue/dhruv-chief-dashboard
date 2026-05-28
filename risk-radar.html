@@ -11,6 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="portfolio-data.js"></script>
+  <script src="portfolio-live.js" onerror="window.PORTFOLIO_LIVE=null"></script>
   <script src="live-prices-data.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -454,17 +455,18 @@
     if (bv.Other)    BUCKETS['Other'].value    = bv.Other;
   }
 
-  // Override POSITIONS with live portfolio-data.js prices/values
-  if (window.PORTFOLIO_DATA?.positions) {
-    window.PORTFOLIO_DATA.positions.forEach(live => {
-      const p = POSITIONS.find(x => x.symbol === live.ticker);
-      if (p) {
-        if (live.shares) p.shares = live.shares;
-        if (live.price)  p.price  = live.price;
-        if (live.value)  p.value  = live.value;
-      }
-    });
-  }
+  // Override POSITIONS with live data — prefer PORTFOLIO_LIVE (symbol), fall back to PORTFOLIO_DATA (ticker)
+  const _livePos = window.PORTFOLIO_LIVE?.positions || window.PORTFOLIO_DATA?.positions || [];
+  const _useSymbol = !!(window.PORTFOLIO_LIVE?.positions);
+  _livePos.forEach(live => {
+    const key = _useSymbol ? live.symbol : live.ticker;
+    const p = POSITIONS.find(x => x.symbol === key);
+    if (p) {
+      if (live.shares) p.shares = live.shares;
+      if (live.price)  p.price  = live.price;
+      if (live.value)  p.value  = live.value;
+    }
+  });
 
   // ══════════════════════════════════════════════════
   // COMPUTED METRICS
