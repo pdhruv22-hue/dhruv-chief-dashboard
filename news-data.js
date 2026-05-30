@@ -1,79 +1,79 @@
-// News data — generated May 26 12:01 PM ET
+// News data — generated May 30 07:00 AM ET
 window.NEWS_DATA = {
-  "generatedAt": "May 26 12:01 PM ET",
-  "generatedTs": "2026-05-26T12:01:14.520885",
+  "generatedAt": "May 30 07:00 AM ET",
+  "generatedTs": "2026-05-30T07:00:12.810850",
   "sections": [
     {
       "id": "market_pulse",
       "title": "Market Pulse",
       "icon": "📊",
       "level": "info",
-      "content": "**Markets are mildly risk-on:** SPY and QQQ are pointing higher, while **VIX is low-to-moderately elevated at 17.21** as of 3:57 PM UTC, which suggests investors are cautious but not in panic mode.[1][6]\n\n- **SPY / S&P 500:** Broad U.S. equity sentiment is constructive, with stock indexes recently c",
-      "ts": "May 26 12:01 PM ET"
+      "content": "SPY and QQQ just finished the week at **new all‑time highs**, while the **VIX is sitting near multi‑month lows around the mid‑teens**, signalling a bullish, low‑volatility risk backdrop heading into next week.[1][3][5]\n\nKey points:\n\n- **Equities (SPY / QQQ)**\n  - S&P 500, Dow, and Nasdaq 100 all clo",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "elon_feed",
       "title": "Elon / TSLA / SpaceX",
       "icon": "⚡",
       "level": "highlight",
-      "content": "SpaceX has formally filed for a blockbuster IPO under the ticker **SPCX**, aiming for a valuation above **$1 trillion** and a June listing, while **Tesla** itself has no new IPO or spinoff but is central to analyst discussions about how the SpaceX IPO could affect Tesla’s stock and a potential future Tesla–SpaceX integration.[3][5][9]\n\nHere are the key points from today’s news and recent filings:\n",
-      "ts": "May 26 12:01 PM ET"
+      "content": "SpaceX has **filed for an IPO**, with reporting that it is aiming for a listing in **June** and could be one of the largest IPOs ever, with a valuation cited around **$1.75 trillion to $2 trillion**. The reported ticker is **SPCX**, and the filing says Musk will retain strong control through the company’s dual-class structure.[5][9][4]\n\nFor **Tesla (TSLA)**, the main market takeaway in today’s cov",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "nvda_ai",
       "title": "NVDA / AI Infrastructure",
       "icon": "🤖",
       "level": "info",
-      "content": "Nvidia is signaling that hyperscalers and cloud providers are in the midst of a *multi‑hundred‑billion to roughly $1 trillion* AI data center capex cycle through 2027, and its own data‑center‑driven growth and guidance are tightly tied to that spending.[1][2][6][8]\n\nKey points from recent coverage and commentary:\n\n- **Scale of AI data center capex**\n  - Analysts and industry observers now frame a ",
-      "ts": "May 26 12:01 PM ET"
+      "content": "Nvidia and its CEO Jensen Huang are positioning the company to ride an unprecedented **AI data center capex boom** through 2026 and beyond, with hyperscalers and cloud providers collectively budgeting on the order of **$650–$830+ billion/year** in AI‑driven infrastructure spending according to recent industry and media estimates.[2][3][7][10]\n\nBelow is a concise synthesis of the most relevant, *re",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "nuclear",
       "title": "Nuclear / Energy",
       "icon": "⚛️",
       "level": "info",
-      "content": "Oklo (OKLO), Nano Nuclear Energy (NNE), NuScale Power (SMR), and Constellation Energy (CEG) are all trading as leveraged “AI power” nuclear plays, with near‑term news centered on Oklo’s Q1 2026 results and NRC safety evaluation, Nano Nuclear’s recent earnings, NuScale’s disappointing earnings, and CEG’s long‑term nuclear PPA and AI‑load positioning.[1][2][7][9]\n\nHere’s the key, *recent* news and c",
-      "ts": "May 26 12:01 PM ET"
+      "content": "Oklo (OKLO), NuScale Power (SMR), Nano Nuclear Energy (NNE), and Constellation Energy (CEG) are all trading as leveraged “nuclear + AI / data center” plays, with recent moves and news centered on licensing progress, earnings, and large power deals rather than any single decisive regulatory shock.[2][3][4]\n\nHere’s a concise roundup of the most relevant recent developments as of late May 2026:\n\n### ",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "xpev_ev",
       "title": "XPeng / China EV",
       "icon": "🚗",
       "level": "info",
-      "content": "XPeng’s XPEV shares are trading under pressure in 2026 as China’s EV market slows and price competition intensifies, but the company is seeing a near‑term order rebound from its new GX SUV and is about to report Q1 2026 earnings, which options markets expect to be volatile.[3][4][7]\n\nHere are the ke",
-      "ts": "May 26 12:01 PM ET"
+      "content": "XPeng’s latest China EV market news is mixed: it posted its **first quarterly profit**, but management also guided **Q2 revenue below market expectations** because of softer EV demand. In the most recent operating updates, XPeng delivered **31,011 vehicles in April 2026** and **62,682 in Q1 2026**; ",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "income_etf",
       "title": "QQQI / BTCI — Income Engines",
       "icon": "🏰",
       "level": "info",
-      "content": "NEOS’s own April 2026 distribution table shows **BTCI at a 27.80% annualized “Distribution Rate” (yield) and XQQI at 20.62%**, based on their most recently declared monthly payouts as of that notice.[1] For BTCI specifically, the fund’s May distribution maintains an annualized yield in roughly the *",
-      "ts": "May 26 12:01 PM ET"
+      "content": "NEOS’ latest press release shows **May 2026 distribution rates** of about **14.1% for QQQI** and **26.7% for BTCI**, with **monthly cash distributions** of **$0.6589/share for QQQI** and **$0.7934/share for BTCI**; these are *distribution* (option-income) yields, not guaranteed total-return yields.[",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "macro",
       "title": "Macro / Fed / Rates",
       "icon": "🌐",
       "level": "info",
-      "content": "The Federal Reserve’s **policy rate** is currently in the **3.50%–3.75%** target range, and the Fed has said inflation remains **somewhat elevated** while keeping the economy and labor market on a solid footing.[4][7]\n\nA quick macro snapshot from the latest official and market-linked data:\n\n- **Fed ",
-      "ts": "May 26 12:01 PM ET"
+      "content": "The Federal Reserve’s **policy rate is currently on hold at a 3.50%–3.75% target range**, but officials are increasingly signaling that **the next move could be a rate hike** if inflation stays above target.[2][5][7] Recent data show **core inflation stuck well above 2%**, Treasury yields at multi‑y",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "btc",
       "title": "Bitcoin / Crypto",
       "icon": "₿",
       "level": "info",
-      "content": "Bitcoin is trading around **$76,500–77,500** today, consolidating after an earlier May surge above $80,000, while **institutional activity remains strong** with new derivatives products and ongoing “smart money” accumulation.[5][8][9]\n\nHere’s the current picture, focused on price and institutional d",
-      "ts": "May 26 12:01 PM ET"
+      "content": "Bitcoin (BTC) is trading in the **low–$73,000 range** with a mild intraday decline and a roughly **5% pullback over the past week**, while institutional activity remains elevated and new derivatives approvals are adding structural support to the market.[1][2][6][8][7]\n\n### 1. Latest BTC price snapsh",
+      "ts": "May 30 07:00 AM ET"
     },
     {
       "id": "spcx_ipo",
       "title": "SPCX IPO — June 12 Countdown",
       "icon": "🚀",
       "level": "highlight",
-      "content": "SpaceX’s IPO under the ticker **SPCX** does *not* yet have a finalized offering price or price range publicly disclosed; current reporting only gives an indicative **valuation target of about $1.75–$2.0 trillion and a raise of roughly $75 billion**, with pricing expected to be set in the IPO roadshow in early June.[1][2][5][7]\n\nHere is what is known so far, and what it means for the offering price",
-      "ts": "May 26 12:01 PM ET"
+      "content": "SpaceX’s IPO under the ticker **SPCX** is *targeted* for **June 12, 2026** on Nasdaq, but as of now the **date and offering price are not yet officially finalized** and the **IPO price range has not been disclosed**.[2][4]\n\nHere’s the latest, based on current reporting and the filed S‑1:\n\n- **Ticker & Exchange**\n  - SpaceX plans to list on **Nasdaq** under the ticker **SPCX**.[1][2]  \n  - The tick",
+      "ts": "May 30 07:00 AM ET"
     }
   ]
 };
