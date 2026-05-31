@@ -1,5 +1,5 @@
 window.WEALTH_DATA = {
-  "generatedAt": "May 30 12:17 PM ET",
+  "generatedAt": "May 31 02:00 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
   "liquid_net_worth": 428583.89,
   "liquid_gap_to_1m": 571416.11,
