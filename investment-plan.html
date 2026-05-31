@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Plan — Dhruv Patel</title>
+<script src="portfolio-live.js" onerror="window.PORTFOLIO_LIVE=null"></script>
+<script src="portfolio-data.js" onerror="window.PORTFOLIO_DATA=null"></script>
+<style>
+  :root {
+    --ink: #0f172a;
+    --ink2: #334155;
+    --ink3: #64748b;
+    --rule: #e2e8f0;
+    --accent: #4f46e5;
+    --green: #16a34a;
+    --red: #dc2626;
+    --gold: #b45309;
+    --bg-light: #f8fafc;
+    --bg-accent: #eef2ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; font-size: 12px; color: var(--ink); background: #fff; line-height: 1.6; }
+
+  /* Print controls — hidden when printing */
+  #controls {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: #1e293b; padding: 10px 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  #controls button {
+    background: #4f46e5; color: #fff; border: none; border-radius: 6px;
+    padding: 8px 18px; font-size: 13px; font-family: sans-serif; cursor: pointer; font-weight: 600;
+  }
+  #controls button:hover { background: #4338ca; }
+  #controls .back { background: transparent; color: #94a3b8; border: 1px solid #334155; }
+  #controls .back:hover { color: #e2e8f0; background: #1e293b; }
+  #controls .label { color: #94a3b8; font-family: sans-serif; font-size: 12px; }
+
+  /* Page layout */
+  .page { max-width: 780px; margin: 70px auto 40px; padding: 0 32px; }
+
+  /* Cover */
+  .cover { text-align: center; padding: 48px 0 40px; border-bottom: 2px solid var(--ink); margin-bottom: 32px; }
+  .cover .doc-type { font-family: sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: .2em; color: var(--ink3); margin-bottom: 12px; }
+  .cover h1 { font-size: 28px; font-weight: 700; color: var(--ink); margin-bottom: 6px; letter-spacing: -0.02em; }
+  .cover .subtitle { font-size: 14px; color: var(--ink2); font-style: italic; margin-bottom: 20px; }
+  .cover .meta-row { display: flex; justify-content: center; gap: 32px; font-family: sans-serif; font-size: 11px; color: var(--ink3); }
+  .cover .meta-row span strong { color: var(--ink2); }
+
+  /* Sections */
+  h2 { font-size: 13px; font-family: sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--accent); margin: 28px 0 10px; padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
+  h3 { font-size: 12px; font-weight: 700; color: var(--ink); margin: 14px 0 6px; }
+  p { margin-bottom: 8px; color: var(--ink2); }
+
+  /* Stat boxes */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 14px 0; }
+  .stat-box { background: var(--bg-light); border: 1px solid var(--rule); border-radius: 6px; padding: 12px; text-align: center; }
+  .stat-box .val { font-size: 18px; font-weight: 700; color: var(--ink); font-family: sans-serif; letter-spacing: -0.02em; }
+  .stat-box .lbl { font-size: 10px; font-family: sans-serif; color: var(--ink3); text-transform: uppercase; letter-spacing: .07em; margin-top: 2px; }
+  .stat-box .sub { font-size: 10px; font-family: sans-serif; color: var(--ink3); margin-top: 1px; }
+
+  /* Progress bar */
+  .progress-wrap { margin: 16px 0; }
+  .progress-label { display: flex; justify-content: space-between; font-family: sans-serif; font-size: 11px; color: var(--ink2); margin-bottom: 4px; }
+  .progress-bar { background: #e2e8f0; border-radius: 4px; height: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #4f46e5, #7c3aed); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-family: sans-serif; font-size: 11px; }
+  th { background: var(--bg-light); border-bottom: 2px solid var(--rule); padding: 6px 8px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink3); font-weight: 700; }
+  td { padding: 6px 8px; border-bottom: 1px solid var(--rule); color: var(--ink2); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .right { text-align: right; }
+  .bold { font-weight: 700; color: var(--ink); }
+  .green { color: var(--green); font-weight: 600; }
+  .red { color: var(--red); font-weight: 600; }
+  .gold { color: var(--gold); font-weight: 600; }
+  .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; font-family: sans-serif; }
+  .tag-core { background: #eef2ff; color: #4338ca; }
+  .tag-income { background: #f0fdf4; color: #15803d; }
+  .tag-btc { background: #fffbeb; color: #b45309; }
+  .tag-nuke { background: #fefce8; color: #854d0e; }
+  .tag-ark { background: #fdf4ff; color: #7e22ce; }
+  .tag-ev { background: #fff1f2; color: #be123c; }
+  .tag-evtol { background: #f0fdfa; color: #0f766e; }
+  .tag-other { background: #f1f5f9; color: #475569; }
+
+  /* Callout boxes */
+  .callout { border-left: 3px solid var(--accent); background: var(--bg-accent); padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; font-family: sans-serif; font-size: 11px; color: var(--ink2); }
+  .callout.warn { border-color: #d97706; background: #fffbeb; }
+  .callout.critical { border-color: var(--red); background: #fef2f2; }
+  .callout strong { color: var(--ink); }
+
+  /* Rule list */
+  .rule-list { margin: 8px 0; padding-left: 0; list-style: none; }
+  .rule-list li { padding: 5px 0 5px 20px; border-bottom: 1px solid var(--rule); font-family: sans-serif; font-size: 11px; color: var(--ink2); position: relative; }
+  .rule-list li:last-child { border-bottom: none; }
+  .rule-list li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  /* Pending orders */
+  .order-row { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 4px; margin-bottom: 4px; font-family: sans-serif; font-size: 11px; }
+  .order-buy { background: #f0fdf4; border: 1px solid #bbf7d0; }
+  .order-sell { background: #fef2f2; border: 1px solid #fecaca; }
+  .order-ipo { background: #fdf4ff; border: 1px solid #e9d5ff; }
+
+  /* Footer */
+  .doc-footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--rule); font-family: sans-serif; font-size: 10px; color: var(--ink3); display: flex; justify-content: space-between; }
+
+  /* Page break hints */
+  .break-before { page-break-before: always; }
+
+  @media print {
+    #controls { display: none !important; }
+    .page { margin-top: 0; }
+    body { font-size: 11px; }
+    .stat-box .val { font-size: 16px; }
+    h2 { margin-top: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Download controls -->
+<div id="controls">
+  <a href="index.html"><button class="back">← Dashboard</button></a>
+  <button onclick="window.print()">⬇ Download / Print PDF</button>
+  <span class="label">Use browser Print → Save as PDF</span>
+</div>
+
+<div class="page" id="doc">
+
+  <!-- Cover -->
+  <div class="cover">
+    <div class="doc-type">Confidential · Personal Finance Document</div>
+    <h1>Investment Plan</h1>
+    <div class="subtitle">Path to $1M Liquid Net Worth &amp; Financial Independence</div>
+    <div class="meta-row">
+      <span><strong>Investor:</strong> Dhruv Patel</span>
+      <span><strong>Date:</strong> <span id="doc-date">May 31, 2026</span></span>
+      <span><strong>Data as of:</strong> <span id="data-date">May 28, 2026</span></span>
+    </div>
+  </div>
+
+  <!-- ══ 1. EXECUTIVE SUMMARY ══════════════════════════ -->
+  <h2>1. Executive Summary</h2>
+  <p>This document captures the complete investment strategy, current portfolio state, income generation plan, and path to $1M liquid net worth. The portfolio is structured across three brokerage accounts at Merrill Edge plus a Bluestone reserve, targeting financial independence through compounding equity growth, covered call income, and high-yield ETF distributions (QQQI).</p>
+
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="val" id="s-portfolio">$410,586</div>
+      <div class="lbl">Merrill Portfolio</div>
+      <div class="sub">Stocks + Cash</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="s-liquid">$429,686</div>
+      <div class="lbl">Liquid Net Worth</div>
+      <div class="sub">Merrill + Crypto</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="s-total">~$524K</div>
+      <div class="lbl">Total Managed</div>
+      <div class="sub">incl. Bluestone</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" id="s-income">$7,263</div>
+      <div class="lbl">Annual Income</div>
+      <div class="sub">Div + distributions</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progress-current-lbl">$429,686 liquid</span>
+      <span style="color:#4f46e5;font-weight:700" id="progress-pct-lbl">43.0% of $1M goal</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:43%"></div></div>
+    <div class="progress-label" style="margin-top:3px">
+      <span style="color:#64748b" id="progress-gap-lbl">Gap: $570,314</span>
+      <span style="color:#64748b">Target: $1,000,000</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Core Thesis:</strong> Build a self-sustaining income engine through QQQI + covered calls on TSLA, compounded by high-conviction equity growth in AI (NVDA), EV (TSLA/XPEV), nuclear energy (OKLO/CEG/NNE), and macro index exposure (QQQ/VOO). Achieve $1M liquid by approximately age 36–38.
+  </div>
+
+  <!-- ══ 2. ACCOUNT STRUCTURE ═══════════════════════════ -->
+  <h2>2. Account Structure</h2>
+
+  <table>
+    <thead><tr><th>Account</th><th>Type</th><th>Purpose</th><th class="right">Value</th><th class="right">Cash</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="bold">IRA-Edge</td>
+        <td>Traditional IRA</td>
+        <td>Core equity — TSLA, GOOGL, NVDA, AAPL, ARKK</td>
+        <td class="right bold">$152,561</td>
+        <td class="right">$117</td>
+      </tr>
+      <tr>
+        <td class="bold">CMA-28Z</td>
+        <td>CMA (Taxable)</td>
+        <td>Growth + Nuclear + ARK + SPCX IPO cash</td>
+        <td class="right bold">$197,854</td>
+        <td class="right">$40,168</td>
+      </tr>
+      <tr>
+        <td class="bold">CMA-88Z</td>
+        <td>CMA (Taxable)</td>
+        <td>Income engine — QQQI (DRIP), BTCI, MSTR</td>
+        <td class="right bold">$60,170</td>
+        <td class="right">$7</td>
+      </tr>
+      <tr>
+        <td class="bold">Bluestone Reserve</td>
+        <td>Liquid reserve</td>
+        <td>Tax reserve ($50K) + Tactical pool ($44K)</td>
+        <td class="right bold">$94,000</td>
+        <td class="right">—</td>
+      </tr>
+      <tr style="background:#f8fafc">
+        <td class="bold">Direct Crypto</td>
+        <td>Self-custody</td>
+        <td>ETH, SOL, XRP, ADA</td>
+        <td class="right bold">~$19,100</td>
+        <td class="right">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>CMA-28Z note:</strong> ~$40K cash is reserved for the SPCX IPO (target June 12, 2026). Tactical pool minimum floor: $10K. Never drop below this floor.
+  </div>
+
+  <!-- ══ 3. CURRENT HOLDINGS ═══════════════════════════ -->
+  <h2>3. Current Holdings</h2>
+
+  <table id="holdings-table">
+    <thead><tr><th>Ticker</th><th>Name</th><th>Shares</th><th class="right">Price</th><th class="right">Value</th><th class="right">Portfolio %</th><th>Bucket</th><th>Account</th></tr></thead>
+    <tbody id="holdings-body">
+      <!-- Populated by JS -->
+      <tr><td colspan="8" style="color:#94a3b8;text-align:center;padding:12px">Loading from portfolio-live.js…</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══ 4. BUCKET ALLOCATION ══════════════════════════ -->
+  <h2>4. Portfolio Bucket Allocation</h2>
+  <p>Positions are grouped into strategic buckets reflecting distinct investment themes and risk profiles.</p>
+
+  <table id="bucket-table">
+    <thead><tr><th>Bucket</th><th>Holdings</th><th class="right">Value</th><th class="right">% Portfolio</th><th>Thesis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-core">Core</span></td>
+        <td>TSLA, QQQ, GOOGL, VOO, NVDA, AMZN, AAPL</td>
+        <td class="right bold">$210,512</td>
+        <td class="right">51.3%</td>
+        <td>Long-duration compounders. Never sell thesis on TSLA/GOOGL/NVDA/AMZN.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-income">Income</span></td>
+        <td>QQQI (892 sh)</td>
+        <td class="right bold">$50,710</td>
+        <td class="right">12.4%</td>
+        <td>NASDAQ-100 covered call ETF. 14% yield. Monthly distributions. DRIP OFF — manual reinvest at age 41.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ev">EV / China</span></td>
+        <td>XPEV (1,346 sh), LCID</td>
+        <td class="right bold">$22,628</td>
+        <td class="right">5.5%</td>
+        <td>XPEV = "Tesla of China." Long hold with catalysts in autonomous + humanoid robotics in China.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-nuke">Nuclear</span></td>
+        <td>OKLO, CEG, NNE, SMR, NXE, UUUU</td>
+        <td class="right bold">$23,010</td>
+        <td class="right">5.6%</td>
+        <td>AI data center power demand. Nuclear is the only scalable solution. Oklo + small modular reactor plays.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ark">ARK</span></td>
+        <td>ARKK (125 sh), ARKW (84 sh)</td>
+        <td class="right bold">$21,920</td>
+        <td class="right">5.3%</td>
+        <td>Cathie Wood disruptive innovation exposure. Long-term hold through volatility.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-btc">Bitcoin</span></td>
+        <td>IBIT (227 sh), BTCI (140 sh), MSTR (30 sh)</td>
+        <td class="right bold">$19,212</td>
+        <td class="right">4.7%</td>
+        <td>Bitcoin exposure via ETF + leveraged plays. BTCI generates income. MSTR = leveraged BTC.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-evtol">eVTOL</span></td>
+        <td>JOBY (128 sh), ACHR (138 sh)</td>
+        <td class="right bold">$2,373</td>
+        <td class="right">0.6%</td>
+        <td>Air taxi / urban air mobility. Long-duration moonshot. Small position.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-other">Other</span></td>
+        <td>RONB, AEXA, TNYA</td>
+        <td class="right bold">$19,929</td>
+        <td class="right">4.9%</td>
+        <td>RONB (Rocket Lab) — space/defense. AEXA + TNYA: de minimis, harvest candidates.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══ 5. INCOME ENGINE ══════════════════════════════ -->
+  <h2>5. Income Engine</h2>
+  <p>The income strategy targets $2,000–$2,500/month through two parallel streams: (1) passive distributions from high-yield ETFs and (2) active covered call writing on TSLA shares.</p>
+
+  <table>
+    <thead><tr><th>Source</th><th>Structure</th><th>Yield / Rate</th><th class="right">Est. Monthly</th><th class="right">Est. Annual</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="bold">QQQI</td>
+        <td>892 sh · NASDAQ-100 covered call ETF</td>
+        <td>~14% annual</td>
+        <td class="right green">+$588</td>
+        <td class="right green">+$7,056</td>
+        <td>ACTIVE · DRIP OFF</td>
+      </tr>
+      <tr>
+        <td class="bold">BTCI</td>
+        <td>140 sh · Bitcoin high-income ETF</td>
+        <td>~14.8% annual</td>
+        <td class="right green">+$60</td>
+        <td class="right green">+$714</td>
+        <td>ACTIVE</td>
+      </tr>
+      <tr>
+        <td class="bold">TSLA Covered Calls</td>
+        <td>165 shares · sell monthly OTM calls</td>
+        <td>$1,360–$2,378/mo range</td>
+        <td class="right green">+$1,870</td>
+        <td class="right green">+$22,440</td>
+        <td>ACTIVE · sell 20–30 delta</td>
+      </tr>
+      <tr>
+        <td class="bold">Dividends (other)</td>
+        <td>GOOGL, AAPL, CEG, VOO</td>
+        <td>0.2–0.8%</td>
+        <td class="right green">+$17</td>
+        <td class="right green">+$207</td>
+        <td>PASSIVE</td>
+      </tr>
+      <tr style="background:#f0fdf4">
+        <td class="bold">TOTAL</td>
+        <td colspan="2"></td>
+        <td class="right bold green" style="font-size:13px">~$2,535</td>
+        <td class="right bold green" style="font-size:13px">~$30,417</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>QQQI Distribution Rules</h3>
+  <ul class="rule-list">
+    <li>Ex-dividend typically falls in the first week of each month. Confirm before month-end.</li>
+    <li>DRIP is currently OFF. Distributions land as cash in CMA-88Z.</li>
+    <li>Reinvest manually into QQQI until age 41, then redirect to living expenses.</li>
+    <li>At current pace: 892 shares × ~$0.526/share = ~$469/month growing as shares compound.</li>
+  </ul>
+
+  <h3>TSLA Covered Call Rules</h3>
+  <ul class="rule-list">
+    <li>Sell monthly calls at 20–30 delta (roughly 10–15% OTM) on all 165 IRA shares.</li>
+    <li>Target $1,870/month mid-range premium income.</li>
+    <li>Never sell below $500 strike — TSLA is a "never sell" core position.</li>
+    <li>Roll up-and-out if approaching ITM to avoid assignment.</li>
+    <li>Do not write calls during major catalysts (earnings, Robotaxi announcement).</li>
+  </ul>
+
+  <!-- ══ 6. UNREALIZED P&L ═══════════════════════════ -->
+  <h2>6. Unrealized P&amp;L Summary</h2>
+
+  <table>
+    <thead><tr><th>Ticker</th><th>Shares</th><th class="right">Avg Cost</th><th class="right">Current Price</th><th class="right">Value</th><th class="right">Unrealized P&amp;L</th><th class="right">Return %</th></tr></thead>
+    <tbody id="pnl-body">
+      <tr><td colspan="7" style="color:#94a3b8;text-align:center;padding:12px">Loading…</td></tr>
+    </tbody>
+  </table>
+  <div id="pnl-total-row" style="text-align:right;font-family:sans-serif;font-size:11px;color:#475569;margin-top:-8px;padding-right:8px"></div>
+
+  <!-- ══ 7. PENDING ORDERS ══════════════════════════════ -->
+  <h2>7. Pending Orders &amp; Near-Term Actions</h2>
+  <div id="pending-orders-section">
+    <div class="callout">No pending orders loaded — ensure portfolio-live.js is current.</div>
+  </div>
+
+  <!-- ══ 8. STRATEGIC RULES ════════════════════════════ -->
+  <h2 class="break-before">8. Core Investment Rules</h2>
+
+  <h3>Never-Sell Positions (Sacred)</h3>
+  <ul class="rule-list">
+    <li><strong>TSLA</strong> — Never sell regardless of price. Write covered calls but never allow assignment below $500. The thesis is Optimus, Robotaxi, energy, and AI compounding for decades.</li>
+    <li><strong>GOOGL</strong> — Never sell. Google is the AI infrastructure play, search moat, and cloud. Hold forever.</li>
+    <li><strong>NVDA</strong> — Never sell. GPU monopoly for AI training and inference. Position to grow significantly.</li>
+    <li><strong>AMZN</strong> — Never sell. AWS + logistics moat + advertising flywheel.</li>
+    <li><strong>XPEV</strong> — Never sell until $50+. Tesla of China with humanoid and autonomous thesis. Avg cost $24.95.</li>
+  </ul>
+
+  <h3>Concentration Rules</h3>
+  <ul class="rule-list">
+    <li>TSLA single-position cap: watch at 20%, review at 25%. Currently 17.7% — in range.</li>
+    <li>No single non-TSLA position to exceed 15% of portfolio.</li>
+    <li>QQQI income position: no hard cap. Target 10–15% of portfolio.</li>
+    <li>Bitcoin (IBIT+BTCI+MSTR combined): maintain below 8% of portfolio.</li>
+  </ul>
+
+  <h3>Rebalancing Triggers</h3>
+  <ul class="rule-list">
+    <li>Add to NVDA on any dip below $180 using IRA cash or settled proceeds.</li>
+    <li>Add QQQI shares quarterly from covered call income (manual DRIP).</li>
+    <li>Nuclear bucket: hold all positions. Add NNE/OKLO on 20%+ dips.</li>
+    <li>XPEV: add at $12 or below (cost averaging). Never sell above $20 unless thesis breaks.</li>
+    <li>Dead positions (LCID, TNYA, AEXA): harvest tax losses when advantageous. Do not add.</li>
+  </ul>
+
+  <h3>Tax Rules</h3>
+  <ul class="rule-list">
+    <li>Bluestone $50K tax reserve is locked — do not touch for any equity purchase.</li>
+    <li>All IRA trades are tax-free. Prioritize rebalancing and loss harvesting inside IRA.</li>
+    <li>CMA taxable accounts: be mindful of short-term vs long-term gains. Hold &gt;1 year where possible.</li>
+    <li>Year 5 pivot (QQQ+VOO → QQQI rotation in CMA-28Z) will trigger ~$31K tax. Fund from AMDA income.</li>
+  </ul>
+
+  <!-- ══ 9. BLUESTONE RESERVE ══════════════════════════ -->
+  <h2>9. Bluestone Reserve</h2>
+
+  <table>
+    <thead><tr><th>Tranche</th><th class="right">Amount</th><th>Purpose</th><th>Rules</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="bold">Tax Reserve</td>
+        <td class="right bold">$50,000</td>
+        <td>IRS quarterly / annual tax obligations</td>
+        <td class="red">LOCKED — do not invest or deploy</td>
+      </tr>
+      <tr>
+        <td class="bold">Tactical Pool</td>
+        <td class="right bold">$44,000</td>
+        <td>High-conviction opportunities, IPOs, bridge capital</td>
+        <td class="gold">Minimum floor: $10,000 always maintained</td>
+      </tr>
+      <tr style="background:#f8fafc">
+        <td class="bold">Total Bluestone</td>
+        <td class="right bold">$94,000</td>
+        <td colspan="2">Managed separately from Merrill accounts</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>SPCX IPO (Pre-IPO wire):</strong> Wire $10K from Bluestone tactical pool to CMA-28Z when ready. IPO target date: June 12, 2026. Wait until 9:45–10:00 AM ET before entering. Max entry price = offering + 25%. Stand down entirely if 100%+ above offering at open. Total CMA-28Z SPCX allocation: ~$50K.
+  </div>
+
+  <!-- ══ 10. $1M ROADMAP ══════════════════════════════ -->
+  <h2>10. $1M Roadmap</h2>
+
+  <table>
+    <thead><tr><th>Milestone</th><th class="right">Target</th><th class="right">Current</th><th class="right">Gap</th><th>Est. Timeline</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>$500K Liquid</strong></td>
+        <td class="right">$500,000</td>
+        <td class="right" id="rm-current">$429,686</td>
+        <td class="right gold" id="rm-gap500">$70,314</td>
+        <td>~6–12 months (market dependent)</td>
+      </tr>
+      <tr>
+        <td><strong>$750K Liquid</strong></td>
+        <td class="right">$750,000</td>
+        <td class="right">$429,686</td>
+        <td class="right gold">$320,314</td>
+        <td>~2–3 years</td>
+      </tr>
+      <tr>
+        <td><strong>$1M Liquid</strong> 🎯</td>
+        <td class="right">$1,000,000</td>
+        <td class="right">$429,686</td>
+        <td class="right red">$570,314</td>
+        <td>~4–5 years (base case)</td>
+      </tr>
+      <tr>
+        <td><strong>$2,500/mo passive</strong></td>
+        <td class="right">$2,500/mo</td>
+        <td class="right">~$2,535/mo</td>
+        <td class="right green">ACHIEVED ✓</td>
+        <td>Now (QQQI + TSLA CCs)</td>
+      </tr>
+      <tr>
+        <td><strong>Financial independence</strong></td>
+        <td class="right">$5,000/mo</td>
+        <td class="right">~$2,535/mo</td>
+        <td class="right gold">$2,465/mo gap</td>
+        <td>~3–4 years (QQQI growth + more shares)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Key Assumptions (Base Case)</h3>
+  <ul class="rule-list">
+    <li>QQQ: 10% annualized return. TSLA: 15–20% CAGR from current levels.</li>
+    <li>QQQI maintains 13–14% annual yield. Distributions reinvested until age 41.</li>
+    <li>TSLA covered calls generate $1,500–$2,000/month net premium.</li>
+    <li>Crypto portfolio appreciates 1.5–2× over 4 years.</li>
+    <li>No new external income contributions assumed (conservative).</li>
+    <li>Bull case: TSLA $800+, NVDA $400+, SPCX 5–10× → $1M in 2–3 years.</li>
+  </ul>
+
+  <!-- ══ 11. RISK FACTORS ══════════════════════════════ -->
+  <h2>11. Key Risks</h2>
+
+  <table>
+    <thead><tr><th>Risk</th><th>Exposure</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="bold red">TSLA concentration</td>
+        <td>17.7% — largest single position</td>
+        <td>Covered calls generate income. Never-sell policy = no forced sell. Add diversification with NVDA adds.</td>
+      </tr>
+      <tr>
+        <td class="bold gold">High portfolio beta</td>
+        <td>Weighted avg beta ~1.6</td>
+        <td>QQQI (beta 0.7) and VOO/QQQ provide buffer. QQQ/VOO hold provides downside cushion vs individual stocks.</td>
+      </tr>
+      <tr>
+        <td class="bold gold">QQQI yield compression</td>
+        <td>Yield falls if VIX drops to 10–12</td>
+        <td>QQQ position offsets since QQQI lags bull markets. Yield historically stays 11%+ even in low-vol environments.</td>
+      </tr>
+      <tr>
+        <td class="bold red">Crypto correlated selloff</td>
+        <td>IBIT + BTCI + MSTR = 4.7%</td>
+        <td>Bitcoin positions are small. MSTR is the riskiest — consider trimming above 1.5% allocation.</td>
+      </tr>
+      <tr>
+        <td class="bold gold">Dead positions drag</td>
+        <td>LCID ($413), TNYA ($8), AEXA ($46)</td>
+        <td>Tax-loss harvest in IRA is not beneficial. These are immaterial. Consider year-end tax strategy in CMA.</td>
+      </tr>
+      <tr>
+        <td class="bold gold">Regulatory / geopolitical</td>
+        <td>XPEV, NXE, UUUU (China + uranium)</td>
+        <td>Position sizing is appropriate for risk. China EV thesis is multi-year. Uranium supply/demand secular.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══ 12. WATCH LIST ════════════════════════════════ -->
+  <h2>12. Watchlist &amp; Future Buys</h2>
+
+  <table>
+    <thead><tr><th>Ticker</th><th>Name</th><th>Thesis</th><th>Entry Target</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td class="bold">SPCX</td><td>SpaceX IPO</td><td>Elon/SpaceX — Starship, Starlink, orbital dominance</td><td>IPO price + 25% max</td><td class="gold">HIGH — June 12</td></tr>
+      <tr><td class="bold">NVDA</td><td>NVIDIA</td><td>Add 59 shares in IRA after cash settles</td><td>$216.50 limit</td><td class="gold">HIGH — pending</td></tr>
+      <tr><td class="bold">RONB</td><td>Rocket Lab USA</td><td>Space launch + defense + satellite. Elon adjacent.</td><td>$23.85 limit</td><td class="gold">HIGH — pending</td></tr>
+      <tr><td class="bold">OKLO</td><td>Oklo Inc</td><td>Altman-backed micro-reactor. Nuclear = AI power thesis.</td><td>Add on dips below $55</td><td>MEDIUM</td></tr>
+      <tr><td class="bold">BTC direct</td><td>Bitcoin</td><td>Move ETH/SOL/XRP → BTC over time via direct wallet</td><td>DCA on $80K–$90K dips</td><td>MEDIUM</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══ 13. CALENDAR ══════════════════════════════════ -->
+  <h2>13. Monthly Action Calendar</h2>
+
+  <table>
+    <thead><tr><th>When</th><th>Action</th><th>Account</th></tr></thead>
+    <tbody>
+      <tr><td>Week 1 of month</td><td>Confirm QQQI ex-dividend date. Log distribution amount.</td><td>CMA-88Z</td></tr>
+      <tr><td>Week 1 of month</td><td>Write new TSLA covered calls for the month (20–30 delta, 30–45 DTE).</td><td>IRA-Edge</td></tr>
+      <tr><td>Week 2</td><td>Review all positions vs thesis. Flag any >10% drawdown from avg cost for review.</td><td>All</td></tr>
+      <tr><td>Week 3</td><td>Check if TSLA calls need rolling (approaching ITM = within 5% of strike).</td><td>IRA-Edge</td></tr>
+      <tr><td>Month-end</td><td>Reinvest QQQI distributions into QQQI shares (manual DRIP).</td><td>CMA-88Z</td></tr>
+      <tr><td>Month-end</td><td>Update portfolio-live.js with any position changes. Run import-portfolio.html tool.</td><td>All</td></tr>
+      <tr><td>Quarterly</td><td>Review bucket allocations vs targets. Rebalance if any bucket drifts >5% from target.</td><td>All</td></tr>
+      <tr><td>June 12, 2026</td><td><strong>SPCX IPO</strong> — Enter CMA-28Z between 9:45–10:00 AM ET. Max $50K. Max price = offering + 25%.</td><td>CMA-28Z</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <span>Dhruv Patel · Personal Investment Plan · Confidential</span>
+    <span id="footer-date">Generated May 31, 2026</span>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const pl = window.PORTFOLIO_LIVE;
+  const pd = window.PORTFOLIO_DATA;
+
+  // ── Dates ─────────────────────────────────────────────
+  const now = new Date();
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dateStr = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  document.getElementById('doc-date').textContent = dateStr;
+  document.getElementById('footer-date').textContent = 'Generated ' + dateStr;
+  const dataDate = pl?.generated_at?.slice(0, 10) || pd?.snapshot_date || '2026-05-28';
+  document.getElementById('data-date').textContent = dataDate;
+
+  function fmt$(n) { if (n == null) return '—'; return '$' + Number(n).toLocaleString('en-US', {maximumFractionDigits: 0}); }
+  function fmtDec(n, d=2) { if (n == null) return '—'; return Number(n).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d}); }
+
+  // ── KPI Strip ─────────────────────────────────────────
+  const merrill = pl?.total_portfolio_value || pd?.totalValue || 410586;
+  const liquidNW = pd?.liquid_net_worth || 429686;
+  const bluestone = pl?.bluestone?.total || 94000;
+  const annualIncome = pl?.total_annual_income || 7263;
+
+  document.getElementById('s-portfolio').textContent = fmt$(merrill);
+  document.getElementById('s-liquid').textContent = fmt$(liquidNW);
+  document.getElementById('s-total').textContent = fmt$(merrill + bluestone);
+  document.getElementById('s-income').textContent = fmt$(annualIncome);
+
+  // ── Progress bar ──────────────────────────────────────
+  const pct = Math.min((liquidNW / 1000000) * 100, 100);
+  document.getElementById('progress-fill').style.width = pct.toFixed(1) + '%';
+  document.getElementById('progress-current-lbl').textContent = fmt$(liquidNW) + ' liquid';
+  document.getElementById('progress-pct-lbl').textContent = pct.toFixed(1) + '% of $1M goal';
+  document.getElementById('progress-gap-lbl').textContent = 'Gap: ' + fmt$(1000000 - liquidNW);
+
+  // ── Roadmap current ───────────────────────────────────
+  const rmEl = document.getElementById('rm-current');
+  const rmGap500 = document.getElementById('rm-gap500');
+  if (rmEl) rmEl.textContent = fmt$(liquidNW);
+  if (rmGap500) rmGap500.textContent = fmt$(Math.max(0, 500000 - liquidNW));
+
+  // ── Holdings table ────────────────────────────────────
+  const positions = pl?.positions || [];
+  const bucketMap = {
+    TSLA:'Core', QQQ:'Core', GOOGL:'Core', VOO:'Core', NVDA:'Core', AMZN:'Core', AAPL:'Core',
+    QQQI:'Income',
+    XPEV:'EV/China', LCID:'EV/China',
+    OKLO:'Nuclear', CEG:'Nuclear', NNE:'Nuclear', SMR:'Nuclear', NXE:'Nuclear', UUUU:'Nuclear',
+    ARKK:'ARK', ARKW:'ARK',
+    IBIT:'Bitcoin', BTCI:'Bitcoin', MSTR:'Bitcoin',
+    JOBY:'eVTOL', ACHR:'eVTOL',
+    RONB:'Other', AEXA:'Other', TNYA:'Other'
+  };
+  const tagCls = {
+    Core:'tag-core', Income:'tag-income', 'EV/China':'tag-ev', Nuclear:'tag-nuke',
+    ARK:'tag-ark', Bitcoin:'tag-btc', eVTOL:'tag-evtol', Other:'tag-other'
+  };
+  const tbody = document.getElementById('holdings-body');
+  if (tbody && positions.length > 0) {
+    const sorted = [...positions].sort((a,b) => b.value - a.value);
+    tbody.innerHTML = sorted.map(p => {
+      const bucket = bucketMap[p.symbol] || 'Other';
+      const cls = tagCls[bucket] || 'tag-other';
+      const pct = p.portfolio_pct ? p.portfolio_pct.toFixed(1)+'%' : '—';
+      const sacred = p.sacred ? ' <span style="color:#4f46e5;font-size:9px">★</span>' : '';
+      return `<tr>
+        <td class="bold">${p.symbol}${sacred}</td>
+        <td>${(p.description||'').replace(/\s+/g,' ').trim().slice(0,28)}</td>
+        <td>${p.shares}</td>
+        <td class="right">$${fmtDec(p.price)}</td>
+        <td class="right bold">${fmt$(p.value)}</td>
+        <td class="right">${pct}</td>
+        <td><span class="tag ${cls}">${bucket}</span></td>
+        <td style="font-size:10px;color:#64748b">${(p.account||'').replace('-Edge','').replace('-','')}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── P&L Table ─────────────────────────────────────────
+  const pnlBody = document.getElementById('pnl-body');
+  const posWithPnl = positions.filter(p => p.unrealized_pnl != null && p.avg_cost != null);
+  posWithPnl.sort((a,b) => (b.unrealized_pnl||0) - (a.unrealized_pnl||0));
+  let totalUnrealized = 0;
+  if (pnlBody && posWithPnl.length > 0) {
+    pnlBody.innerHTML = posWithPnl.map(p => {
+      totalUnrealized += (p.unrealized_pnl||0);
+      const unr = p.unrealized_pnl || 0;
+      const pctRet = p.unrealized_pct != null ? ((p.unrealized_pct * 100) >= 0 ? '+' : '') + (p.unrealized_pct * 100).toFixed(0) + '%' : '—';
+      const cls = unr >= 0 ? 'green' : 'red';
+      return `<tr>
+        <td class="bold">${p.symbol}</td>
+        <td>${p.shares}</td>
+        <td class="right">$${fmtDec(p.avg_cost)}</td>
+        <td class="right">$${fmtDec(p.price)}</td>
+        <td class="right bold">${fmt$(p.value)}</td>
+        <td class="right ${cls}">${unr >= 0 ? '+' : ''}${fmt$(Math.abs(unr)).replace('$','')} ${unr >= 0 ? '' : '–'}</td>
+        <td class="right ${cls}">${pctRet}</td>
+      </tr>`;
+    }).join('');
+    const totalEl = document.getElementById('pnl-total-row');
+    if (totalEl) {
+      const cls = totalUnrealized >= 0 ? 'green' : 'red';
+      totalEl.innerHTML = `<strong>Total Unrealized:</strong> <span class="${cls}" style="font-weight:700">${totalUnrealized >= 0 ? '+' : ''}${fmt$(Math.abs(totalUnrealized))}</span>`;
+    }
+  }
+
+  // ── Pending Orders ────────────────────────────────────
+  const pending = (pl?.pending_actions || []).filter(a => a.status === 'PENDING');
+  const pendingEl = document.getElementById('pending-orders-section');
+  if (pendingEl && pending.length > 0) {
+    pendingEl.innerHTML = pending.map(a => {
+      const isBuy = a.action === 'BUY';
+      const isIPO = a.symbol === 'SPCX';
+      const rowCls = isIPO ? 'order-ipo' : isBuy ? 'order-buy' : 'order-sell';
+      const price = a.limit_price ? ` @ $${a.limit_price} LIMIT` : ' @ MARKET';
+      const qty = a.qty ? `${a.qty} shares` : 'full allocation';
+      const amt = a.est_cost ? fmt$(a.est_cost) : (a.est_proceeds ? fmt$(a.est_proceeds) : '');
+      const noteHtml = a.note ? `<span style="color:#64748b;font-size:10px;margin-left:8px">↳ ${a.note}</span>` : '';
+      return `<div class="order-row ${rowCls}">
+        <span style="font-weight:700;min-width:36px">${a.action}</span>
+        <span style="font-weight:700;min-width:44px">${a.symbol}</span>
+        <span style="color:#475569">${qty}${price}</span>
+        ${amt ? `<span style="font-weight:600">${amt}</span>` : ''}
+        <span style="color:#94a3b8;font-size:10px">${a.account || ''} · ${a.target_date || ''}</span>
+        ${noteHtml}
+      </div>`;
+    }).join('');
+  } else if (pendingEl && pending.length === 0) {
+    pendingEl.innerHTML = '<div class="callout" style="color:#64748b">No pending orders at time of generation.</div>';
+  }
+});
+</script>
+</body>
+</html>
