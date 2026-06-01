@@ -1,14 +1,14 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "Jun 01 12:32 PM ET",
+  "generatedAt": "Jun 01 12:33 PM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 427153.1,
-  "liquid_gap_to_1m": 572846.9,
-  "liquid_pct_to_1m": 42.7,
-  "totalValue": 408053.1,
-  "totalStocks": 355056.15,
-  "totalCash": 52996.95,
-  "gapTo1M": 591946.9,
-  "pctTo1M": 40.8,
+  "liquid_net_worth": 426453.96,
+  "liquid_gap_to_1m": 573546.04,
+  "liquid_pct_to_1m": 42.6,
+  "totalValue": 407353.96,
+  "totalStocks": 367062.55,
+  "totalCash": 40291.41,
+  "gapTo1M": 592646.04,
+  "pctTo1M": 40.7,
   "accounts": {
     "IRA": {
       "stock_value": 149218.68,
@@ -16,9 +16,9 @@ window.PORTFOLIO_DATA = {
       "total": 149335.25
     },
     "28Z": {
-      "stock_value": 145538.43,
-      "cash": 52873.54,
-      "total": 198411.97
+      "stock_value": 157544.83,
+      "cash": 40168.0,
+      "total": 197712.83
     },
     "88Z": {
       "stock_value": 60299.04,
@@ -83,6 +83,13 @@ window.PORTFOLIO_DATA = {
       "shares": 84.0,
       "price": 146.03,
       "value": 12266.52,
+      "account": "28Z"
+    },
+    {
+      "ticker": "MSTR",
+      "shares": 80.0,
+      "price": 150.08,
+      "value": 12006.4,
       "account": "28Z"
     },
     {
