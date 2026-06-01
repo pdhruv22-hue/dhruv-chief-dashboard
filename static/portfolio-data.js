@@ -1,13 +1,13 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "Jun 01 02:00 AM ET",
+  "generatedAt": "Jun 01 10:00 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 428583.89,
-  "liquid_gap_to_1m": 571416.11,
-  "liquid_pct_to_1m": 42.9,
-  "totalValue": 409483.89,
-  "totalStocks": 369192.48,
+  "liquid_net_worth": 428063.25,
+  "liquid_gap_to_1m": 571936.75,
+  "liquid_pct_to_1m": 42.8,
+  "totalValue": 408963.25,
+  "totalStocks": 368671.84,
   "totalCash": 40291.41,
-  "gapTo1M": 590516.11,
+  "gapTo1M": 591036.75,
   "pctTo1M": 40.9,
   "accounts": {
     "IRA": {
@@ -21,9 +21,9 @@ window.PORTFOLIO_DATA = {
       "total": 197854.13
     },
     "88Z": {
-      "stock_value": 60549.14,
+      "stock_value": 60028.5,
       "cash": 6.84,
-      "total": 60555.98
+      "total": 60035.34
     }
   },
   "hysa_wealthfront": 0,
@@ -46,8 +46,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "QQQI",
       "shares": 892.0,
-      "price": 57.22,
-      "value": 51040.24,
+      "price": 57.1,
+      "value": 50933.2,
       "account": "88Z"
     },
     {
@@ -128,17 +128,10 @@ window.PORTFOLIO_DATA = {
       "account": "28Z"
     },
     {
-      "ticker": "MSTR",
-      "shares": 30.0,
-      "price": 159.09,
-      "value": 4772.7,
-      "account": "88Z"
-    },
-    {
       "ticker": "BTCI",
       "shares": 140.0,
-      "price": 33.83,
-      "value": 4736.2,
+      "price": 33.07,
+      "value": 4629.8,
       "account": "88Z"
     },
     {
@@ -147,6 +140,13 @@ window.PORTFOLIO_DATA = {
       "price": 301.57,
       "value": 4523.55,
       "account": "28Z"
+    },
+    {
+      "ticker": "MSTR",
+      "shares": 30.0,
+      "price": 148.85,
+      "value": 4465.5,
+      "account": "88Z"
     },
     {
       "ticker": "AAPL",
