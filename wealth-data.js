@@ -1,29 +1,29 @@
 window.WEALTH_DATA = {
-  "generatedAt": "Jun 02 02:00 PM ET",
+  "generatedAt": "Jun 02 03:00 PM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 418735.05,
-  "liquid_gap_to_1m": 581264.95,
-  "liquid_pct_to_1m": 41.9,
-  "totalValue": 399635.05,
-  "totalStocks": 359318.21,
+  "liquid_net_worth": 418412.13,
+  "liquid_gap_to_1m": 581587.87,
+  "liquid_pct_to_1m": 41.8,
+  "totalValue": 399312.13,
+  "totalStocks": 358995.29,
   "totalCash": 40316.84,
-  "gapTo1M": 600364.95,
-  "pctTo1M": 40.0,
+  "gapTo1M": 600687.87,
+  "pctTo1M": 39.9,
   "accounts": {
     "IRA": {
-      "stock_value": 141536.12,
+      "stock_value": 141364.03,
       "cash": 142.0,
-      "total": 141678.12
+      "total": 141506.03
     },
     "28Z": {
-      "stock_value": 157928.41,
+      "stock_value": 157798.24,
       "cash": 40168.0,
-      "total": 198096.41
+      "total": 197966.24
     },
     "88Z": {
-      "stock_value": 59853.68,
+      "stock_value": 59833.02,
       "cash": 6.84,
-      "total": 59860.52
+      "total": 59839.86
     }
   },
   "hysa_wealthfront": 0,
@@ -32,141 +32,141 @@ window.WEALTH_DATA = {
     {
       "ticker": "TSLA",
       "shares": 165.0,
-      "price": 422.1,
-      "value": 69646.5,
+      "price": 422.7,
+      "value": 69745.5,
       "account": "IRA"
     },
     {
       "ticker": "QQQ",
       "shares": 70.0,
-      "price": 744.18,
-      "value": 52092.6,
+      "price": 744.46,
+      "value": 52112.2,
       "account": "28Z"
     },
     {
       "ticker": "QQQI",
       "shares": 892.0,
-      "price": 57.59,
-      "value": 51370.28,
+      "price": 57.61,
+      "value": 51388.12,
       "account": "88Z"
     },
     {
       "ticker": "GOOGL",
       "shares": 85.0,
-      "price": 367.93,
-      "value": 31274.05,
+      "price": 366.8,
+      "value": 31178.0,
       "account": "IRA"
     },
     {
       "ticker": "NVDA",
       "shares": 94.0,
-      "price": 225.48,
-      "value": 21195.12,
+      "price": 223.31,
+      "value": 20991.14,
       "account": "IRA"
     },
     {
       "ticker": "VOO",
       "shares": 30.0,
-      "price": 697.71,
-      "value": 20931.3,
+      "price": 697.91,
+      "value": 20937.3,
       "account": "28Z"
     },
     {
       "ticker": "RONB",
       "shares": 833.0,
-      "price": 24.4,
-      "value": 20325.2,
+      "price": 24.36,
+      "value": 20291.88,
       "account": "28Z"
     },
     {
       "ticker": "ARKW",
       "shares": 84.0,
-      "price": 151.48,
-      "value": 12724.32,
+      "price": 150.91,
+      "value": 12676.44,
       "account": "28Z"
     },
     {
       "ticker": "OKLO",
       "shares": 155.0,
-      "price": 71.71,
-      "value": 11115.05,
+      "price": 71.95,
+      "value": 11152.25,
       "account": "28Z"
     },
     {
       "ticker": "XPEV",
       "shares": 612.0,
-      "price": 17.92,
-      "value": 10967.04,
+      "price": 17.95,
+      "value": 10985.4,
       "account": "IRA"
     },
     {
       "ticker": "MSTR",
       "shares": 80.0,
-      "price": 136.76,
-      "value": 10940.8,
+      "price": 135.99,
+      "value": 10879.2,
       "account": "28Z"
     },
     {
       "ticker": "IBIT",
       "shares": 227.0,
-      "price": 38.15,
-      "value": 8660.05,
+      "price": 38.08,
+      "value": 8644.16,
       "account": "28Z"
     },
     {
       "ticker": "AMZN",
       "shares": 33.0,
-      "price": 257.48,
-      "value": 8496.84,
+      "price": 258.31,
+      "value": 8524.23,
       "account": "28Z"
     },
     {
       "ticker": "BTCI",
       "shares": 140.0,
-      "price": 31.29,
-      "value": 4380.6,
+      "price": 31.18,
+      "value": 4365.2,
       "account": "88Z"
     },
     {
       "ticker": "AAPL",
       "shares": 13.6492,
-      "price": 314.46,
-      "value": 4292.13,
+      "price": 314.69,
+      "value": 4295.27,
       "account": "IRA"
     },
     {
       "ticker": "CEG",
       "shares": 15.0,
-      "price": 274.17,
-      "value": 4112.55,
+      "price": 273.52,
+      "value": 4102.8,
       "account": "28Z"
     },
     {
       "ticker": "MSTR",
       "shares": 30.0,
-      "price": 136.76,
-      "value": 4102.8,
+      "price": 135.99,
+      "value": 4079.7,
       "account": "88Z"
     },
     {
       "ticker": "NNE",
       "shares": 130.0,
-      "price": 30.51,
-      "value": 3966.3,
+      "price": 30.21,
+      "value": 3927.3,
       "account": "28Z"
     },
     {
       "ticker": "SMR",
       "shares": 200.0,
-      "price": 13.84,
-      "value": 2768.0,
+      "price": 13.78,
+      "value": 2756.0,
       "account": "28Z"
     },
     {
       "ticker": "JOBY",
       "shares": 128.0,
-      "price": 11.7,
-      "value": 1497.6,
+      "price": 11.73,
+      "value": 1501.44,
       "account": "IRA"
     },
     {
@@ -179,43 +179,43 @@ window.WEALTH_DATA = {
     {
       "ticker": "ACHR",
       "shares": 138.0,
-      "price": 6.71,
-      "value": 925.98,
+      "price": 6.76,
+      "value": 932.88,
       "account": "IRA"
     },
     {
       "ticker": "NXE",
       "shares": 75.0,
-      "price": 12.19,
-      "value": 914.25,
+      "price": 12.17,
+      "value": 912.75,
       "account": "28Z"
     },
     {
       "ticker": "UUUU",
       "shares": 43.0,
-      "price": 19.23,
-      "value": 826.89,
+      "price": 19.25,
+      "value": 827.75,
       "account": "28Z"
     },
     {
       "ticker": "LCID",
       "shares": 66.0,
-      "price": 6.47,
-      "value": 427.02,
+      "price": 6.42,
+      "value": 423.72,
       "account": "IRA"
     },
     {
       "ticker": "AEXA",
       "shares": 4.0,
-      "price": 11.49,
-      "value": 45.96,
+      "price": 11.47,
+      "value": 45.88,
       "account": "28Z"
     },
     {
       "ticker": "TNYA",
       "shares": 10.0,
-      "price": 0.83,
-      "value": 8.3,
+      "price": 0.81,
+      "value": 8.1,
       "account": "28Z"
     }
   ],
