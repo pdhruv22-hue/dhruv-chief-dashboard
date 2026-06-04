@@ -1,1 +1,226 @@
-window.WEALTH_DATA = {"liquid": 419379.05, "liquid_net_worth": 419379.05, "total_net_worth": 419379.05, "roth_ira": 0, "amda_equity": 0, "april_start_nw": 266834.0, "month_delta": 152545.05, "month_delta_pct": 57.17, "target": 1000000, "gap": 580620.95, "pct_to_target": 41.9, "breakdown": {"merrill": 209869.8, "bluestone_checking": 200000, "emergency_fund": 75000, "hysa_pending": 75000, "deployment_bucket": 50000, "roth_ira": 0, "crypto": 9509.25}, "positions": [{"ticker": "TSLA", "shares": 165, "price": 433.59, "value": 71542.35, "account": "IRA", "name": "Tesla Inc", "note": "HOLD  - merger thesis", "thesis": "", "harvest_loss": null, "pct_portfolio": 17.1}, {"ticker": "GOOGL", "shares": 85, "price": 388.88, "value": 33054.8, "account": "IRA", "name": "Alphabet CL A", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 7.9}, {"ticker": "XPEV", "shares": 1346, "price": 16.55, "value": 22276.3, "account": "IRA+CMA", "name": "XPeng ADR", "note": "HOLD  - Tesla of China", "thesis": "", "harvest_loss": null, "pct_portfolio": 5.3}, {"ticker": "ARKW", "shares": 84, "price": 146.03, "value": 12266.52, "account": "CMA", "name": "ARK Next Generation ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.9}, {"ticker": "OKLO", "shares": 155, "price": 68.7, "value": 10648.5, "account": "CMA", "name": "Oklo Inc (Nuclear)", "note": "", "thesis": "nuclear", "harvest_loss": null, "pct_portfolio": 2.5}, {"ticker": "ARKK", "shares": 125, "price": 77.23, "value": 9653.75, "account": "IRA", "name": "ARK Innovation ETF", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.3}, {"ticker": "NVDA", "shares": 44, "price": 214.86, "value": 9453.84, "account": "IRA", "name": "Nvidia", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.3}, {"ticker": "AMZN", "shares": 33, "price": 265.29, "value": 8754.57, "account": "CMA", "name": "Amazon", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 2.1}, {"ticker": "SCHD", "shares": 200, "price": 32.67, "value": 6534.0, "account": "IRA", "name": "Schwab US Dividend", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.6}, {"ticker": "INSM", "shares": 45, "price": 108.87, "value": 4899.15, "account": "IRA", "name": "Insmed Inc", "note": "", "thesis": "", "harvest_loss": null, "pct_portfolio": 1.2}], "tsla_pct": 17.1, "tsla_alert": false, "bluestone_checking": 200000, "emergency_fund": 75000, "hysa_pending": 75000, "hysa_funded": false, "deployment_bucket": 50000, "ai_income_confirmed": 0, "cre_income_confirmed": 0, "cash_locked": true, "locked_snapshot_date": "2026-04-22", "note": "Cash positions locked. Market positions float daily.", "hysa_axos": 75000, "hysa_sofi": 25000, "sparkline": [{"date": "2026-06-04", "value": 419379.05}], "snapshot_date": "", "updated_at": "2026-06-04"};
+window.WEALTH_DATA = {
+  "generatedAt": "Jun 04 12:00 PM ET",
+  "source": "Google Sheet (GOOGLEFINANCE live prices)",
+  "liquid_net_worth": 411069.01,
+  "liquid_gap_to_1m": 588930.99,
+  "liquid_pct_to_1m": 41.1,
+  "totalValue": 391969.01,
+  "totalStocks": 351652.17,
+  "totalCash": 40316.84,
+  "gapTo1M": 608030.99,
+  "pctTo1M": 39.2,
+  "accounts": {
+    "IRA": {
+      "stock_value": 139300.44,
+      "cash": 142.0,
+      "total": 139442.44
+    },
+    "28Z": {
+      "stock_value": 153214.81,
+      "cash": 40168.0,
+      "total": 193382.81
+    },
+    "88Z": {
+      "stock_value": 59136.92,
+      "cash": 6.84,
+      "total": 59143.76
+    }
+  },
+  "hysa_wealthfront": 0,
+  "crypto": 19100.0,
+  "positions": [
+    {
+      "ticker": "TSLA",
+      "shares": 165.0,
+      "price": 417.83,
+      "value": 68941.95,
+      "account": "IRA"
+    },
+    {
+      "ticker": "QQQ",
+      "shares": 70.0,
+      "price": 738.82,
+      "value": 51717.4,
+      "account": "28Z"
+    },
+    {
+      "ticker": "QQQI",
+      "shares": 892.0,
+      "price": 57.31,
+      "value": 51120.52,
+      "account": "88Z"
+    },
+    {
+      "ticker": "GOOGL",
+      "shares": 85.0,
+      "price": 368.99,
+      "value": 31364.15,
+      "account": "IRA"
+    },
+    {
+      "ticker": "VOO",
+      "shares": 30.0,
+      "price": 694.42,
+      "value": 20832.6,
+      "account": "28Z"
+    },
+    {
+      "ticker": "NVDA",
+      "shares": 94.0,
+      "price": 216.69,
+      "value": 20368.86,
+      "account": "IRA"
+    },
+    {
+      "ticker": "RONB",
+      "shares": 833.0,
+      "price": 24.25,
+      "value": 20200.25,
+      "account": "28Z"
+    },
+    {
+      "ticker": "ARKW",
+      "shares": 84.0,
+      "price": 146.76,
+      "value": 12327.84,
+      "account": "28Z"
+    },
+    {
+      "ticker": "XPEV",
+      "shares": 612.0,
+      "price": 16.85,
+      "value": 10312.2,
+      "account": "IRA"
+    },
+    {
+      "ticker": "MSTR",
+      "shares": 80.0,
+      "price": 128.66,
+      "value": 10292.8,
+      "account": "28Z"
+    },
+    {
+      "ticker": "OKLO",
+      "shares": 155.0,
+      "price": 64.15,
+      "value": 9943.25,
+      "account": "28Z"
+    },
+    {
+      "ticker": "AMZN",
+      "shares": 33.0,
+      "price": 254.0,
+      "value": 8382.0,
+      "account": "28Z"
+    },
+    {
+      "ticker": "IBIT",
+      "shares": 227.0,
+      "price": 36.16,
+      "value": 8208.32,
+      "account": "28Z"
+    },
+    {
+      "ticker": "AAPL",
+      "shares": 13.6492,
+      "price": 310.17,
+      "value": 4233.57,
+      "account": "IRA"
+    },
+    {
+      "ticker": "BTCI",
+      "shares": 140.0,
+      "price": 29.69,
+      "value": 4156.6,
+      "account": "88Z"
+    },
+    {
+      "ticker": "CEG",
+      "shares": 15.0,
+      "price": 264.02,
+      "value": 3960.3,
+      "account": "28Z"
+    },
+    {
+      "ticker": "MSTR",
+      "shares": 30.0,
+      "price": 128.66,
+      "value": 3859.8,
+      "account": "88Z"
+    },
+    {
+      "ticker": "NNE",
+      "shares": 130.0,
+      "price": 25.43,
+      "value": 3305.9,
+      "account": "28Z"
+    },
+    {
+      "ticker": "SMR",
+      "shares": 200.0,
+      "price": 11.95,
+      "value": 2390.0,
+      "account": "28Z"
+    },
+    {
+      "ticker": "JOBY",
+      "shares": 128.0,
+      "price": 11.41,
+      "value": 1460.48,
+      "account": "IRA"
+    },
+    {
+      "ticker": "ARKK",
+      "shares": 151.0,
+      "price": 8.87,
+      "value": 1339.37,
+      "account": "IRA"
+    },
+    {
+      "ticker": "ACHR",
+      "shares": 138.0,
+      "price": 6.51,
+      "value": 898.38,
+      "account": "IRA"
+    },
+    {
+      "ticker": "NXE",
+      "shares": 75.0,
+      "price": 11.39,
+      "value": 854.25,
+      "account": "28Z"
+    },
+    {
+      "ticker": "UUUU",
+      "shares": 43.0,
+      "price": 17.36,
+      "value": 746.48,
+      "account": "28Z"
+    },
+    {
+      "ticker": "LCID",
+      "shares": 66.0,
+      "price": 5.78,
+      "value": 381.48,
+      "account": "IRA"
+    },
+    {
+      "ticker": "AEXA",
+      "shares": 4.0,
+      "price": 11.38,
+      "value": 45.52,
+      "account": "28Z"
+    },
+    {
+      "ticker": "TNYA",
+      "shares": 10.0,
+      "price": 0.79,
+      "value": 7.9,
+      "account": "28Z"
+    }
+  ],
+  "bluestone": {
+    "tax_reserve": 75000.0,
+    "tactical": 34000.0
+  }
+};
