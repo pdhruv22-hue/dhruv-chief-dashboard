@@ -1,5 +1,5 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "Jun 14 02:00 AM ET",
+  "generatedAt": "Jun 14 06:02 AM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
   "liquid_net_worth": 422462.05,
   "liquid_gap_to_1m": 577537.95,
