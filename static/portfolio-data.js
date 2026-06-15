@@ -1,29 +1,29 @@
 window.PORTFOLIO_DATA = {
-  "generatedAt": "Jun 15 02:00 AM ET",
+  "generatedAt": "Jun 15 12:00 PM ET",
   "source": "Google Sheet (GOOGLEFINANCE live prices)",
-  "liquid_net_worth": 422462.05,
-  "liquid_gap_to_1m": 577537.95,
-  "liquid_pct_to_1m": 42.2,
-  "totalValue": 403362.05,
-  "totalStocks": 380406.81,
+  "liquid_net_worth": 428150.86,
+  "liquid_gap_to_1m": 571849.14,
+  "liquid_pct_to_1m": 42.8,
+  "totalValue": 409050.86,
+  "totalStocks": 386095.62,
   "totalCash": 22955.24,
-  "gapTo1M": 596637.95,
-  "pctTo1M": 40.3,
+  "gapTo1M": 590949.14,
+  "pctTo1M": 40.9,
   "accounts": {
     "IRA": {
-      "stock_value": 133233.43,
+      "stock_value": 133268.16,
       "cash": 142.24,
-      "total": 133375.67
+      "total": 133410.4
     },
     "28Z": {
-      "stock_value": 189222.2,
+      "stock_value": 192966.92,
       "cash": 22807.0,
-      "total": 212029.2
+      "total": 215773.92
     },
     "88Z": {
-      "stock_value": 57951.18,
+      "stock_value": 59860.54,
       "cash": 6.0,
-      "total": 57957.18
+      "total": 59866.54
     }
   },
   "hysa_wealthfront": 0,
@@ -37,6 +37,13 @@ window.PORTFOLIO_DATA = {
       "account": "IRA"
     },
     {
+      "ticker": "QQQI",
+      "shares": 892.0,
+      "price": 57.67,
+      "value": 51441.64,
+      "account": "88Z"
+    },
+    {
       "ticker": "QQQ",
       "shares": 70.0,
       "price": 719.9,
@@ -44,17 +51,10 @@ window.PORTFOLIO_DATA = {
       "account": "28Z"
     },
     {
-      "ticker": "QQQI",
-      "shares": 892.0,
-      "price": 56.14,
-      "value": 50076.88,
-      "account": "88Z"
-    },
-    {
       "ticker": "SPCX",
       "shares": 252.0,
-      "price": 160.95,
-      "value": 40559.4,
+      "price": 175.81,
+      "value": 44304.12,
       "account": "28Z"
     },
     {
@@ -130,8 +130,15 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "BTCI",
       "shares": 140.0,
-      "price": 29.68,
-      "value": 4155.2,
+      "price": 31.14,
+      "value": 4359.6,
+      "account": "88Z"
+    },
+    {
+      "ticker": "MSTR",
+      "shares": 30.0,
+      "price": 135.31,
+      "value": 4059.3,
       "account": "88Z"
     },
     {
@@ -147,13 +154,6 @@ window.PORTFOLIO_DATA = {
       "price": 251.62,
       "value": 3780.46,
       "account": "28Z"
-    },
-    {
-      "ticker": "MSTR",
-      "shares": 30.0,
-      "price": 123.97,
-      "value": 3719.1,
-      "account": "88Z"
     },
     {
       "ticker": "NNE",
@@ -172,8 +172,8 @@ window.PORTFOLIO_DATA = {
     {
       "ticker": "ARKK",
       "shares": 151.0,
-      "price": 8.31,
-      "value": 1254.81,
+      "price": 8.54,
+      "value": 1289.54,
       "account": "IRA"
     },
     {
